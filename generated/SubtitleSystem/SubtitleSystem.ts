@@ -281,7 +281,7 @@ export class SubtilteStateChange__Params {
     return this._event.parameters[1].value.toI32();
   }
 
-  get time(): BigInt {
+  get applyId(): BigInt {
     return this._event.parameters[2].value.toBigInt();
   }
 }
@@ -891,20 +891,22 @@ export class SubtitleSystem__subtitleNFTResult {
 export class SubtitleSystem__totalApplysResult {
   value0: Address;
   value1: BigInt;
-  value2: i32;
-  value3: BigInt;
-  value4: i32;
-  value5: BigInt;
+  value2: string;
+  value3: i32;
+  value4: BigInt;
+  value5: i32;
   value6: BigInt;
+  value7: BigInt;
 
   constructor(
     value0: Address,
     value1: BigInt,
-    value2: i32,
-    value3: BigInt,
-    value4: i32,
-    value5: BigInt,
-    value6: BigInt
+    value2: string,
+    value3: i32,
+    value4: BigInt,
+    value5: i32,
+    value6: BigInt,
+    value7: BigInt
   ) {
     this.value0 = value0;
     this.value1 = value1;
@@ -913,23 +915,25 @@ export class SubtitleSystem__totalApplysResult {
     this.value4 = value4;
     this.value5 = value5;
     this.value6 = value6;
+    this.value7 = value7;
   }
 
   toMap(): TypedMap<string, ethereum.Value> {
     let map = new TypedMap<string, ethereum.Value>();
     map.set("value0", ethereum.Value.fromAddress(this.value0));
     map.set("value1", ethereum.Value.fromUnsignedBigInt(this.value1));
+    map.set("value2", ethereum.Value.fromString(this.value2));
     map.set(
-      "value2",
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(this.value2))
+      "value3",
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(this.value3))
     );
-    map.set("value3", ethereum.Value.fromUnsignedBigInt(this.value3));
+    map.set("value4", ethereum.Value.fromUnsignedBigInt(this.value4));
     map.set(
-      "value4",
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(this.value4))
+      "value5",
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(this.value5))
     );
-    map.set("value5", ethereum.Value.fromUnsignedBigInt(this.value5));
     map.set("value6", ethereum.Value.fromUnsignedBigInt(this.value6));
+    map.set("value7", ethereum.Value.fromUnsignedBigInt(this.value7));
     return map;
   }
 
@@ -941,24 +945,28 @@ export class SubtitleSystem__totalApplysResult {
     return this.value1;
   }
 
-  getStrategy(): i32 {
+  getSource(): string {
     return this.value2;
   }
 
-  getAmount(): BigInt {
+  getStrategy(): i32 {
     return this.value3;
   }
 
-  getLanguage(): i32 {
+  getAmount(): BigInt {
     return this.value4;
   }
 
-  getAdopted(): BigInt {
+  getLanguage(): i32 {
     return this.value5;
   }
 
-  getDeadline(): BigInt {
+  getAdopted(): BigInt {
     return this.value6;
+  }
+
+  getDeadline(): BigInt {
+    return this.value7;
   }
 }
 
@@ -1080,20 +1088,14 @@ export class SubtitleSystem extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
-  createVideo(
-    id: BigInt,
-    symbol: string,
-    creator: Address,
-    total: BigInt
-  ): BigInt {
+  createVideo(id: BigInt, symbol: string, creator: Address): BigInt {
     let result = super.call(
       "createVideo",
-      "createVideo(uint256,string,address,uint256):(uint256)",
+      "createVideo(uint256,string,address):(uint256)",
       [
         ethereum.Value.fromUnsignedBigInt(id),
         ethereum.Value.fromString(symbol),
-        ethereum.Value.fromAddress(creator),
-        ethereum.Value.fromUnsignedBigInt(total)
+        ethereum.Value.fromAddress(creator)
       ]
     );
 
@@ -1103,17 +1105,15 @@ export class SubtitleSystem extends ethereum.SmartContract {
   try_createVideo(
     id: BigInt,
     symbol: string,
-    creator: Address,
-    total: BigInt
+    creator: Address
   ): ethereum.CallResult<BigInt> {
     let result = super.tryCall(
       "createVideo",
-      "createVideo(uint256,string,address,uint256):(uint256)",
+      "createVideo(uint256,string,address):(uint256)",
       [
         ethereum.Value.fromUnsignedBigInt(id),
         ethereum.Value.fromString(symbol),
-        ethereum.Value.fromAddress(creator),
-        ethereum.Value.fromUnsignedBigInt(total)
+        ethereum.Value.fromAddress(creator)
       ]
     );
     if (result.reverted) {
@@ -1146,48 +1146,27 @@ export class SubtitleSystem extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
-  getDefaultVideoSrc(applyId: BigInt): string {
+  getLanguageType(languageId: i32): string {
     let result = super.call(
-      "getDefaultVideoSrc",
-      "getDefaultVideoSrc(uint256):(string)",
-      [ethereum.Value.fromUnsignedBigInt(applyId)]
+      "getLanguageType",
+      "getLanguageType(uint16):(string)",
+      [ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(languageId))]
     );
 
     return result[0].toString();
   }
 
-  try_getDefaultVideoSrc(applyId: BigInt): ethereum.CallResult<string> {
+  try_getLanguageType(languageId: i32): ethereum.CallResult<string> {
     let result = super.tryCall(
-      "getDefaultVideoSrc",
-      "getDefaultVideoSrc(uint256):(string)",
-      [ethereum.Value.fromUnsignedBigInt(applyId)]
+      "getLanguageType",
+      "getLanguageType(uint16):(string)",
+      [ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(languageId))]
     );
     if (result.reverted) {
       return new ethereum.CallResult();
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toString());
-  }
-
-  getLanguageId(language: string): i32 {
-    let result = super.call("getLanguageId", "getLanguageId(string):(uint16)", [
-      ethereum.Value.fromString(language)
-    ]);
-
-    return result[0].toI32();
-  }
-
-  try_getLanguageId(language: string): ethereum.CallResult<i32> {
-    let result = super.tryCall(
-      "getLanguageId",
-      "getLanguageId(string):(uint16)",
-      [ethereum.Value.fromString(language)]
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toI32());
   }
 
   getSubtitleAuditInfo(
@@ -1299,37 +1278,18 @@ export class SubtitleSystem extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
-  getVideoApplys(videoId: BigInt): Array<BigInt> {
-    let result = super.call(
-      "getVideoApplys",
-      "getVideoApplys(uint256):(uint256[])",
-      [ethereum.Value.fromUnsignedBigInt(videoId)]
-    );
-
-    return result[0].toBigIntArray();
-  }
-
-  try_getVideoApplys(videoId: BigInt): ethereum.CallResult<Array<BigInt>> {
-    let result = super.tryCall(
-      "getVideoApplys",
-      "getVideoApplys(uint256):(uint256[])",
-      [ethereum.Value.fromUnsignedBigInt(videoId)]
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBigIntArray());
-  }
-
-  languageTypes(): i32 {
-    let result = super.call("languageTypes", "languageTypes():(uint16)", []);
+  languages(param0: string): i32 {
+    let result = super.call("languages", "languages(string):(uint16)", [
+      ethereum.Value.fromString(param0)
+    ]);
 
     return result[0].toI32();
   }
 
-  try_languageTypes(): ethereum.CallResult<i32> {
-    let result = super.tryCall("languageTypes", "languageTypes():(uint16)", []);
+  try_languages(param0: string): ethereum.CallResult<i32> {
+    let result = super.tryCall("languages", "languages(string):(uint16)", [
+      ethereum.Value.fromString(param0)
+    ]);
     if (result.reverted) {
       return new ethereum.CallResult();
     }
@@ -1719,18 +1679,19 @@ export class SubtitleSystem extends ethereum.SmartContract {
   totalApplys(param0: BigInt): SubtitleSystem__totalApplysResult {
     let result = super.call(
       "totalApplys",
-      "totalApplys(uint256):(address,uint256,uint8,uint256,uint16,uint256,uint256)",
+      "totalApplys(uint256):(address,uint256,string,uint8,uint256,uint16,uint256,uint256)",
       [ethereum.Value.fromUnsignedBigInt(param0)]
     );
 
     return new SubtitleSystem__totalApplysResult(
       result[0].toAddress(),
       result[1].toBigInt(),
-      result[2].toI32(),
-      result[3].toBigInt(),
-      result[4].toI32(),
-      result[5].toBigInt(),
-      result[6].toBigInt()
+      result[2].toString(),
+      result[3].toI32(),
+      result[4].toBigInt(),
+      result[5].toI32(),
+      result[6].toBigInt(),
+      result[7].toBigInt()
     );
   }
 
@@ -1739,7 +1700,7 @@ export class SubtitleSystem extends ethereum.SmartContract {
   ): ethereum.CallResult<SubtitleSystem__totalApplysResult> {
     let result = super.tryCall(
       "totalApplys",
-      "totalApplys(uint256):(address,uint256,uint8,uint256,uint16,uint256,uint256)",
+      "totalApplys(uint256):(address,uint256,string,uint8,uint256,uint16,uint256,uint256)",
       [ethereum.Value.fromUnsignedBigInt(param0)]
     );
     if (result.reverted) {
@@ -1750,11 +1711,12 @@ export class SubtitleSystem extends ethereum.SmartContract {
       new SubtitleSystem__totalApplysResult(
         value[0].toAddress(),
         value[1].toBigInt(),
-        value[2].toI32(),
-        value[3].toBigInt(),
-        value[4].toI32(),
-        value[5].toBigInt(),
-        value[6].toBigInt()
+        value[2].toString(),
+        value[3].toI32(),
+        value[4].toBigInt(),
+        value[5].toI32(),
+        value[6].toBigInt(),
+        value[7].toBigInt()
       )
     );
   }
@@ -2058,10 +2020,6 @@ export class CreateVideoCall__Inputs {
 
   get creator(): Address {
     return this._call.inputValues[2].value.toAddress();
-  }
-
-  get total(): BigInt {
-    return this._call.inputValues[3].value.toBigInt();
   }
 }
 

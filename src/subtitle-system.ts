@@ -1,4 +1,4 @@
-import { BigInt, Address } from "@graphprotocol/graph-ts"
+import { BigInt, Address, ethereum } from "@graphprotocol/graph-ts"
 import {
   SubtitleSystem,
   ApplicationSubmit,
@@ -14,18 +14,18 @@ import {
   VideoCreate
 } from "../generated/SubtitleSystem/SubtitleSystem"
 
-import { Dashboard, Application, User, Reward, SettlementStrategy, Language, Subtitle, Platform, Video } from "../generated/schema"
+import { Dashboard, DayData, Application, User, Reward, SettlementStrategy, Language, Audit, Platform, Video } from "../generated/schema"
 import { SUBTITLE_SYSTEM_ADDRESS, ZERO_BI, ONE_BI } from "./utils"
+import { getOrCreateSubtitle } from "./components/subtitle-token"
 
-const TSCS = SubtitleSystem.bind(Address.fromString(SUBTITLE_SYSTEM_ADDRESS))
+export const TSCS = SubtitleSystem.bind(Address.fromString(SUBTITLE_SYSTEM_ADDRESS))
 
 export function handleRegisterLanguage(event: RegisterLanguage): void {
+  let languageId = event.params.id
+  let language = new Language(languageId.toString())
+  language.notes = event.params.language
   let dashboard = getOrCreateDashboard()
   dashboard.languageCount += 1
-  let languageId = event.params.id
-  let language = new Language('language-' + languageId.toString())
-  language.languageId = languageId
-  language.notes = event.params.language
   language.save()
   dashboard.save()
 }
@@ -33,8 +33,13 @@ export function handleRegisterLanguage(event: RegisterLanguage): void {
 export function handleUserJoin(event: UserJoin): void {
   let user = new User(event.params.user.toHexString())
   let dashboard = getOrCreateDashboard()
+  let dayData = getOrCreateDayData(event)
+  dayData.userCount.plus(ONE_BI)
   dashboard.userCount.plus(ONE_BI)
+  dayData.save()
+  dashboard.save()
   user.save()
+
 }
 
 export function handleUserLockRewardUpdate(event: UserLockRewardUpdate): void {
@@ -45,9 +50,8 @@ export function handleUserLockRewardUpdate(event: UserLockRewardUpdate): void {
 
 export function handleUserWithdraw(event: UserWithdraw): void {
   let days = event.params.day
-  let reward
   for (let i = 0; i < days.length; i++) {
-    reward = getOrCreateReward(event.params.user, event.params.platform, days[i])
+    let reward = getOrCreateReward(event.params.user, event.params.platform, days[i])
     reward.extracted.plus(reward.locked)
     reward.locked = ZERO_BI
     reward.save()
@@ -55,7 +59,7 @@ export function handleUserWithdraw(event: UserWithdraw): void {
 }
 
 export function handlePlatformJoin(event: PlatformJoin): void {
-  let platform = new Platform('platform-' + event.params.platform.toHexString())
+  let platform = new Platform(event.params.platform.toHexString())
   platform.name = event.params.name
   platform.symbol = event.params.symbol
   platform.owner = event.params.platform
@@ -64,6 +68,10 @@ export function handlePlatformJoin(event: PlatformJoin): void {
   platform.rateAuditorDivide = event.params.rate2
   let dashboard = getOrCreateDashboard()
   dashboard.platformCount.plus(ONE_BI)
+  let dayData = getOrCreateDayData(event)
+  dayData.platformCount.plus(ONE_BI)
+  dayData.save()
+  dashboard.save()
   platform.save()
 }
 
@@ -75,8 +83,7 @@ export function handlePlatformSetRate(event: PlatformSetRate): void {
 }
 
 export function handleSystemSetSettlement(event: SystemSetSettlement): void {
-  let settlement = new SettlementStrategy('settlement-' + event.params.strategyId.toString())
-  settlement.strategyId = event.params.strategyId
+  let settlement = new SettlementStrategy(event.params.strategyId.toString())
   settlement.address = event.params.strategy
   settlement.notes = event.params.notes
   let dashboard = getOrCreateDashboard()
@@ -87,15 +94,22 @@ export function handleSystemSetSettlement(event: SystemSetSettlement): void {
 
 export function handleApplicationSubmit(event: ApplicationSubmit): void {
   let applyId = event.params.applyId
-  let application = new Application('application-' + applyId.toString());
+  let application = new Application(applyId.toString());
   let user = getOrCreateUser(event.params.applicant)
   application.applicant = user.id
   application.amount = event.params.amount
   application.deadline = event.params.deadline
-  application.applyId = applyId
+  // application.applyId = applyId
   application.source = event.params.src
   application.language = getOrCreateLanguage(event.params.language).id
   application.strategy = getOrCreateSettlement(event.params.strategy).id
+  let dashboard = getOrCreateDashboard()
+  dashboard.applicationCount.plus(ONE_BI)
+  let dayData = getOrCreateDayData(event)
+  dayData.applicationCount.plus(ONE_BI)
+  dayData.save()
+  dashboard.save()
+  application.save()
 }
 
 export function handleVideoCreate(event: VideoCreate): void {
@@ -104,7 +118,46 @@ export function handleVideoCreate(event: VideoCreate): void {
   video.realId = event.params.realId
   video.orderId = event.params.id
   video.creator = getOrCreateUser(event.params.creator).id
+  let dashboard = getOrCreateDashboard()
+  dashboard.videoCount.plus(ONE_BI)
+  let dayData = getOrCreateDayData(event)
+  dayData.videoCount.plus(ONE_BI)
+  dayData.save()
+  dashboard.save()
   video.save()
+}
+
+export function handleSubitlteGetEvaluation(event: SubitlteGetEvaluation): void {
+  let subtitle = getOrCreateSubtitle(event.params.subtitleId)
+  let attitude = event.params.attitude
+  let attitudeText = ""
+  if(attitude == 0) {
+    subtitle.supporterCount.plus(ONE_BI)
+    attitudeText = "SUPPORT"
+  } else {
+    subtitle.dissenterCount.plus(ONE_BI)
+    attitudeText = "OPPOSITION"
+  }
+  let audit = new Audit(event.params.evaluator.toHexString() + '-' + event.params.subtitleId.toString())
+  audit.auditor = getOrCreateUser(event.params.evaluator).id
+  audit.subtitle = getOrCreateSubtitle(event.params.subtitleId).id
+  audit.attitude = attitudeText
+  audit.save()
+  subtitle.save()
+}
+
+export function handleSubtilteStateChange(event: SubtilteStateChange): void {
+  let subtitle = getOrCreateSubtitle(event.params.subtitleId)
+  let state = event.params.state
+  if(state == 0) {
+    subtitle.state = "ADOPTED"
+    let application = getOrCreateApplication(event.params.applyId)
+    application.adopted = subtitle.id
+    application.save()
+  } else if(state == 1) {
+    subtitle.state = "DELETED"
+  }
+  subtitle.save()
 }
 
 export function getOrCreateUser(address: Address): User {
@@ -134,27 +187,26 @@ export function getOrCreateDashboard(): Dashboard {
   return dashboard
 }
 
-export function getOrCreateLanguage(languageId: number): Language {
-  
-  let language = Language.load('language-' + languageId.toString())
+export function getOrCreateLanguage(languageId: i32): Language {
+  let language = Language.load(languageId.toString())
   if (language === null) {
-    language = new Language('language-' + languageId.toString())
-    language.languageId = languageId
-    language.notes = ""
+    language = new Language(languageId.toString())
+    // language.languageId = languageId
+    let base = TSCS.try_getLanguageType(languageId)
+    language.notes = base.value
     language.save()
   }
   return language
 }
 
-export function getOrCreateSettlement(strategyId: number): SettlementStrategy {
-  
-  let settlement = SettlementStrategy.load('settlement-' + strategyId.toString())
+export function getOrCreateSettlement(strategyId: i32): SettlementStrategy {
+  let settlement = SettlementStrategy.load(strategyId.toString())
   if (settlement === null) {
-    settlement = new SettlementStrategy('settlement-' + strategyId.toString())
-    settlement.strategyId = strategyId
+    settlement = new SettlementStrategy(strategyId.toString())
+    // settlement.strategyId = strategyId
     let base = TSCS.try_settlementStrategy(strategyId)
-    settlement.address = base.value.value0
-    settlement.notes = base.value.value1
+    settlement.address = base.value.getStrategy()
+    settlement.notes = base.value.getNotes()
     let dashboard = getOrCreateDashboard()
     dashboard.settlementStrategyCount += 1
     dashboard.save()
@@ -164,18 +216,18 @@ export function getOrCreateSettlement(strategyId: number): SettlementStrategy {
 }
 
 export function getOrCreatePlatform(platformAddress: Address): Platform {
-  let platform = Platform.load('platform-' + platformAddress.toHexString())
+  let platform = Platform.load(platformAddress.toHexString())
   if (platform === null) {
-    platform = new Platform('platform-' + platformAddress.toHexString())
+    platform = new Platform(platformAddress.toHexString())
     let base = TSCS.try_platforms(platformAddress)
-    platform.name = base.value.value0
-    platform.symbol = base.value.value1
+    platform.name = base.value.getName()
+    platform.symbol = base.value.getSymbol()
     platform.owner = platformAddress
-    platform.platformId = base.value.value2
-    platform.rateCountsToProfit = base.value.value3
-    platform.rateAuditorDivide = base.value.value4
+    platform.platformId = base.value.getPlatformId()
+    platform.rateCountsToProfit = base.value.getRateCountsToProfit()
+    platform.rateAuditorDivide = base.value.getRateAuditorDivide()
     let dashboard = getOrCreateDashboard()
-    dashboard.platformCount.plus(ONE_BI)
+    dashboard.save()
     platform.save()
   }
   return platform
@@ -187,10 +239,45 @@ export function getOrCreateReward(ownerAddress: Address, platformAddress: Addres
     reward = new Reward(ownerAddress.toHexString() + '-' + platformAddress.toHexString() + day.toString())
     reward.day = day
     reward.user = getOrCreateUser(ownerAddress).id
-    reward.platform = getOrCreatePlatform(platformAddress)
+    reward.platform = getOrCreatePlatform(platformAddress).id
     reward.locked = ZERO_BI
     reward.extracted = ZERO_BI
     reward.save()
   }
   return reward
+}
+
+export function getOrCreateApplication(applyId: BigInt): Application {
+  let application = Application.load(applyId.toString())
+  if (application === null) {
+    application = new Application(applyId.toString())
+    let base  = TSCS.try_totalApplys(applyId)
+    application.applicant = getOrCreateUser(base.value.getApplicant()).id
+    application.amount = base.value.getAmount()
+    application.deadline = base.value.getDeadline()
+    // application.applyId = applyId
+    application.source = base.value.getSource()
+    application.language = getOrCreateLanguage(base.value.getLanguage()).id
+    application.strategy = getOrCreateSettlement(base.value.getStrategy()).id
+    application.save()
+  }
+  return application
+}
+
+export function getOrCreateDayData(event: ethereum.Event): DayData {
+  let timestamp = event.block.timestamp.toI32()
+  let dayId = timestamp / 86400
+  let dayData = DayData.load(dayId.toString())
+  if(dayData === null) {
+    dayData = new DayData(dayId.toString())
+    let dashboard = getOrCreateDashboard()
+    dayData.dashboard = dashboard.id
+    dayData.day = dayId
+    dayData.applicationCount = ZERO_BI
+    dayData.platformCount = ZERO_BI
+    dayData.subtitleCount = ZERO_BI
+    dayData.videoCount = ZERO_BI
+    dayData.userCount = ZERO_BI
+  }
+  return dayData
 }

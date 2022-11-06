@@ -104,6 +104,118 @@ export class Dashboard extends Entity {
   set settlementStrategyCount(value: i32) {
     this.set("settlementStrategyCount", Value.fromI32(value));
   }
+
+  get dayData(): Array<string> | null {
+    let value = this.get("dayData");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set dayData(value: Array<string> | null) {
+    if (!value) {
+      this.unset("dayData");
+    } else {
+      this.set("dayData", Value.fromStringArray(<Array<string>>value));
+    }
+  }
+}
+
+export class DayData extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save DayData entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type DayData must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("DayData", id.toString(), this);
+    }
+  }
+
+  static load(id: string): DayData | null {
+    return changetype<DayData | null>(store.get("DayData", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get dashboard(): string {
+    let value = this.get("dashboard");
+    return value!.toString();
+  }
+
+  set dashboard(value: string) {
+    this.set("dashboard", Value.fromString(value));
+  }
+
+  get day(): i32 {
+    let value = this.get("day");
+    return value!.toI32();
+  }
+
+  set day(value: i32) {
+    this.set("day", Value.fromI32(value));
+  }
+
+  get applicationCount(): BigInt {
+    let value = this.get("applicationCount");
+    return value!.toBigInt();
+  }
+
+  set applicationCount(value: BigInt) {
+    this.set("applicationCount", Value.fromBigInt(value));
+  }
+
+  get subtitleCount(): BigInt {
+    let value = this.get("subtitleCount");
+    return value!.toBigInt();
+  }
+
+  set subtitleCount(value: BigInt) {
+    this.set("subtitleCount", Value.fromBigInt(value));
+  }
+
+  get platformCount(): BigInt {
+    let value = this.get("platformCount");
+    return value!.toBigInt();
+  }
+
+  set platformCount(value: BigInt) {
+    this.set("platformCount", Value.fromBigInt(value));
+  }
+
+  get videoCount(): BigInt {
+    let value = this.get("videoCount");
+    return value!.toBigInt();
+  }
+
+  set videoCount(value: BigInt) {
+    this.set("videoCount", Value.fromBigInt(value));
+  }
+
+  get userCount(): BigInt {
+    let value = this.get("userCount");
+    return value!.toBigInt();
+  }
+
+  set userCount(value: BigInt) {
+    this.set("userCount", Value.fromBigInt(value));
+  }
 }
 
 export class Application extends Entity {
@@ -197,15 +309,6 @@ export class Application extends Entity {
 
   set deadline(value: BigInt) {
     this.set("deadline", Value.fromBigInt(value));
-  }
-
-  get applyId(): BigInt {
-    let value = this.get("applyId");
-    return value!.toBigInt();
-  }
-
-  set applyId(value: BigInt) {
-    this.set("applyId", Value.fromBigInt(value));
   }
 
   get source(): string | null {
@@ -478,15 +581,6 @@ export class SettlementStrategy extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get strategyId(): i32 {
-    let value = this.get("strategyId");
-    return value!.toI32();
-  }
-
-  set strategyId(value: i32) {
-    this.set("strategyId", Value.fromI32(value));
-  }
-
   get address(): Bytes {
     let value = this.get("address");
     return value!.toBytes();
@@ -535,15 +629,6 @@ export class Language extends Entity {
 
   set id(value: string) {
     this.set("id", Value.fromString(value));
-  }
-
-  get languageId(): i32 {
-    let value = this.get("languageId");
-    return value!.toI32();
-  }
-
-  set languageId(value: i32) {
-    this.set("languageId", Value.fromI32(value));
   }
 
   get notes(): string {
@@ -613,15 +698,6 @@ export class Subtitle extends Entity {
     }
   }
 
-  get subtitleId(): BigInt {
-    let value = this.get("subtitleId");
-    return value!.toBigInt();
-  }
-
-  set subtitleId(value: BigInt) {
-    this.set("subtitleId", Value.fromBigInt(value));
-  }
-
   get application(): string {
     let value = this.get("application");
     return value!.toString();
@@ -640,21 +716,22 @@ export class Subtitle extends Entity {
     this.set("language", Value.fromString(value));
   }
 
-  get cid(): string | null {
+  get cid(): string {
     let value = this.get("cid");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
+    return value!.toString();
   }
 
-  set cid(value: string | null) {
-    if (!value) {
-      this.unset("cid");
-    } else {
-      this.set("cid", Value.fromString(<string>value));
-    }
+  set cid(value: string) {
+    this.set("cid", Value.fromString(value));
+  }
+
+  get fingerprint(): BigInt {
+    let value = this.get("fingerprint");
+    return value!.toBigInt();
+  }
+
+  set fingerprint(value: BigInt) {
+    this.set("fingerprint", Value.fromBigInt(value));
   }
 
   get state(): string | null {
@@ -674,55 +751,22 @@ export class Subtitle extends Entity {
     }
   }
 
-  get fingerprint(): string | null {
-    let value = this.get("fingerprint");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
-  }
-
-  set fingerprint(value: string | null) {
-    if (!value) {
-      this.unset("fingerprint");
-    } else {
-      this.set("fingerprint", Value.fromString(<string>value));
-    }
-  }
-
-  get supporterCount(): BigInt | null {
+  get supporterCount(): BigInt {
     let value = this.get("supporterCount");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toBigInt();
-    }
+    return value!.toBigInt();
   }
 
-  set supporterCount(value: BigInt | null) {
-    if (!value) {
-      this.unset("supporterCount");
-    } else {
-      this.set("supporterCount", Value.fromBigInt(<BigInt>value));
-    }
+  set supporterCount(value: BigInt) {
+    this.set("supporterCount", Value.fromBigInt(value));
   }
 
-  get dissenterCount(): BigInt | null {
+  get dissenterCount(): BigInt {
     let value = this.get("dissenterCount");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toBigInt();
-    }
+    return value!.toBigInt();
   }
 
-  set dissenterCount(value: BigInt | null) {
-    if (!value) {
-      this.unset("dissenterCount");
-    } else {
-      this.set("dissenterCount", Value.fromBigInt(<BigInt>value));
-    }
+  set dissenterCount(value: BigInt) {
+    this.set("dissenterCount", Value.fromBigInt(value));
   }
 }
 

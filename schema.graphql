@@ -7,6 +7,18 @@ type Dashboard @entity {
   videoCount: BigInt!
   userCount: BigInt!
   settlementStrategyCount: Int!
+  dayData: [DayData!] @derivedFrom(field: "dashboard")
+}
+
+type DayData @entity {
+  id: ID!
+  dashboard: Dashboard!
+  day: Int!
+  applicationCount: BigInt!
+  subtitleCount: BigInt!
+  platformCount: BigInt!
+  videoCount: BigInt!
+  userCount: BigInt!
 }
 
 type Application @entity {
@@ -17,7 +29,7 @@ type Application @entity {
   amount: BigInt!
   language: Language!
   deadline: BigInt!
-  applyId: BigInt!
+  # applyId: BigInt!
   source: String
   subtitles: [Subtitle!] @derivedFrom(field: "application")
   adopted: Subtitle
@@ -42,14 +54,14 @@ type Reward @entity {
 
 type SettlementStrategy @entity {
   id: ID!
-  strategyId: Int!
+  # strategyId: Int!
   address: Bytes!
   notes: String!
 }
 
 type Language @entity {
   id: ID!
-  languageId: Int!
+  # languageId: Int!
   notes: String!
 }
 
@@ -57,14 +69,14 @@ type Subtitle @entity {
   id: ID!
   maker: User!
   owner: User
-  subtitleId: BigInt!
+  # subtitleId: BigInt!
   application: Application!
   language: Language!
-  cid: String
+  cid: String!
+  fingerprint: BigInt!
   state: SubtitleState
-  fingerprint: String
-  supporterCount: BigInt
-  dissenterCount: BigInt
+  supporterCount: BigInt!
+  dissenterCount: BigInt!
 }
 
 type Platform @entity {

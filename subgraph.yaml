@@ -55,6 +55,7 @@ dataSources:
     network: mainnet
     source:
       abi: SubtitleToken
+      address: "0x3f204Fcde7E2434FbC2BCdfF370e10065e499374"
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
