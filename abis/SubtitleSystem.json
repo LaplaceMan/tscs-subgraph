@@ -570,7 +570,7 @@
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "reealId",
+        "name": "realId",
         "type": "uint256"
       },
       {
@@ -590,12 +590,6 @@
         "internalType": "address",
         "name": "creator",
         "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "counts",
-        "type": "uint256"
       }
     ],
     "name": "VideoCreate",

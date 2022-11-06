@@ -1,4 +1,4 @@
-specVersion: 0.0.1
+specVersion: 0.0.4
 schema:
   file: ./schema.graphql
 dataSources:
@@ -10,49 +10,24 @@ dataSources:
       abi: SubtitleSystem
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
-        - ApplicationCancel
-        - ApplicationRecover
-        - ApplicationSubmit
-        - OpeatorsStateChange
-        - OwnershipTransferred
-        - PlatformJoin
-        - PlatformSetRate
-        - RegisterLanguage
-        - SubitlteGetEvaluation
-        - SubtilteStateChange
-        - SubtitleCountsUpdate
-        - SystemSetAccess
-        - SystemSetAudit
-        - SystemSetDetection
-        - SystemSetLockUpTime
-        - SystemSetSettlement
-        - SystemSetSubtitleToken
-        - SystemSetVideoToken
-        - SystemSetZimuToken
-        - UserInfoUpdate
-        - UserJoin
-        - UserLockRewardUpdate
-        - UserWithdraw
-        - VideoCountsUpdate
-        - VideoCreate
-        - VideoPreExtract
+        - Dashboard
+        - Application
+        - User
+        - Reward
+        - SettlementStrategy
+        - Language
+        - Subtitle
+        - Platform
+        - Video
       abis:
         - name: SubtitleSystem
           file: ./abis/SubtitleSystem.json
       eventHandlers:
-        - event: ApplicationCancel(uint256)
-          handler: handleApplicationCancel
-        - event: ApplicationRecover(uint256,uint256,uint256)
-          handler: handleApplicationRecover
         - event: ApplicationSubmit(address,address,uint256,uint8,uint256,uint16,uint256,uint256,string)
           handler: handleApplicationSubmit
-        - event: OpeatorsStateChange(indexed address[],indexed bool)
-          handler: handleOpeatorsStateChange
-        - event: OwnershipTransferred(indexed address,indexed address)
-          handler: handleOwnershipTransferred
         - event: PlatformJoin(address,uint256,string,string,uint16,uint16)
           handler: handlePlatformJoin
         - event: PlatformSetRate(address,uint16,uint16)
@@ -63,36 +38,35 @@ dataSources:
           handler: handleSubitlteGetEvaluation
         - event: SubtilteStateChange(uint256,uint8,uint256)
           handler: handleSubtilteStateChange
-        - event: SubtitleCountsUpdate(address,uint256[],uint256[])
-          handler: handleSubtitleCountsUpdate
-        - event: SystemSetAccess(address)
-          handler: handleSystemSetAccess
-        - event: SystemSetAudit(address)
-          handler: handleSystemSetAudit
-        - event: SystemSetDetection(address)
-          handler: handleSystemSetDetection
-        - event: SystemSetLockUpTime(uint256)
-          handler: handleSystemSetLockUpTime
         - event: SystemSetSettlement(uint8,address,string)
           handler: handleSystemSetSettlement
-        - event: SystemSetSubtitleToken(address)
-          handler: handleSystemSetSubtitleToken
-        - event: SystemSetVideoToken(address)
-          handler: handleSystemSetVideoToken
-        - event: SystemSetZimuToken(address)
-          handler: handleSystemSetZimuToken
-        - event: UserInfoUpdate(address,int256,int256)
-          handler: handleUserInfoUpdate
         - event: UserJoin(address,uint256,int256)
           handler: handleUserJoin
         - event: UserLockRewardUpdate(address,address,uint256,int256)
           handler: handleUserLockRewardUpdate
         - event: UserWithdraw(address,address,uint256[],uint256)
           handler: handleUserWithdraw
-        - event: VideoCountsUpdate(address,uint256[],uint256[])
-          handler: handleVideoCountsUpdate
-        - event: VideoCreate(address,uint256,uint256,string,address,uint256)
+        - event: VideoCreate(address,uint256,uint256,string,address)
           handler: handleVideoCreate
-        - event: VideoPreExtract(uint256,uint256,uint256)
-          handler: handleVideoPreExtract
       file: ./src/subtitle-system.ts
+
+  - kind: ethereum/contract
+    name: SubtitleToken
+    network: mainnet
+    source:
+      abi: SubtitleToken
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Subtitle
+      abis:
+        - name: SubtitleToken
+          file: ./abis/SubtitleToken.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleSTTransfer
+        - event: SubtitleUpload(address,uint256,uint256,string,uint16,uint256)
+          handler: handleSubtitleUpload
+      file: ./src/components/subtitle-token.ts

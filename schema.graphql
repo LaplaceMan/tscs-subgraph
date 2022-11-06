@@ -1,5 +1,106 @@
-type ExampleEntity @entity {
+type Dashboard @entity {
   id: ID!
-  count: BigInt!
-  applyId: BigInt! # uint256
+  applicationCount: BigInt!
+  subtitleCount: BigInt!
+  languageCount: Int!
+  platformCount: BigInt!
+  videoCount: BigInt!
+  userCount: BigInt!
+  settlementStrategyCount: Int!
+}
+
+type Application @entity {
+  id: ID!
+  applicant: User!
+  video: Video
+  strategy: SettlementStrategy!
+  amount: BigInt!
+  language: Language!
+  deadline: BigInt!
+  applyId: BigInt!
+  source: String
+  subtitles: [Subtitle!] @derivedFrom(field: "application")
+  adopted: Subtitle
+}
+
+type User @entity {
+  id: ID!
+  rewards: [Reward!] @derivedFrom(field: "user")
+  applications: [Application!] @derivedFrom(field: "applicant")
+  subtitles: [Subtitle!] @derivedFrom(field: "maker")
+  audits: [Audit!] @derivedFrom(field: "auditor")
+}
+
+type Reward @entity {
+  id: ID!
+  day: BigInt!
+  user: User!
+  platform: Platform
+  locked: BigInt!
+  extracted: BigInt!
+}
+
+type SettlementStrategy @entity {
+  id: ID!
+  strategyId: Int!
+  address: Bytes!
+  notes: String!
+}
+
+type Language @entity {
+  id: ID!
+  languageId: Int!
+  notes: String!
+}
+
+type Subtitle @entity {
+  id: ID!
+  maker: User!
+  owner: User
+  subtitleId: BigInt!
+  application: Application!
+  language: Language!
+  cid: String
+  state: SubtitleState
+  fingerprint: String
+  supporterCount: BigInt
+  dissenterCount: BigInt
+}
+
+type Platform @entity {
+  id: ID!
+  name: String!
+  symbol: String!
+  owner: Bytes!
+  platformId: BigInt!
+  rateCountsToProfit: Int
+  rateAuditorDivide: Int
+  videos: [Video!] @derivedFrom(field: "platform")
+}
+
+type Video @entity {
+  id: ID!
+  platform: Platform!
+  realId: BigInt!
+  orderId: BigInt!
+  creator: User
+  applications: [Application!] @derivedFrom(field: "video")
+}
+
+type Audit @entity {
+  id: ID!
+  auditor: User!
+  subtitle: Subtitle!
+  attitude: AuditAttitude
+}
+
+enum SubtitleState {
+  NORMAL
+  ADOPTED
+  DELETED
+}
+
+enum AuditAttitude {
+  SUPPORT
+  OPPOSITION
 }
