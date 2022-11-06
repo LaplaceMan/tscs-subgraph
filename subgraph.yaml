@@ -1,0 +1,98 @@
+specVersion: 0.0.1
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: SubtitleSystem
+    network: mainnet
+    source:
+      address: "0x3f204Fcde7E2434FbC2BCdfF370e10065e499374"
+      abi: SubtitleSystem
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - ApplicationCancel
+        - ApplicationRecover
+        - ApplicationSubmit
+        - OpeatorsStateChange
+        - OwnershipTransferred
+        - PlatformJoin
+        - PlatformSetRate
+        - RegisterLanguage
+        - SubitlteGetEvaluation
+        - SubtilteStateChange
+        - SubtitleCountsUpdate
+        - SystemSetAccess
+        - SystemSetAudit
+        - SystemSetDetection
+        - SystemSetLockUpTime
+        - SystemSetSettlement
+        - SystemSetSubtitleToken
+        - SystemSetVideoToken
+        - SystemSetZimuToken
+        - UserInfoUpdate
+        - UserJoin
+        - UserLockRewardUpdate
+        - UserWithdraw
+        - VideoCountsUpdate
+        - VideoCreate
+        - VideoPreExtract
+      abis:
+        - name: SubtitleSystem
+          file: ./abis/SubtitleSystem.json
+      eventHandlers:
+        - event: ApplicationCancel(uint256)
+          handler: handleApplicationCancel
+        - event: ApplicationRecover(uint256,uint256,uint256)
+          handler: handleApplicationRecover
+        - event: ApplicationSubmit(address,address,uint256,uint8,uint256,uint16,uint256,uint256,string)
+          handler: handleApplicationSubmit
+        - event: OpeatorsStateChange(indexed address[],indexed bool)
+          handler: handleOpeatorsStateChange
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+        - event: PlatformJoin(address,uint256,string,string,uint16,uint16)
+          handler: handlePlatformJoin
+        - event: PlatformSetRate(address,uint16,uint16)
+          handler: handlePlatformSetRate
+        - event: RegisterLanguage(string,uint16)
+          handler: handleRegisterLanguage
+        - event: SubitlteGetEvaluation(uint256,address,uint8)
+          handler: handleSubitlteGetEvaluation
+        - event: SubtilteStateChange(uint256,uint8,uint256)
+          handler: handleSubtilteStateChange
+        - event: SubtitleCountsUpdate(address,uint256[],uint256[])
+          handler: handleSubtitleCountsUpdate
+        - event: SystemSetAccess(address)
+          handler: handleSystemSetAccess
+        - event: SystemSetAudit(address)
+          handler: handleSystemSetAudit
+        - event: SystemSetDetection(address)
+          handler: handleSystemSetDetection
+        - event: SystemSetLockUpTime(uint256)
+          handler: handleSystemSetLockUpTime
+        - event: SystemSetSettlement(uint8,address,string)
+          handler: handleSystemSetSettlement
+        - event: SystemSetSubtitleToken(address)
+          handler: handleSystemSetSubtitleToken
+        - event: SystemSetVideoToken(address)
+          handler: handleSystemSetVideoToken
+        - event: SystemSetZimuToken(address)
+          handler: handleSystemSetZimuToken
+        - event: UserInfoUpdate(address,int256,int256)
+          handler: handleUserInfoUpdate
+        - event: UserJoin(address,uint256,int256)
+          handler: handleUserJoin
+        - event: UserLockRewardUpdate(address,address,uint256,int256)
+          handler: handleUserLockRewardUpdate
+        - event: UserWithdraw(address,address,uint256[],uint256)
+          handler: handleUserWithdraw
+        - event: VideoCountsUpdate(address,uint256[],uint256[])
+          handler: handleVideoCountsUpdate
+        - event: VideoCreate(address,uint256,uint256,string,address,uint256)
+          handler: handleVideoCreate
+        - event: VideoPreExtract(uint256,uint256,uint256)
+          handler: handleVideoPreExtract
+      file: ./src/subtitle-system.ts
