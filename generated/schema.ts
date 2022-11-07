@@ -337,6 +337,15 @@ export class Application extends Entity {
     }
   }
 
+  get subtitleNumber(): BigInt {
+    let value = this.get("subtitleNumber");
+    return value!.toBigInt();
+  }
+
+  set subtitleNumber(value: BigInt) {
+    this.set("subtitleNumber", Value.fromBigInt(value));
+  }
+
   get subtitles(): Array<string> | null {
     let value = this.get("subtitles");
     if (!value || value.kind == ValueKind.NULL) {
@@ -410,6 +419,42 @@ export class User extends Entity {
 
   set time(value: i32) {
     this.set("time", Value.fromI32(value));
+  }
+
+  get applicationNumber(): BigInt {
+    let value = this.get("applicationNumber");
+    return value!.toBigInt();
+  }
+
+  set applicationNumber(value: BigInt) {
+    this.set("applicationNumber", Value.fromBigInt(value));
+  }
+
+  get subtitleNumber(): BigInt {
+    let value = this.get("subtitleNumber");
+    return value!.toBigInt();
+  }
+
+  set subtitleNumber(value: BigInt) {
+    this.set("subtitleNumber", Value.fromBigInt(value));
+  }
+
+  get auditNumber(): BigInt {
+    let value = this.get("auditNumber");
+    return value!.toBigInt();
+  }
+
+  set auditNumber(value: BigInt) {
+    this.set("auditNumber", Value.fromBigInt(value));
+  }
+
+  get adoptedNumber(): BigInt {
+    let value = this.get("adoptedNumber");
+    return value!.toBigInt();
+  }
+
+  set adoptedNumber(value: BigInt) {
+    this.set("adoptedNumber", Value.fromBigInt(value));
   }
 
   get rewards(): Array<string> | null {
@@ -873,6 +918,15 @@ export class Platform extends Entity {
     this.set("platformId", Value.fromBigInt(value));
   }
 
+  get videoNumber(): BigInt {
+    let value = this.get("videoNumber");
+    return value!.toBigInt();
+  }
+
+  set videoNumber(value: BigInt) {
+    this.set("videoNumber", Value.fromBigInt(value));
+  }
+
   get rateCountsToProfit(): i32 {
     let value = this.get("rateCountsToProfit");
     return value!.toI32();
@@ -949,13 +1003,21 @@ export class Video extends Entity {
     this.set("platform", Value.fromString(value));
   }
 
-  get realId(): BigInt {
+  get realId(): BigInt | null {
     let value = this.get("realId");
-    return value!.toBigInt();
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
   }
 
-  set realId(value: BigInt) {
-    this.set("realId", Value.fromBigInt(value));
+  set realId(value: BigInt | null) {
+    if (!value) {
+      this.unset("realId");
+    } else {
+      this.set("realId", Value.fromBigInt(<BigInt>value));
+    }
   }
 
   get orderId(): BigInt {
@@ -991,6 +1053,15 @@ export class Video extends Entity {
 
   set time(value: i32) {
     this.set("time", Value.fromI32(value));
+  }
+
+  get applicationNumber(): BigInt {
+    let value = this.get("applicationNumber");
+    return value!.toBigInt();
+  }
+
+  set applicationNumber(value: BigInt) {
+    this.set("applicationNumber", Value.fromBigInt(value));
   }
 
   get applications(): Array<string> | null {

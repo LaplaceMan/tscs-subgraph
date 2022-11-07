@@ -30,8 +30,8 @@ type Application @entity {
   language: Language!
   start: Int
   deadline: BigInt!
-  # applyId: BigInt!
   source: String
+  subtitleNumber: BigInt!
   subtitles: [Subtitle!] @derivedFrom(field: "application")
   adopted: Subtitle
 }
@@ -39,6 +39,10 @@ type Application @entity {
 type User @entity {
   id: ID!
   time: Int
+  applicationNumber: BigInt!
+  subtitleNumber: BigInt!
+  auditNumber: BigInt!
+  adoptedNumber: BigInt!
   rewards: [Reward!] @derivedFrom(field: "user")
   applications: [Application!] @derivedFrom(field: "applicant")
   subtitles: [Subtitle!] @derivedFrom(field: "maker")
@@ -56,14 +60,12 @@ type Reward @entity {
 
 type SettlementStrategy @entity {
   id: ID!
-  # strategyId: Int!
   address: Bytes!
   notes: String!
 }
 
 type Language @entity {
   id: ID!
-  # languageId: Int!
   notes: String!
 }
 
@@ -72,7 +74,6 @@ type Subtitle @entity {
   maker: User!
   owner: User
   time: Int
-  # subtitleId: BigInt!
   application: Application!
   language: Language!
   cid: String!
@@ -89,6 +90,7 @@ type Platform @entity {
   time: Int
   owner: Bytes!
   platformId: BigInt!
+  videoNumber: BigInt!
   rateCountsToProfit: Int
   rateAuditorDivide: Int
   videos: [Video!] @derivedFrom(field: "platform")
@@ -97,10 +99,11 @@ type Platform @entity {
 type Video @entity {
   id: ID!
   platform: Platform!
-  realId: BigInt!
+  realId: BigInt
   orderId: BigInt!
   creator: User
   time: Int
+  applicationNumber: BigInt!
   applications: [Application!] @derivedFrom(field: "video")
 }
 
