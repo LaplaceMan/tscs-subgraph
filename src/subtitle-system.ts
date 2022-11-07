@@ -43,7 +43,7 @@ export function handleUserJoin(event: UserJoin): void {
 }
 
 export function handleUserLockRewardUpdate(event: UserLockRewardUpdate): void {
-  let reward = getOrCreateReward(event.params.user, event.params.platform, event.params.day)
+  let reward = getOrCreateReward(event.params.user, event.params.platform, event.params.day, event)
   reward.locked.plus(event.params.reward)
   reward.save()
 }
@@ -51,7 +51,7 @@ export function handleUserLockRewardUpdate(event: UserLockRewardUpdate): void {
 export function handleUserWithdraw(event: UserWithdraw): void {
   let days = event.params.day
   for (let i = 0; i < days.length; i++) {
-    let reward = getOrCreateReward(event.params.user, event.params.platform, days[i])
+    let reward = getOrCreateReward(event.params.user, event.params.platform, days[i], event)
     reward.extracted.plus(reward.locked)
     reward.locked = ZERO_BI
     reward.save()
@@ -76,7 +76,7 @@ export function handlePlatformJoin(event: PlatformJoin): void {
 }
 
 export function handlePlatformSetRate(event: PlatformSetRate): void {
-  let platform = getOrCreatePlatform(event.params.platform);
+  let platform = getOrCreatePlatform(event.params.platform, event);
   platform.rateCountsToProfit = event.params.rate1
   platform.rateAuditorDivide = event.params.rate2
   platform.save()
@@ -95,7 +95,7 @@ export function handleSystemSetSettlement(event: SystemSetSettlement): void {
 export function handleApplicationSubmit(event: ApplicationSubmit): void {
   let applyId = event.params.applyId
   let application = new Application(applyId.toString());
-  let user = getOrCreateUser(event.params.applicant)
+  let user = getOrCreateUser(event.params.applicant, event)
   application.applicant = user.id
   application.amount = event.params.amount
   application.deadline = event.params.deadline
@@ -114,10 +114,10 @@ export function handleApplicationSubmit(event: ApplicationSubmit): void {
 
 export function handleVideoCreate(event: VideoCreate): void {
   let video = new Video(event.params.platform.toHexString() + event.params.id.toString())
-  video.platform = getOrCreatePlatform(event.params.platform).id
+  video.platform = getOrCreatePlatform(event.params.platform, event).id
   video.realId = event.params.realId
   video.orderId = event.params.id
-  video.creator = getOrCreateUser(event.params.creator).id
+  video.creator = getOrCreateUser(event.params.creator, event).id
   let dashboard = getOrCreateDashboard()
   dashboard.videoCount.plus(ONE_BI)
   let dayData = getOrCreateDayData(event)
@@ -128,10 +128,10 @@ export function handleVideoCreate(event: VideoCreate): void {
 }
 
 export function handleSubitlteGetEvaluation(event: SubitlteGetEvaluation): void {
-  let subtitle = getOrCreateSubtitle(event.params.subtitleId)
+  let subtitle = getOrCreateSubtitle(event.params.subtitleId, event)
   let attitude = event.params.attitude
   let attitudeText = ""
-  if(attitude == 0) {
+  if (attitude == 0) {
     subtitle.supporterCount.plus(ONE_BI)
     attitudeText = "SUPPORT"
   } else {
@@ -139,33 +139,36 @@ export function handleSubitlteGetEvaluation(event: SubitlteGetEvaluation): void 
     attitudeText = "OPPOSITION"
   }
   let audit = new Audit(event.params.evaluator.toHexString() + '-' + event.params.subtitleId.toString())
-  audit.auditor = getOrCreateUser(event.params.evaluator).id
-  audit.subtitle = getOrCreateSubtitle(event.params.subtitleId).id
+  audit.auditor = getOrCreateUser(event.params.evaluator, event).id
+  audit.subtitle = getOrCreateSubtitle(event.params.subtitleId, event).id
   audit.attitude = attitudeText
   audit.save()
   subtitle.save()
 }
 
 export function handleSubtilteStateChange(event: SubtilteStateChange): void {
-  let subtitle = getOrCreateSubtitle(event.params.subtitleId)
+  let subtitle = getOrCreateSubtitle(event.params.subtitleId, event)
   let state = event.params.state
-  if(state == 0) {
+  if (state == 0) {
     subtitle.state = "ADOPTED"
-    let application = getOrCreateApplication(event.params.applyId)
+    let application = getOrCreateApplication(event.params.applyId, event)
     application.adopted = subtitle.id
     application.save()
-  } else if(state == 1) {
+  } else if (state == 1) {
     subtitle.state = "DELETED"
   }
   subtitle.save()
 }
 
-export function getOrCreateUser(address: Address): User {
+export function getOrCreateUser(address: Address, event: ethereum.Event): User {
   let user = User.load(address.toHexString())
   if (user === null) {
     user = new User(address.toHexString())
     let dashboard = getOrCreateDashboard()
     dashboard.userCount.plus(ONE_BI)
+    let dayData = getOrCreateDayData(event)
+    dayData.userCount.plus(ONE_BI)
+    dayData.save()
     dashboard.save()
     user.save()
   }
@@ -215,7 +218,7 @@ export function getOrCreateSettlement(strategyId: i32): SettlementStrategy {
   return settlement
 }
 
-export function getOrCreatePlatform(platformAddress: Address): Platform {
+export function getOrCreatePlatform(platformAddress: Address, event: ethereum.Event): Platform {
   let platform = Platform.load(platformAddress.toHexString())
   if (platform === null) {
     platform = new Platform(platformAddress.toHexString())
@@ -227,19 +230,22 @@ export function getOrCreatePlatform(platformAddress: Address): Platform {
     platform.rateCountsToProfit = base.value.getRateCountsToProfit()
     platform.rateAuditorDivide = base.value.getRateAuditorDivide()
     let dashboard = getOrCreateDashboard()
+    let dayData = getOrCreateDayData(event)
+    dayData.platformCount.plus(ONE_BI)
+    dayData.save()
     dashboard.save()
     platform.save()
   }
   return platform
 }
 
-export function getOrCreateReward(ownerAddress: Address, platformAddress: Address, day: BigInt): Reward {
+export function getOrCreateReward(ownerAddress: Address, platformAddress: Address, day: BigInt, event: ethereum.Event): Reward {
   let reward = Reward.load(ownerAddress.toHexString() + '-' + platformAddress.toHexString() + day.toString())
   if (reward === null) {
     reward = new Reward(ownerAddress.toHexString() + '-' + platformAddress.toHexString() + day.toString())
     reward.day = day
-    reward.user = getOrCreateUser(ownerAddress).id
-    reward.platform = getOrCreatePlatform(platformAddress).id
+    reward.user = getOrCreateUser(ownerAddress, event).id
+    reward.platform = getOrCreatePlatform(platformAddress, event).id
     reward.locked = ZERO_BI
     reward.extracted = ZERO_BI
     reward.save()
@@ -247,18 +253,21 @@ export function getOrCreateReward(ownerAddress: Address, platformAddress: Addres
   return reward
 }
 
-export function getOrCreateApplication(applyId: BigInt): Application {
+export function getOrCreateApplication(applyId: BigInt, event: ethereum.Event): Application {
   let application = Application.load(applyId.toString())
   if (application === null) {
     application = new Application(applyId.toString())
-    let base  = TSCS.try_totalApplys(applyId)
-    application.applicant = getOrCreateUser(base.value.getApplicant()).id
+    let base = TSCS.try_totalApplys(applyId)
+    application.applicant = getOrCreateUser(base.value.getApplicant(), event).id
     application.amount = base.value.getAmount()
     application.deadline = base.value.getDeadline()
     // application.applyId = applyId
     application.source = base.value.getSource()
     application.language = getOrCreateLanguage(base.value.getLanguage()).id
     application.strategy = getOrCreateSettlement(base.value.getStrategy()).id
+    let dayData = getOrCreateDayData(event)
+    dayData.applicationCount.plus(ONE_BI)
+    dayData.save()
     application.save()
   }
   return application
@@ -268,7 +277,7 @@ export function getOrCreateDayData(event: ethereum.Event): DayData {
   let timestamp = event.block.timestamp.toI32()
   let dayId = timestamp / 86400
   let dayData = DayData.load(dayId.toString())
-  if(dayData === null) {
+  if (dayData === null) {
     dayData = new DayData(dayId.toString())
     let dashboard = getOrCreateDashboard()
     dayData.dashboard = dashboard.id
