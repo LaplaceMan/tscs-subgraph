@@ -16,6 +16,7 @@ export function handleSubtitleUpload(event: SubtitleUpload): void {
     subtitle.application = getOrCreateApplication(event.params.applyId, event).id
     subtitle.state = "NORMAL"
     subtitle.fingerprint = event.params.fingerprint
+    subtitle.time = event.block.timestamp.toI32()
     let dashboard = getOrCreateDashboard()
     dashboard.subtitleCount.plus(ONE_BI)
     let dayData = getOrCreateDayData(event)

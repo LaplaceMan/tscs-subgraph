@@ -28,6 +28,7 @@ type Application @entity {
   strategy: SettlementStrategy!
   amount: BigInt!
   language: Language!
+  start: Int
   deadline: BigInt!
   # applyId: BigInt!
   source: String
@@ -37,6 +38,7 @@ type Application @entity {
 
 type User @entity {
   id: ID!
+  time: Int
   rewards: [Reward!] @derivedFrom(field: "user")
   applications: [Application!] @derivedFrom(field: "applicant")
   subtitles: [Subtitle!] @derivedFrom(field: "maker")
@@ -69,6 +71,7 @@ type Subtitle @entity {
   id: ID!
   maker: User!
   owner: User
+  time: Int
   # subtitleId: BigInt!
   application: Application!
   language: Language!
@@ -83,6 +86,7 @@ type Platform @entity {
   id: ID!
   name: String!
   symbol: String!
+  time: Int
   owner: Bytes!
   platformId: BigInt!
   rateCountsToProfit: Int
@@ -96,11 +100,13 @@ type Video @entity {
   realId: BigInt!
   orderId: BigInt!
   creator: User
+  time: Int
   applications: [Application!] @derivedFrom(field: "video")
 }
 
 type Audit @entity {
   id: ID!
+  time: Int
   auditor: User!
   subtitle: Subtitle!
   attitude: AuditAttitude

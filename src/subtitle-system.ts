@@ -32,6 +32,7 @@ export function handleRegisterLanguage(event: RegisterLanguage): void {
 
 export function handleUserJoin(event: UserJoin): void {
   let user = new User(event.params.user.toHexString())
+  user.time = event.block.timestamp.toI32()
   let dashboard = getOrCreateDashboard()
   let dayData = getOrCreateDayData(event)
   dayData.userCount.plus(ONE_BI)
@@ -64,6 +65,7 @@ export function handlePlatformJoin(event: PlatformJoin): void {
   platform.symbol = event.params.symbol
   platform.owner = event.params.platform
   platform.platformId = event.params.id
+  platform.time = event.block.timestamp.toI32()
   platform.rateCountsToProfit = event.params.rate1
   platform.rateAuditorDivide = event.params.rate2
   let dashboard = getOrCreateDashboard()
@@ -98,6 +100,7 @@ export function handleApplicationSubmit(event: ApplicationSubmit): void {
   let user = getOrCreateUser(event.params.applicant, event)
   application.applicant = user.id
   application.amount = event.params.amount
+  application.start = event.block.timestamp.toI32()
   application.deadline = event.params.deadline
   // application.applyId = applyId
   application.source = event.params.src
@@ -117,6 +120,7 @@ export function handleVideoCreate(event: VideoCreate): void {
   video.platform = getOrCreatePlatform(event.params.platform, event).id
   video.realId = event.params.realId
   video.orderId = event.params.id
+  video.time = event.block.timestamp.toI32()
   video.creator = getOrCreateUser(event.params.creator, event).id
   let dashboard = getOrCreateDashboard()
   dashboard.videoCount.plus(ONE_BI)
@@ -142,6 +146,7 @@ export function handleSubitlteGetEvaluation(event: SubitlteGetEvaluation): void 
   audit.auditor = getOrCreateUser(event.params.evaluator, event).id
   audit.subtitle = getOrCreateSubtitle(event.params.subtitleId, event).id
   audit.attitude = attitudeText
+  audit.time = event.block.timestamp.toI32()
   audit.save()
   subtitle.save()
 }

@@ -302,6 +302,15 @@ export class Application extends Entity {
     this.set("language", Value.fromString(value));
   }
 
+  get start(): i32 {
+    let value = this.get("start");
+    return value!.toI32();
+  }
+
+  set start(value: i32) {
+    this.set("start", Value.fromI32(value));
+  }
+
   get deadline(): BigInt {
     let value = this.get("deadline");
     return value!.toBigInt();
@@ -392,6 +401,15 @@ export class User extends Entity {
 
   set id(value: string) {
     this.set("id", Value.fromString(value));
+  }
+
+  get time(): i32 {
+    let value = this.get("time");
+    return value!.toI32();
+  }
+
+  set time(value: i32) {
+    this.set("time", Value.fromI32(value));
   }
 
   get rewards(): Array<string> | null {
@@ -698,6 +716,15 @@ export class Subtitle extends Entity {
     }
   }
 
+  get time(): i32 {
+    let value = this.get("time");
+    return value!.toI32();
+  }
+
+  set time(value: i32) {
+    this.set("time", Value.fromI32(value));
+  }
+
   get application(): string {
     let value = this.get("application");
     return value!.toString();
@@ -817,6 +844,15 @@ export class Platform extends Entity {
 
   set symbol(value: string) {
     this.set("symbol", Value.fromString(value));
+  }
+
+  get time(): i32 {
+    let value = this.get("time");
+    return value!.toI32();
+  }
+
+  set time(value: i32) {
+    this.set("time", Value.fromI32(value));
   }
 
   get owner(): Bytes {
@@ -948,6 +984,15 @@ export class Video extends Entity {
     }
   }
 
+  get time(): i32 {
+    let value = this.get("time");
+    return value!.toI32();
+  }
+
+  set time(value: i32) {
+    this.set("time", Value.fromI32(value));
+  }
+
   get applications(): Array<string> | null {
     let value = this.get("applications");
     if (!value || value.kind == ValueKind.NULL) {
@@ -995,6 +1040,15 @@ export class Audit extends Entity {
 
   set id(value: string) {
     this.set("id", Value.fromString(value));
+  }
+
+  get time(): i32 {
+    let value = this.get("time");
+    return value!.toI32();
+  }
+
+  set time(value: i32) {
+    this.set("time", Value.fromI32(value));
   }
 
   get auditor(): string {
