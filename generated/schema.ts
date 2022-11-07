@@ -430,13 +430,22 @@ export class User extends Entity {
     this.set("applicationNumber", Value.fromBigInt(value));
   }
 
-  get subtitleNumber(): BigInt {
-    let value = this.get("subtitleNumber");
+  get makeSubtitleNumber(): BigInt {
+    let value = this.get("makeSubtitleNumber");
     return value!.toBigInt();
   }
 
-  set subtitleNumber(value: BigInt) {
-    this.set("subtitleNumber", Value.fromBigInt(value));
+  set makeSubtitleNumber(value: BigInt) {
+    this.set("makeSubtitleNumber", Value.fromBigInt(value));
+  }
+
+  get ownSubtitleNumber(): BigInt {
+    let value = this.get("ownSubtitleNumber");
+    return value!.toBigInt();
+  }
+
+  set ownSubtitleNumber(value: BigInt) {
+    this.set("ownSubtitleNumber", Value.fromBigInt(value));
   }
 
   get auditNumber(): BigInt {
@@ -491,8 +500,8 @@ export class User extends Entity {
     }
   }
 
-  get subtitles(): Array<string> | null {
-    let value = this.get("subtitles");
+  get subtitlesMaker(): Array<string> | null {
+    let value = this.get("subtitlesMaker");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
@@ -500,11 +509,28 @@ export class User extends Entity {
     }
   }
 
-  set subtitles(value: Array<string> | null) {
+  set subtitlesMaker(value: Array<string> | null) {
     if (!value) {
-      this.unset("subtitles");
+      this.unset("subtitlesMaker");
     } else {
-      this.set("subtitles", Value.fromStringArray(<Array<string>>value));
+      this.set("subtitlesMaker", Value.fromStringArray(<Array<string>>value));
+    }
+  }
+
+  get subtitlesOwner(): Array<string> | null {
+    let value = this.get("subtitlesOwner");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set subtitlesOwner(value: Array<string> | null) {
+    if (!value) {
+      this.unset("subtitlesOwner");
+    } else {
+      this.set("subtitlesOwner", Value.fromStringArray(<Array<string>>value));
     }
   }
 

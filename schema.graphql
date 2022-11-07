@@ -40,12 +40,14 @@ type User @entity {
   id: ID!
   time: Int
   applicationNumber: BigInt!
-  subtitleNumber: BigInt!
+  makeSubtitleNumber: BigInt!
+  ownSubtitleNumber: BigInt!
   auditNumber: BigInt!
   adoptedNumber: BigInt!
   rewards: [Reward!] @derivedFrom(field: "user")
   applications: [Application!] @derivedFrom(field: "applicant")
-  subtitles: [Subtitle!] @derivedFrom(field: "maker")
+  subtitlesMaker: [Subtitle!] @derivedFrom(field: "maker")
+  subtitlesOwner: [Subtitle!] @derivedFrom(field: "owner")
   audits: [Audit!] @derivedFrom(field: "auditor")
 }
 

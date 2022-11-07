@@ -890,23 +890,25 @@ export class SubtitleSystem__subtitleNFTResult {
 
 export class SubtitleSystem__totalApplysResult {
   value0: Address;
-  value1: BigInt;
-  value2: string;
-  value3: i32;
-  value4: BigInt;
-  value5: i32;
-  value6: BigInt;
+  value1: Address;
+  value2: BigInt;
+  value3: string;
+  value4: i32;
+  value5: BigInt;
+  value6: i32;
   value7: BigInt;
+  value8: BigInt;
 
   constructor(
     value0: Address,
-    value1: BigInt,
-    value2: string,
-    value3: i32,
-    value4: BigInt,
-    value5: i32,
-    value6: BigInt,
-    value7: BigInt
+    value1: Address,
+    value2: BigInt,
+    value3: string,
+    value4: i32,
+    value5: BigInt,
+    value6: i32,
+    value7: BigInt,
+    value8: BigInt
   ) {
     this.value0 = value0;
     this.value1 = value1;
@@ -916,24 +918,26 @@ export class SubtitleSystem__totalApplysResult {
     this.value5 = value5;
     this.value6 = value6;
     this.value7 = value7;
+    this.value8 = value8;
   }
 
   toMap(): TypedMap<string, ethereum.Value> {
     let map = new TypedMap<string, ethereum.Value>();
     map.set("value0", ethereum.Value.fromAddress(this.value0));
-    map.set("value1", ethereum.Value.fromUnsignedBigInt(this.value1));
-    map.set("value2", ethereum.Value.fromString(this.value2));
+    map.set("value1", ethereum.Value.fromAddress(this.value1));
+    map.set("value2", ethereum.Value.fromUnsignedBigInt(this.value2));
+    map.set("value3", ethereum.Value.fromString(this.value3));
     map.set(
-      "value3",
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(this.value3))
+      "value4",
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(this.value4))
     );
-    map.set("value4", ethereum.Value.fromUnsignedBigInt(this.value4));
+    map.set("value5", ethereum.Value.fromUnsignedBigInt(this.value5));
     map.set(
-      "value5",
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(this.value5))
+      "value6",
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(this.value6))
     );
-    map.set("value6", ethereum.Value.fromUnsignedBigInt(this.value6));
     map.set("value7", ethereum.Value.fromUnsignedBigInt(this.value7));
+    map.set("value8", ethereum.Value.fromUnsignedBigInt(this.value8));
     return map;
   }
 
@@ -941,32 +945,36 @@ export class SubtitleSystem__totalApplysResult {
     return this.value0;
   }
 
-  getVideoId(): BigInt {
+  getPlatform(): Address {
     return this.value1;
   }
 
-  getSource(): string {
+  getVideoId(): BigInt {
     return this.value2;
   }
 
-  getStrategy(): i32 {
+  getSource(): string {
     return this.value3;
   }
 
-  getAmount(): BigInt {
+  getStrategy(): i32 {
     return this.value4;
   }
 
-  getLanguage(): i32 {
+  getAmount(): BigInt {
     return this.value5;
   }
 
-  getAdopted(): BigInt {
+  getLanguage(): i32 {
     return this.value6;
   }
 
-  getDeadline(): BigInt {
+  getAdopted(): BigInt {
     return this.value7;
+  }
+
+  getDeadline(): BigInt {
+    return this.value8;
   }
 }
 
@@ -1551,7 +1559,7 @@ export class SubtitleSystem extends ethereum.SmartContract {
     amount: BigInt,
     language: i32,
     deadline: BigInt,
-    src: string
+    source: string
   ): BigInt {
     let result = super.call(
       "submitApplication",
@@ -1563,7 +1571,7 @@ export class SubtitleSystem extends ethereum.SmartContract {
         ethereum.Value.fromUnsignedBigInt(amount),
         ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(language)),
         ethereum.Value.fromUnsignedBigInt(deadline),
-        ethereum.Value.fromString(src)
+        ethereum.Value.fromString(source)
       ]
     );
 
@@ -1577,7 +1585,7 @@ export class SubtitleSystem extends ethereum.SmartContract {
     amount: BigInt,
     language: i32,
     deadline: BigInt,
-    src: string
+    source: string
   ): ethereum.CallResult<BigInt> {
     let result = super.tryCall(
       "submitApplication",
@@ -1589,7 +1597,7 @@ export class SubtitleSystem extends ethereum.SmartContract {
         ethereum.Value.fromUnsignedBigInt(amount),
         ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(language)),
         ethereum.Value.fromUnsignedBigInt(deadline),
-        ethereum.Value.fromString(src)
+        ethereum.Value.fromString(source)
       ]
     );
     if (result.reverted) {
@@ -1679,19 +1687,20 @@ export class SubtitleSystem extends ethereum.SmartContract {
   totalApplys(param0: BigInt): SubtitleSystem__totalApplysResult {
     let result = super.call(
       "totalApplys",
-      "totalApplys(uint256):(address,uint256,string,uint8,uint256,uint16,uint256,uint256)",
+      "totalApplys(uint256):(address,address,uint256,string,uint8,uint256,uint16,uint256,uint256)",
       [ethereum.Value.fromUnsignedBigInt(param0)]
     );
 
     return new SubtitleSystem__totalApplysResult(
       result[0].toAddress(),
-      result[1].toBigInt(),
-      result[2].toString(),
-      result[3].toI32(),
-      result[4].toBigInt(),
-      result[5].toI32(),
-      result[6].toBigInt(),
-      result[7].toBigInt()
+      result[1].toAddress(),
+      result[2].toBigInt(),
+      result[3].toString(),
+      result[4].toI32(),
+      result[5].toBigInt(),
+      result[6].toI32(),
+      result[7].toBigInt(),
+      result[8].toBigInt()
     );
   }
 
@@ -1700,7 +1709,7 @@ export class SubtitleSystem extends ethereum.SmartContract {
   ): ethereum.CallResult<SubtitleSystem__totalApplysResult> {
     let result = super.tryCall(
       "totalApplys",
-      "totalApplys(uint256):(address,uint256,string,uint8,uint256,uint16,uint256,uint256)",
+      "totalApplys(uint256):(address,address,uint256,string,uint8,uint256,uint16,uint256,uint256)",
       [ethereum.Value.fromUnsignedBigInt(param0)]
     );
     if (result.reverted) {
@@ -1710,13 +1719,14 @@ export class SubtitleSystem extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(
       new SubtitleSystem__totalApplysResult(
         value[0].toAddress(),
-        value[1].toBigInt(),
-        value[2].toString(),
-        value[3].toI32(),
-        value[4].toBigInt(),
-        value[5].toI32(),
-        value[6].toBigInt(),
-        value[7].toBigInt()
+        value[1].toAddress(),
+        value[2].toBigInt(),
+        value[3].toString(),
+        value[4].toI32(),
+        value[5].toBigInt(),
+        value[6].toI32(),
+        value[7].toBigInt(),
+        value[8].toBigInt()
       )
     );
   }
@@ -2696,7 +2706,7 @@ export class SubmitApplicationCall__Inputs {
     return this._call.inputValues[5].value.toBigInt();
   }
 
-  get src(): string {
+  get source(): string {
     return this._call.inputValues[6].value.toString();
   }
 }

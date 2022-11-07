@@ -10,11 +10,11 @@ export function handleSubtitleUpload(event: SubtitleUpload): void {
     let subtitle = new Subtitle(event.params.subtitleId.toString())
     let maker = getOrCreateUser(event.params.maker, event)
     let application = getOrCreateApplication(event.params.applyId, event)
-    maker.subtitleNumber.plus(ONE_BI)
+    maker.makeSubtitleNumber.plus(ONE_BI)
+    maker.ownSubtitleNumber.plus(ONE_BI)
     application.subtitleNumber.plus(ONE_BI)
     subtitle.maker = maker.id
     subtitle.owner = getOrCreateUser(event.params.maker, event).id
-    // subtitle.subtitleId = event.params.subtitleId
     subtitle.language = getOrCreateLanguage(event.params.languageId).id
     subtitle.cid = event.params.cid
     subtitle.application = application.id
@@ -27,14 +27,20 @@ export function handleSubtitleUpload(event: SubtitleUpload): void {
     dayData.subtitleCount.plus(ONE_BI)
     maker.save()
     dayData.save()
-    dashboard.save()
     subtitle.save()
+    dashboard.save()
     application.save()
 }
 
 export function handleSTTransfer(event: Transfer): void {
     let subtitle = getOrCreateSubtitle(event.params.tokenId, event)
-    subtitle.owner = getOrCreateUser(event.params.to, event).id
+    let oldOwner = getOrCreateUser(event.params.from, event)
+    let newOwner = getOrCreateUser(event.params.from, event)
+    oldOwner.ownSubtitleNumber.minus(ONE_BI)
+    newOwner.ownSubtitleNumber.plus(ONE_BI)
+    subtitle.owner = newOwner.id
+    oldOwner.save()
+    newOwner.save()
     subtitle.save()
 }
 
@@ -54,13 +60,18 @@ export function getOrCreateSubtitle(subtitleId: BigInt, event: ethereum.Event): 
         let owner = ST.try_ownerOf(subtitleId)
         let maker = getOrCreateUser(owner.value, event)
         subtitle.maker = maker.id
-        maker.subtitleNumber.plus(ONE_BI)
+        maker.makeSubtitleNumber.plus(ONE_BI)
+        maker.ownSubtitleNumber.plus(ONE_BI)
         subtitle.owner = getOrCreateUser(owner.value, event).id
         let dashboard = getOrCreateDashboard()
         dashboard.subtitleCount.plus(ONE_BI)
-        subtitle.save()
-        application.save()
+        let dayData = getOrCreateDayData(event)
+        dayData.subtitleCount.plus(ONE_BI)
         maker.save()
+        dayData.save()
+        subtitle.save()
+        dashboard.save()
+        application.save()
     }
     return subtitle
 }
