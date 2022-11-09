@@ -33,15 +33,15 @@ export function handleRegisterLanguage(event: RegisterLanguage): void {
 export function handleUserJoin(event: UserJoin): void {
   let user = new User(event.params.user.toHexString())
   user.time = event.block.timestamp.toI32()
-  user.applicationNumber = ZERO_BI
-  user.makeSubtitleNumber = ZERO_BI
-  user.ownSubtitleNumber = ZERO_BI
-  user.auditNumber = ZERO_BI
-  user.adoptedNumber = ZERO_BI
+  user.applicationCount = ZERO_BI
+  user.makeSubtitleCount = ZERO_BI
+  user.ownSubtitleCount = ZERO_BI
+  user.auditCount = ZERO_BI
+  user.adoptedCount = ZERO_BI
   let dashboard = getOrCreateDashboard()
   let dayData = getOrCreateDayData(event)
-  dayData.userCount.plus(ONE_BI)
-  dashboard.userCount.plus(ONE_BI)
+  dayData.userCount = dayData.userCount.plus(ONE_BI)
+  dashboard.userCount = dashboard.userCount.plus(ONE_BI)
   user.save()
   dayData.save()
   dashboard.save()
@@ -49,7 +49,7 @@ export function handleUserJoin(event: UserJoin): void {
 
 export function handleUserLockRewardUpdate(event: UserLockRewardUpdate): void {
   let reward = getOrCreateReward(event.params.user, event.params.platform, event.params.day, event)
-  reward.locked.plus(event.params.reward)
+  reward.locked = reward.locked.plus(event.params.reward)
   reward.save()
 }
 
@@ -57,7 +57,7 @@ export function handleUserWithdraw(event: UserWithdraw): void {
   let days = event.params.day
   for (let i = 0; i < days.length; i++) {
     let reward = getOrCreateReward(event.params.user, event.params.platform, days[i], event)
-    reward.extracted.plus(reward.locked)
+    reward.extracted = reward.extracted.plus(reward.locked)
     reward.locked = ZERO_BI
     reward.save()
   }
@@ -69,14 +69,14 @@ export function handlePlatformJoin(event: PlatformJoin): void {
   platform.symbol = event.params.symbol
   platform.owner = event.params.platform
   platform.platformId = event.params.id
-  platform.videoNumber = ZERO_BI
+  platform.videoCount = ZERO_BI
   platform.time = event.block.timestamp.toI32()
   platform.rateCountsToProfit = event.params.rate1
   platform.rateAuditorDivide = event.params.rate2
   let dashboard = getOrCreateDashboard()
-  dashboard.platformCount.plus(ONE_BI)
+  dashboard.platformCount = dashboard.platformCount.plus(ONE_BI)
   let dayData = getOrCreateDayData(event)
-  dayData.platformCount.plus(ONE_BI)
+  dayData.platformCount = dayData.platformCount.plus(ONE_BI)
   dayData.save()
   platform.save()
   dashboard.save()
@@ -104,20 +104,22 @@ export function handleApplicationSubmit(event: ApplicationSubmit): void {
   let application = new Application(applyId.toString());
   let user = getOrCreateUser(event.params.applicant, event)
   let video = getOrCreateVideo(event.params.platform, event.params.videoId, event)
-  video.applicationNumber.plus(ONE_BI)
-  user.applicationNumber.plus(ONE_BI)
+  video.applicationCount = video.applicationCount.plus(ONE_BI)
+  user.applicationCount = user.applicationCount.plus(ONE_BI)
+  application.video = video.id
   application.applicant = user.id
   application.amount = event.params.amount
   application.start = event.block.timestamp.toI32()
   application.deadline = event.params.deadline
   application.source = event.params.src
-  application.subtitleNumber = ZERO_BI
+  application.subtitleCount = ZERO_BI
+  application.adopted = null
   application.language = getOrCreateLanguage(event.params.language).id
   application.strategy = getOrCreateSettlement(event.params.strategy).id
   let dashboard = getOrCreateDashboard()
-  dashboard.applicationCount.plus(ONE_BI)
+  dashboard.applicationCount = dashboard.applicationCount.plus(ONE_BI)
   let dayData = getOrCreateDayData(event)
-  dayData.applicationCount.plus(ONE_BI)
+  dayData.applicationCount = dayData.applicationCount.plus(ONE_BI)
   user.save()
   video.save()
   dayData.save()
@@ -128,17 +130,17 @@ export function handleApplicationSubmit(event: ApplicationSubmit): void {
 export function handleVideoCreate(event: VideoCreate): void {
   let video = new Video(event.params.platform.toHexString() + event.params.id.toString())
   let platform = getOrCreatePlatform(event.params.platform, event)
-  platform.videoNumber.plus(ONE_BI)
+  platform.videoCount = platform.videoCount.plus(ONE_BI)
   video.platform = platform.id
   video.realId = event.params.realId
   video.orderId = event.params.id
   video.time = event.block.timestamp.toI32()
-  video.applicationNumber = ZERO_BI
+  video.applicationCount = ZERO_BI
   video.creator = getOrCreateUser(event.params.creator, event).id
   let dashboard = getOrCreateDashboard()
-  dashboard.videoCount.plus(ONE_BI)
+  dashboard.videoCount = dashboard.videoCount.plus(ONE_BI)
   let dayData = getOrCreateDayData(event)
-  dayData.videoCount.plus(ONE_BI)
+  dayData.videoCount = dayData.videoCount.plus(ONE_BI)
   video.save()
   dayData.save()
   platform.save()
@@ -151,14 +153,14 @@ export function handleSubitlteGetEvaluation(event: SubitlteGetEvaluation): void 
   let user = getOrCreateUser(event.params.evaluator, event)
   let attitudeText = ""
   if (attitude == 0) {
-    subtitle.supporterCount.plus(ONE_BI)
+    subtitle.supporterCount = subtitle.supporterCount.plus(ONE_BI)
     attitudeText = "SUPPORT"
   } else {
-    subtitle.dissenterCount.plus(ONE_BI)
+    subtitle.dissenterCount = subtitle.dissenterCount.plus(ONE_BI)
     attitudeText = "OPPOSITION"
   }
   let audit = new Audit(event.params.evaluator.toHexString() + '-' + event.params.subtitleId.toString())
-  user.auditNumber.plus(ONE_BI)
+  user.auditCount = user.auditCount.plus(ONE_BI)
   audit.auditor = user.id
   audit.subtitle = subtitle.id
   audit.attitude = attitudeText
@@ -175,7 +177,7 @@ export function handleSubtilteStateChange(event: SubtilteStateChange): void {
     subtitle.state = "ADOPTED"
     let application = getOrCreateApplication(event.params.applyId, event)
     let maker = getOrCreateUser(Address.fromString(subtitle.maker), event)
-    maker.adoptedNumber.plus(ONE_BI)
+    maker.adoptedCount = maker.adoptedCount.plus(ONE_BI)
     application.adopted = subtitle.id
     maker.save()
     application.save()
@@ -186,19 +188,20 @@ export function handleSubtilteStateChange(event: SubtilteStateChange): void {
 }
 
 export function getOrCreateVideo(platform: Address, videoId: BigInt, event: ethereum.Event): Video {
-  let video = new Video(platform.toHexString() + videoId.toString())
+  let video = Video.load(platform.toHexString() + videoId.toString())
   if (video === null) {
     let platform_ = getOrCreatePlatform(platform, event)
     video = new Video(platform.toHexString() + videoId.toString())
     video.platform = platform_.id
     video.time = event.block.timestamp.toI32()
-    platform_.videoNumber.plus(ONE_BI)
+    video.applicationCount = ZERO_BI
     let base = TSCS.try_videos(videoId)
-    video.realId = base.value.getId()
+    if (!base.reverted) {
+      video.realId = base.value.getId()
+      video.creator = getOrCreateUser(base.value.getCreator(), event).id
+    }
     video.orderId = videoId
-    video.creator = getOrCreateUser(base.value.getCreator(), event).id
     video.save()
-    platform_.save()
   }
   return video
 }
@@ -207,18 +210,13 @@ export function getOrCreateUser(address: Address, event: ethereum.Event): User {
   let user = User.load(address.toHexString())
   if (user === null) {
     user = new User(address.toHexString())
-    user.adoptedNumber = ZERO_BI
-    user.applicationNumber = ZERO_BI
-    user.makeSubtitleNumber = ZERO_BI
-    user.ownSubtitleNumber = ZERO_BI
-    user.auditNumber = ZERO_BI
-    let dashboard = getOrCreateDashboard()
-    dashboard.userCount.plus(ONE_BI)
-    let dayData = getOrCreateDayData(event)
-    dayData.userCount.plus(ONE_BI)
+    user.adoptedCount = ZERO_BI
+    user.applicationCount = ZERO_BI
+    user.makeSubtitleCount = ZERO_BI
+    user.ownSubtitleCount = ZERO_BI
+    user.auditCount = ZERO_BI
+    user.time = event.block.timestamp.toI32()
     user.save()
-    dayData.save()
-    dashboard.save()
   }
   return user
 }
@@ -234,6 +232,7 @@ export function getOrCreateDashboard(): Dashboard {
     dashboard.videoCount = ZERO_BI
     dashboard.userCount = ZERO_BI
     dashboard.settlementStrategyCount = 0
+    dashboard.save()
   }
   return dashboard
 }
@@ -243,7 +242,9 @@ export function getOrCreateLanguage(languageId: i32): Language {
   if (language === null) {
     language = new Language(languageId.toString())
     let base = TSCS.try_getLanguageType(languageId)
-    language.notes = base.value
+    if (!base.reverted) {
+      language.notes = base.value
+    }
     language.save()
   }
   return language
@@ -254,11 +255,10 @@ export function getOrCreateSettlement(strategyId: i32): SettlementStrategy {
   if (settlement === null) {
     settlement = new SettlementStrategy(strategyId.toString())
     let base = TSCS.try_settlementStrategy(strategyId)
-    settlement.address = base.value.getStrategy()
-    settlement.notes = base.value.getNotes()
-    let dashboard = getOrCreateDashboard()
-    dashboard.settlementStrategyCount += 1
-    dashboard.save()
+    if (!base.reverted) {
+      settlement.address = base.value.getStrategy()
+      settlement.notes = base.value.getNotes()
+    }
     settlement.save()
   }
   return settlement
@@ -269,20 +269,17 @@ export function getOrCreatePlatform(platformAddress: Address, event: ethereum.Ev
   if (platform === null) {
     platform = new Platform(platformAddress.toHexString())
     let base = TSCS.try_platforms(platformAddress)
-    platform.name = base.value.getName()
-    platform.symbol = base.value.getSymbol()
+    if (!base.reverted) {
+      platform.name = base.value.getName()
+      platform.symbol = base.value.getSymbol()
+      platform.platformId = base.value.getPlatformId()
+      platform.rateCountsToProfit = base.value.getRateCountsToProfit()
+      platform.rateAuditorDivide = base.value.getRateAuditorDivide()
+    }
+    platform.time = event.block.timestamp.toI32()
     platform.owner = platformAddress
-    platform.videoNumber = ZERO_BI
-    platform.platformId = base.value.getPlatformId()
-    platform.rateCountsToProfit = base.value.getRateCountsToProfit()
-    platform.rateAuditorDivide = base.value.getRateAuditorDivide()
-    let dashboard = getOrCreateDashboard()
-    let dayData = getOrCreateDayData(event)
-    dashboard.platformCount.plus(ONE_BI)
-    dayData.platformCount.plus(ONE_BI)
-    dayData.save()
+    platform.videoCount = ZERO_BI
     platform.save()
-    dashboard.save()
   }
   return platform
 }
@@ -306,22 +303,23 @@ export function getOrCreateApplication(applyId: BigInt, event: ethereum.Event): 
   if (application === null) {
     application = new Application(applyId.toString())
     let base = TSCS.try_totalApplys(applyId)
-    let user = getOrCreateUser(base.value.getApplicant(), event)
-    let video = getOrCreateVideo(base.value.getPlatform(), base.value.getVideoId(), event)
-    video.applicationNumber.plus(ONE_BI)
-    user.applicationNumber.plus(ONE_BI)
-    application.applicant = user.id
-    application.amount = base.value.getAmount()
-    application.deadline = base.value.getDeadline()
-    application.source = base.value.getSource()
-    application.subtitleNumber = ZERO_BI
-    application.language = getOrCreateLanguage(base.value.getLanguage()).id
-    application.strategy = getOrCreateSettlement(base.value.getStrategy()).id
-    let dayData = getOrCreateDayData(event)
-    dayData.applicationCount.plus(ONE_BI)
-    user.save()
-    video.save()
-    dayData.save()
+    if (!base.reverted) {
+      let user = getOrCreateUser(base.value.getApplicant(), event)
+      let video = getOrCreateVideo(base.value.getPlatform(), base.value.getVideoId(), event)
+      user.applicationCount = user.applicationCount.plus(ONE_BI)
+      application.video = video.id
+      application.applicant = user.id
+      application.amount = base.value.getAmount()
+      application.deadline = base.value.getDeadline()
+      application.source = base.value.getSource()
+      application.language = getOrCreateLanguage(base.value.getLanguage()).id
+      application.strategy = getOrCreateSettlement(base.value.getStrategy()).id
+      user.save()
+      video.save()
+    }
+    application.start = event.block.timestamp.toI32()
+    application.subtitleCount = ZERO_BI
+    application.adopted = null
     application.save()
   }
   return application
@@ -341,6 +339,7 @@ export function getOrCreateDayData(event: ethereum.Event): DayData {
     dayData.subtitleCount = ZERO_BI
     dayData.videoCount = ZERO_BI
     dayData.userCount = ZERO_BI
+    dayData.save()
   }
   return dayData
 }
