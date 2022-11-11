@@ -405,6 +405,24 @@ export class User extends Entity {
     this.set("time", Value.fromI32(value));
   }
 
+  get reputation(): BigInt {
+    let value = this.get("reputation");
+    return value!.toBigInt();
+  }
+
+  set reputation(value: BigInt) {
+    this.set("reputation", Value.fromBigInt(value));
+  }
+
+  get deposit(): BigInt {
+    let value = this.get("deposit");
+    return value!.toBigInt();
+  }
+
+  set deposit(value: BigInt) {
+    this.set("deposit", Value.fromBigInt(value));
+  }
+
   get applicationCount(): BigInt {
     let value = this.get("applicationCount");
     return value!.toBigInt();

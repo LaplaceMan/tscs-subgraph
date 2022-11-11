@@ -15,10 +15,10 @@ import {
 } from "../generated/SubtitleSystem/SubtitleSystem"
 
 import { Dashboard, DayData, Application, User, Reward, SettlementStrategy, Language, Audit, Platform, Video } from "../generated/schema"
-import { SUBTITLE_SYSTEM_ADDRESS, ZERO_BI, ONE_BI } from "./utils"
+import { SUBTITLE_SYSTEM, ZERO_BI, ONE_BI } from "./utils"
 import { getOrCreateSubtitle } from "./components/subtitle-token"
 
-export const TSCS = SubtitleSystem.bind(Address.fromString(SUBTITLE_SYSTEM_ADDRESS))
+export const TSCS = SubtitleSystem.bind(Address.fromString(SUBTITLE_SYSTEM))
 
 export function handleRegisterLanguage(event: RegisterLanguage): void {
   let languageId = event.params.id
@@ -35,6 +35,8 @@ export function handleUserJoin(event: UserJoin): void {
   user.time = event.block.timestamp.toI32()
   user.applicationCount = ZERO_BI
   user.makeSubtitleCount = ZERO_BI
+  user.reputation = event.params.reputation
+  user.deposit = event.params.deposit
   user.ownSubtitleCount = ZERO_BI
   user.auditCount = ZERO_BI
   user.adoptedCount = ZERO_BI
@@ -216,15 +218,18 @@ export function getOrCreateUser(address: Address, event: ethereum.Event): User {
     user.ownSubtitleCount = ZERO_BI
     user.auditCount = ZERO_BI
     user.time = event.block.timestamp.toI32()
+    let base = TSCS.getUserBaseInfo(address)
+    user.reputation = base.getValue0()
+    user.deposit = base.getValue1()
     user.save()
   }
   return user
 }
 
 export function getOrCreateDashboard(): Dashboard {
-  let dashboard = Dashboard.load(SUBTITLE_SYSTEM_ADDRESS)
+  let dashboard = Dashboard.load(SUBTITLE_SYSTEM)
   if (dashboard === null) {
-    dashboard = new Dashboard(SUBTITLE_SYSTEM_ADDRESS)
+    dashboard = new Dashboard(SUBTITLE_SYSTEM)
     dashboard.applicationCount = ZERO_BI
     dashboard.subtitleCount = ZERO_BI
     dashboard.languageCount = 0

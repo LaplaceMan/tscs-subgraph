@@ -39,6 +39,8 @@ type Application @entity {
 type User @entity {
   id: ID!
   time: Int!
+  reputation: BigInt!
+  deposit: BigInt!
   applicationCount: BigInt!
   makeSubtitleCount: BigInt!
   ownSubtitleCount: BigInt!

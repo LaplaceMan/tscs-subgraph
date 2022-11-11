@@ -6,8 +6,8 @@ dataSources:
     name: SubtitleSystem
     network: mainnet
     source:
-      # startBlock: 50
-      address: "0xFAD53972470A332657bc9aA64B725f2dDd28cCe8"
+      # startBlock: 308400
+      address: "0x73E5CE1acDcBF67C48960Cc8353A7c18436Ad29B"
       abi: SubtitleSystem
     mapping:
       kind: ethereum/events
@@ -55,9 +55,9 @@ dataSources:
     name: SubtitleToken
     network: mainnet
     source:
-      # startBlock: 50
+      # startBlock: 308400
       abi: SubtitleToken
-      address: "0xff55B2Cd3d82c28dd035470Ad11A23B6cCC0D5Cd"
+      address: "0x7003EA6A2A51C0FA39F1EA94E8E3BA71D27Ddc1f"
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
