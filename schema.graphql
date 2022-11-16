@@ -92,7 +92,6 @@ type Platform @entity {
   name: String!
   symbol: String!
   time: Int!
-  owner: Bytes!
   platformId: BigInt!
   videoCount: BigInt!
   rateCountsToProfit: Int!
