@@ -363,6 +363,23 @@ export class Application extends Entity {
       this.set("adopted", Value.fromString(<string>value));
     }
   }
+
+  get txHash(): Bytes | null {
+    let value = this.get("txHash");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set txHash(value: Bytes | null) {
+    if (!value) {
+      this.unset("txHash");
+    } else {
+      this.set("txHash", Value.fromBytes(<Bytes>value));
+    }
+  }
 }
 
 export class User extends Entity {
@@ -828,6 +845,23 @@ export class Subtitle extends Entity {
   set dissenterCount(value: BigInt) {
     this.set("dissenterCount", Value.fromBigInt(value));
   }
+
+  get txHash(): Bytes | null {
+    let value = this.get("txHash");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set txHash(value: Bytes | null) {
+    if (!value) {
+      this.unset("txHash");
+    } else {
+      this.set("txHash", Value.fromBytes(<Bytes>value));
+    }
+  }
 }
 
 export class Platform extends Entity {
@@ -886,15 +920,6 @@ export class Platform extends Entity {
 
   set time(value: i32) {
     this.set("time", Value.fromI32(value));
-  }
-
-  get owner(): Bytes {
-    let value = this.get("owner");
-    return value!.toBytes();
-  }
-
-  set owner(value: Bytes) {
-    this.set("owner", Value.fromBytes(value));
   }
 
   get platformId(): BigInt {
@@ -1119,5 +1144,22 @@ export class Audit extends Entity {
 
   set attitude(value: string) {
     this.set("attitude", Value.fromString(value));
+  }
+
+  get txHash(): Bytes | null {
+    let value = this.get("txHash");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set txHash(value: Bytes | null) {
+    if (!value) {
+      this.unset("txHash");
+    } else {
+      this.set("txHash", Value.fromBytes(<Bytes>value));
+    }
   }
 }

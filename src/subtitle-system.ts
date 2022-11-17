@@ -140,6 +140,7 @@ export function handleApplicationSubmit(event: ApplicationSubmit): void {
   application.source = event.params.src;
   application.subtitleCount = ZERO_BI;
   application.adopted = null;
+  application.txHash = event.transaction.hash;
   application.language = getOrCreateLanguage(event.params.language).id;
   application.strategy = getOrCreateSettlement(event.params.strategy).id;
   let dashboard = getOrCreateDashboard();
@@ -198,6 +199,7 @@ export function handleSubitlteGetEvaluation(
   audit.auditor = user.id;
   audit.subtitle = subtitle.id;
   audit.attitude = attitudeText;
+  audit.txHash = event.transaction.hash;
   audit.time = event.block.timestamp.toI32();
   user.save();
   audit.save();

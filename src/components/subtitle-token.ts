@@ -33,6 +33,7 @@ export function handleSubtitleUpload(event: SubtitleUpload): void {
   subtitle.time = event.block.timestamp.toI32();
   subtitle.supporterCount = ZERO_BI;
   subtitle.dissenterCount = ZERO_BI;
+  subtitle.txHash = event.transaction.hash;
   let dashboard = getOrCreateDashboard();
   dashboard.subtitleCount = dashboard.subtitleCount.plus(ONE_BI);
   let dayData = getOrCreateDayData(event);
