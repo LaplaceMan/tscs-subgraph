@@ -9,6 +9,7 @@ import {
   SubtilteStateChange,
   SystemSetSettlement,
   UserJoin,
+  UserInfoUpdate,
   UserLockRewardUpdate,
   UserWithdraw,
   VideoCreate,
@@ -58,6 +59,13 @@ export function handleUserJoin(event: UserJoin): void {
   user.save();
   dayData.save();
   dashboard.save();
+}
+
+export function handleUserInfoUpdate(event: UserInfoUpdate): void {
+  let user = getOrCreateUser(event.params.usr, event);
+  user.reputation = event.params.reputationSpread;
+  user.deposit = event.params.tokenSpread;
+  user.save();
 }
 
 export function handleUserLockRewardUpdate(event: UserLockRewardUpdate): void {

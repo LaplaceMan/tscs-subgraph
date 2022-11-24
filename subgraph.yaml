@@ -4,10 +4,10 @@ schema:
 dataSources:
   - kind: ethereum
     name: SubtitleSystem
-    network: mainnet
+    network: goerli
     source:
-      # startBlock: 308400
-      address: "0xe43ed01D7fdc971C0F6aD5a8F3c21f4ACb7c3dA8"
+      startBlock: 7977385
+      address: "0x780EEE0D38101f100eC01C391EF6f623BC652866"
       abi: SubtitleSystem
     mapping:
       kind: ethereum/events
@@ -43,6 +43,8 @@ dataSources:
           handler: handleSystemSetSettlement
         - event: UserJoin(address,uint256,int256)
           handler: handleUserJoin
+        - event: UserInfoUpdate(address,int256,int256)
+          handler: handleUserInfoUpdate
         - event: UserLockRewardUpdate(address,address,uint256,int256)
           handler: handleUserLockRewardUpdate
         - event: UserWithdraw(address,address,uint256[],uint256)
@@ -53,11 +55,11 @@ dataSources:
 
   - kind: ethereum/contract
     name: SubtitleToken
-    network: mainnet
+    network: goerli
     source:
-      # startBlock: 308400
+      startBlock: 7977385
       abi: SubtitleToken
-      address: "0x60f69c3Df81899E19048f4217cBd9E2D6f67501f"
+      address: "0x13a5318b68e95e46C4dF661083142afB1eC4868F"
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6

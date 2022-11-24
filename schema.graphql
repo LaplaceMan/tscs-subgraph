@@ -47,11 +47,11 @@ type User @entity {
   ownSubtitleCount: BigInt!
   auditCount: BigInt!
   adoptedCount: BigInt!
-  rewards: [Reward!]! @derivedFrom(field: "user")
+  rewards: [Reward!] @derivedFrom(field: "user")
   applications: [Application!] @derivedFrom(field: "applicant")
   subtitlesMaker: [Subtitle!] @derivedFrom(field: "maker")
   subtitlesOwner: [Subtitle!] @derivedFrom(field: "owner")
-  audits: [Audit!]! @derivedFrom(field: "auditor")
+  audits: [Audit!] @derivedFrom(field: "auditor")
 }
 
 type Reward @entity {
@@ -72,6 +72,8 @@ type SettlementStrategy @entity {
 type Language @entity {
   id: ID!
   notes: String!
+  applications: [Application!] @derivedFrom(field: "language")
+  subtitles: [Subtitle!] @derivedFrom(field: "language")
 }
 
 type Subtitle @entity {

@@ -485,13 +485,21 @@ export class User extends Entity {
     this.set("adoptedCount", Value.fromBigInt(value));
   }
 
-  get rewards(): Array<string> {
+  get rewards(): Array<string> | null {
     let value = this.get("rewards");
-    return value!.toStringArray();
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
   }
 
-  set rewards(value: Array<string>) {
-    this.set("rewards", Value.fromStringArray(value));
+  set rewards(value: Array<string> | null) {
+    if (!value) {
+      this.unset("rewards");
+    } else {
+      this.set("rewards", Value.fromStringArray(<Array<string>>value));
+    }
   }
 
   get applications(): Array<string> | null {
@@ -545,13 +553,21 @@ export class User extends Entity {
     }
   }
 
-  get audits(): Array<string> {
+  get audits(): Array<string> | null {
     let value = this.get("audits");
-    return value!.toStringArray();
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
   }
 
-  set audits(value: Array<string>) {
-    this.set("audits", Value.fromStringArray(value));
+  set audits(value: Array<string> | null) {
+    if (!value) {
+      this.unset("audits");
+    } else {
+      this.set("audits", Value.fromStringArray(<Array<string>>value));
+    }
   }
 }
 
@@ -722,6 +738,40 @@ export class Language extends Entity {
 
   set notes(value: string) {
     this.set("notes", Value.fromString(value));
+  }
+
+  get applications(): Array<string> | null {
+    let value = this.get("applications");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set applications(value: Array<string> | null) {
+    if (!value) {
+      this.unset("applications");
+    } else {
+      this.set("applications", Value.fromStringArray(<Array<string>>value));
+    }
+  }
+
+  get subtitles(): Array<string> | null {
+    let value = this.get("subtitles");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set subtitles(value: Array<string> | null) {
+    if (!value) {
+      this.unset("subtitles");
+    } else {
+      this.set("subtitles", Value.fromStringArray(<Array<string>>value));
+    }
   }
 }
 
