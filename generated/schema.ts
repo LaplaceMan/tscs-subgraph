@@ -912,6 +912,23 @@ export class Subtitle extends Entity {
       this.set("txHash", Value.fromBytes(<Bytes>value));
     }
   }
+
+  get audits(): Array<string> | null {
+    let value = this.get("audits");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set audits(value: Array<string> | null) {
+    if (!value) {
+      this.unset("audits");
+    } else {
+      this.set("audits", Value.fromStringArray(<Array<string>>value));
+    }
+  }
 }
 
 export class Platform extends Entity {

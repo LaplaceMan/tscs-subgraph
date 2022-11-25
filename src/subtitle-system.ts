@@ -347,6 +347,7 @@ export function getOrCreateReward(
     ownerAddress.toHexString() +
       "-" +
       platformAddress.toHexString() +
+      "-" +
       day.toString()
   );
   if (reward === null) {
@@ -354,6 +355,7 @@ export function getOrCreateReward(
       ownerAddress.toHexString() +
         "-" +
         platformAddress.toHexString() +
+        "-" +
         day.toString()
     );
     reward.day = day;

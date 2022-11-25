@@ -89,6 +89,7 @@ type Subtitle @entity {
   supporterCount: BigInt!
   dissenterCount: BigInt!
   txHash: Bytes
+  audits: [Audit!] @derivedFrom(field: "subtitle")
 }
 
 type Platform @entity {
