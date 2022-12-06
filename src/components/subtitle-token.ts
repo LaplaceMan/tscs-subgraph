@@ -11,7 +11,7 @@ import {
   getOrCreateApplication,
   getOrCreateDashboard,
   getOrCreateDayData,
-} from "../subtitle-system";
+} from "../murmes";
 import { ONE_BI, SUBTITLE_TOKEN, ZERO_BI } from "../utils";
 
 export const ST = SubtitleToken.bind(Address.fromString(SUBTITLE_TOKEN));
@@ -19,7 +19,7 @@ export const ST = SubtitleToken.bind(Address.fromString(SUBTITLE_TOKEN));
 export function handleSubtitleUpload(event: SubtitleUpload): void {
   let subtitle = new Subtitle(event.params.subtitleId.toString());
   let maker = getOrCreateUser(event.params.maker, event);
-  let application = getOrCreateApplication(event.params.applyId, event);
+  let application = getOrCreateApplication(event.params.taskId, event);
   maker.makeSubtitleCount = maker.makeSubtitleCount.plus(ONE_BI);
   maker.ownSubtitleCount = maker.ownSubtitleCount.plus(ONE_BI);
   application.subtitleCount = application.subtitleCount.plus(ONE_BI);
@@ -64,14 +64,12 @@ export function getOrCreateSubtitle(
   let subtitle = Subtitle.load(subtitleId.toString());
   if (subtitle === null) {
     subtitle = new Subtitle(subtitleId.toString());
-    let base = ST.try_subtitleNFT(subtitleId);
-    if (!base.reverted) {
-      subtitle.language = getOrCreateLanguage(base.value.getLanguageId()).id;
-      subtitle.fingerprint = base.value.getFingerprint();
-      let application = getOrCreateApplication(base.value.getApplyId(), event);
-      subtitle.application = application.id;
-      application.save();
-    }
+    let base = ST.getSTBaseInfo(subtitleId);
+    subtitle.language = getOrCreateLanguage(base.getValue2()).id;
+    subtitle.fingerprint = base.getValue3();
+    let application = getOrCreateApplication(base.getValue1(), event);
+    subtitle.application = application.id;
+    application.save();
     subtitle.state = "NORMAL";
     let uri = ST.try_tokenURI(subtitleId);
     if (!uri.reverted) {

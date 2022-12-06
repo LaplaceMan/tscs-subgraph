@@ -1,9 +1,7 @@
 import { BigInt, Address, ethereum } from "@graphprotocol/graph-ts";
 import {
-  SubtitleSystem,
+  Murmes,
   ApplicationSubmit,
-  PlatformJoin,
-  PlatformSetRate,
   RegisterLanguage,
   SubitlteGetEvaluation,
   SubtilteStateChange,
@@ -12,8 +10,7 @@ import {
   UserInfoUpdate,
   UserLockRewardUpdate,
   UserWithdraw,
-  VideoCreate,
-} from "../generated/SubtitleSystem/SubtitleSystem";
+} from "../generated/Murmes/Murmes";
 
 import {
   Dashboard,
@@ -24,13 +21,12 @@ import {
   SettlementStrategy,
   Language,
   Audit,
-  Platform,
-  Video,
 } from "../generated/schema";
-import { SUBTITLE_SYSTEM, ZERO_BI, ONE_BI } from "./utils";
+import { MURMES_SYSTEM, ZERO_BI, ONE_BI } from "./utils";
 import { getOrCreateSubtitle } from "./components/subtitle-token";
+import { getOrCreateVideo, getOrCreatePlatform } from "./components/platforms";
 
-export const TSCS = SubtitleSystem.bind(Address.fromString(SUBTITLE_SYSTEM));
+export let MURMES = Murmes.bind(Address.fromString(MURMES_SYSTEM));
 
 export function handleRegisterLanguage(event: RegisterLanguage): void {
   let languageId = event.params.id;
@@ -94,31 +90,6 @@ export function handleUserWithdraw(event: UserWithdraw): void {
   }
 }
 
-export function handlePlatformJoin(event: PlatformJoin): void {
-  let platform = new Platform(event.params.platform.toHexString());
-  platform.name = event.params.name;
-  platform.symbol = event.params.symbol;
-  platform.platformId = event.params.id;
-  platform.videoCount = ZERO_BI;
-  platform.time = event.block.timestamp.toI32();
-  platform.rateCountsToProfit = event.params.rate1;
-  platform.rateAuditorDivide = event.params.rate2;
-  let dashboard = getOrCreateDashboard();
-  dashboard.platformCount = dashboard.platformCount.plus(ONE_BI);
-  let dayData = getOrCreateDayData(event);
-  dayData.platformCount = dayData.platformCount.plus(ONE_BI);
-  dayData.save();
-  platform.save();
-  dashboard.save();
-}
-
-export function handlePlatformSetRate(event: PlatformSetRate): void {
-  let platform = getOrCreatePlatform(event.params.platform, event);
-  platform.rateCountsToProfit = event.params.rate1;
-  platform.rateAuditorDivide = event.params.rate2;
-  platform.save();
-}
-
 export function handleSystemSetSettlement(event: SystemSetSettlement): void {
   let settlement = new SettlementStrategy(event.params.strategyId.toString());
   settlement.address = event.params.strategy;
@@ -130,8 +101,8 @@ export function handleSystemSetSettlement(event: SystemSetSettlement): void {
 }
 
 export function handleApplicationSubmit(event: ApplicationSubmit): void {
-  let applyId = event.params.applyId;
-  let application = new Application(applyId.toString());
+  let taskId = event.params.taskId;
+  let application = new Application(taskId.toString());
   let user = getOrCreateUser(event.params.applicant, event);
   let video = getOrCreateVideo(
     event.params.platform,
@@ -160,28 +131,6 @@ export function handleApplicationSubmit(event: ApplicationSubmit): void {
   dayData.save();
   dashboard.save();
   application.save();
-}
-
-export function handleVideoCreate(event: VideoCreate): void {
-  let video = new Video(
-    event.params.platform.toHexString() + event.params.id.toString()
-  );
-  let platform = getOrCreatePlatform(event.params.platform, event);
-  platform.videoCount = platform.videoCount.plus(ONE_BI);
-  video.platform = platform.id;
-  video.realId = event.params.realId;
-  video.orderId = event.params.id;
-  video.time = event.block.timestamp.toI32();
-  video.applicationCount = ZERO_BI;
-  video.creator = getOrCreateUser(event.params.creator, event).id;
-  let dashboard = getOrCreateDashboard();
-  dashboard.videoCount = dashboard.videoCount.plus(ONE_BI);
-  let dayData = getOrCreateDayData(event);
-  dayData.videoCount = dayData.videoCount.plus(ONE_BI);
-  video.save();
-  dayData.save();
-  platform.save();
-  dashboard.save();
 }
 
 export function handleSubitlteGetEvaluation(
@@ -219,7 +168,7 @@ export function handleSubtilteStateChange(event: SubtilteStateChange): void {
   let state = event.params.state;
   if (state == 1) {
     subtitle.state = "ADOPTED";
-    let application = getOrCreateApplication(event.params.applyId, event);
+    let application = getOrCreateApplication(event.params.taskId, event);
     let maker = getOrCreateUser(Address.fromString(subtitle.maker), event);
     maker.adoptedCount = maker.adoptedCount.plus(ONE_BI);
     application.adopted = subtitle.id;
@@ -229,29 +178,6 @@ export function handleSubtilteStateChange(event: SubtilteStateChange): void {
     subtitle.state = "DELETED";
   }
   subtitle.save();
-}
-
-export function getOrCreateVideo(
-  platform: Address,
-  videoId: BigInt,
-  event: ethereum.Event
-): Video {
-  let video = Video.load(platform.toHexString() + videoId.toString());
-  if (video === null) {
-    let platform_ = getOrCreatePlatform(platform, event);
-    video = new Video(platform.toHexString() + videoId.toString());
-    video.platform = platform_.id;
-    video.time = event.block.timestamp.toI32();
-    video.applicationCount = ZERO_BI;
-    let base = TSCS.try_videos(videoId);
-    if (!base.reverted) {
-      video.realId = base.value.getId();
-      video.creator = getOrCreateUser(base.value.getCreator(), event).id;
-    }
-    video.orderId = videoId;
-    video.save();
-  }
-  return video;
 }
 
 export function getOrCreateUser(address: Address, event: ethereum.Event): User {
@@ -264,7 +190,8 @@ export function getOrCreateUser(address: Address, event: ethereum.Event): User {
     user.ownSubtitleCount = ZERO_BI;
     user.auditCount = ZERO_BI;
     user.time = event.block.timestamp.toI32();
-    let base = TSCS.getUserBaseInfo(address);
+    let contract = Murmes.bind(Address.fromString(MURMES_SYSTEM));
+    let base = contract.getUserBaseInfo(address);
     user.reputation = base.getValue0();
     user.deposit = base.getValue1();
     user.save();
@@ -273,9 +200,9 @@ export function getOrCreateUser(address: Address, event: ethereum.Event): User {
 }
 
 export function getOrCreateDashboard(): Dashboard {
-  let dashboard = Dashboard.load(SUBTITLE_SYSTEM);
+  let dashboard = Dashboard.load(MURMES_SYSTEM);
   if (dashboard === null) {
-    dashboard = new Dashboard(SUBTITLE_SYSTEM);
+    dashboard = new Dashboard(MURMES_SYSTEM);
     dashboard.applicationCount = ZERO_BI;
     dashboard.subtitleCount = ZERO_BI;
     dashboard.languageCount = 0;
@@ -292,10 +219,8 @@ export function getOrCreateLanguage(languageId: i32): Language {
   let language = Language.load(languageId.toString());
   if (language === null) {
     language = new Language(languageId.toString());
-    let base = TSCS.try_getLanguageType(languageId);
-    if (!base.reverted) {
-      language.notes = base.value;
-    }
+    let base = MURMES.getLanguageNoteById(languageId);
+    language.notes = base;
     language.save();
   }
   return language;
@@ -305,36 +230,12 @@ export function getOrCreateSettlement(strategyId: i32): SettlementStrategy {
   let settlement = SettlementStrategy.load(strategyId.toString());
   if (settlement === null) {
     settlement = new SettlementStrategy(strategyId.toString());
-    let base = TSCS.try_settlementStrategy(strategyId);
-    if (!base.reverted) {
-      settlement.address = base.value.getStrategy();
-      settlement.notes = base.value.getNotes();
-    }
+    let base = MURMES.getSettlementStrategyBaseInfo(strategyId);
+    settlement.address = base.getValue0();
+    settlement.notes = base.getValue1();
     settlement.save();
   }
   return settlement;
-}
-
-export function getOrCreatePlatform(
-  platformAddress: Address,
-  event: ethereum.Event
-): Platform {
-  let platform = Platform.load(platformAddress.toHexString());
-  if (platform === null) {
-    platform = new Platform(platformAddress.toHexString());
-    let base = TSCS.try_platforms(platformAddress);
-    if (!base.reverted) {
-      platform.name = base.value.getName();
-      platform.symbol = base.value.getSymbol();
-      platform.platformId = base.value.getPlatformId();
-      platform.rateCountsToProfit = base.value.getRateCountsToProfit();
-      platform.rateAuditorDivide = base.value.getRateAuditorDivide();
-    }
-    platform.time = event.block.timestamp.toI32();
-    platform.videoCount = ZERO_BI;
-    platform.save();
-  }
-  return platform;
 }
 
 export function getOrCreateReward(
@@ -369,13 +270,13 @@ export function getOrCreateReward(
 }
 
 export function getOrCreateApplication(
-  applyId: BigInt,
+  taskId: BigInt,
   event: ethereum.Event
 ): Application {
-  let application = Application.load(applyId.toString());
+  let application = Application.load(taskId.toString());
   if (application === null) {
-    application = new Application(applyId.toString());
-    let base = TSCS.try_totalApplys(applyId);
+    application = new Application(taskId.toString());
+    let base = MURMES.try_tasks(taskId);
     if (!base.reverted) {
       let user = getOrCreateUser(base.value.getApplicant(), event);
       let video = getOrCreateVideo(

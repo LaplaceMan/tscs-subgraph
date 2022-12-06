@@ -10,24 +10,6 @@ import {
   BigInt
 } from "@graphprotocol/graph-ts";
 
-export class ApplicationCancel extends ethereum.Event {
-  get params(): ApplicationCancel__Params {
-    return new ApplicationCancel__Params(this);
-  }
-}
-
-export class ApplicationCancel__Params {
-  _event: ApplicationCancel;
-
-  constructor(event: ApplicationCancel) {
-    this._event = event;
-  }
-
-  get applyId(): BigInt {
-    return this._event.parameters[0].value.toBigInt();
-  }
-}
-
 export class ApplicationRecover extends ethereum.Event {
   get params(): ApplicationRecover__Params {
     return new ApplicationRecover__Params(this);
@@ -41,7 +23,7 @@ export class ApplicationRecover__Params {
     this._event = event;
   }
 
-  get applyId(): BigInt {
+  get taskId(): BigInt {
     return this._event.parameters[0].value.toBigInt();
   }
 
@@ -51,6 +33,28 @@ export class ApplicationRecover__Params {
 
   get deadline(): BigInt {
     return this._event.parameters[2].value.toBigInt();
+  }
+}
+
+export class ApplicationReset extends ethereum.Event {
+  get params(): ApplicationReset__Params {
+    return new ApplicationReset__Params(this);
+  }
+}
+
+export class ApplicationReset__Params {
+  _event: ApplicationReset;
+
+  constructor(event: ApplicationReset) {
+    this._event = event;
+  }
+
+  get taskId(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+
+  get amount(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
   }
 }
 
@@ -95,12 +99,38 @@ export class ApplicationSubmit__Params {
     return this._event.parameters[6].value.toBigInt();
   }
 
-  get applyId(): BigInt {
+  get taskId(): BigInt {
     return this._event.parameters[7].value.toBigInt();
   }
 
   get src(): string {
     return this._event.parameters[8].value.toString();
+  }
+}
+
+export class ApplicationUpdate extends ethereum.Event {
+  get params(): ApplicationUpdate__Params {
+    return new ApplicationUpdate__Params(this);
+  }
+}
+
+export class ApplicationUpdate__Params {
+  _event: ApplicationUpdate;
+
+  constructor(event: ApplicationUpdate) {
+    this._event = event;
+  }
+
+  get taskId(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+
+  get newAmount(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
+  }
+
+  get newDeadline(): BigInt {
+    return this._event.parameters[2].value.toBigInt();
   }
 }
 
@@ -145,70 +175,6 @@ export class OwnershipTransferred__Params {
 
   get newOwner(): Address {
     return this._event.parameters[1].value.toAddress();
-  }
-}
-
-export class PlatformJoin extends ethereum.Event {
-  get params(): PlatformJoin__Params {
-    return new PlatformJoin__Params(this);
-  }
-}
-
-export class PlatformJoin__Params {
-  _event: PlatformJoin;
-
-  constructor(event: PlatformJoin) {
-    this._event = event;
-  }
-
-  get platform(): Address {
-    return this._event.parameters[0].value.toAddress();
-  }
-
-  get id(): BigInt {
-    return this._event.parameters[1].value.toBigInt();
-  }
-
-  get name(): string {
-    return this._event.parameters[2].value.toString();
-  }
-
-  get symbol(): string {
-    return this._event.parameters[3].value.toString();
-  }
-
-  get rate1(): i32 {
-    return this._event.parameters[4].value.toI32();
-  }
-
-  get rate2(): i32 {
-    return this._event.parameters[5].value.toI32();
-  }
-}
-
-export class PlatformSetRate extends ethereum.Event {
-  get params(): PlatformSetRate__Params {
-    return new PlatformSetRate__Params(this);
-  }
-}
-
-export class PlatformSetRate__Params {
-  _event: PlatformSetRate;
-
-  constructor(event: PlatformSetRate) {
-    this._event = event;
-  }
-
-  get platform(): Address {
-    return this._event.parameters[0].value.toAddress();
-  }
-
-  get rate1(): i32 {
-    return this._event.parameters[1].value.toI32();
-  }
-
-  get rate2(): i32 {
-    return this._event.parameters[2].value.toI32();
   }
 }
 
@@ -281,7 +247,7 @@ export class SubtilteStateChange__Params {
     return this._event.parameters[1].value.toI32();
   }
 
-  get applyId(): BigInt {
+  get taskId(): BigInt {
     return this._event.parameters[2].value.toBigInt();
   }
 }
@@ -384,6 +350,24 @@ export class SystemSetLockUpTime__Params {
   }
 }
 
+export class SystemSetPlatforms extends ethereum.Event {
+  get params(): SystemSetPlatforms__Params {
+    return new SystemSetPlatforms__Params(this);
+  }
+}
+
+export class SystemSetPlatforms__Params {
+  _event: SystemSetPlatforms;
+
+  constructor(event: SystemSetPlatforms) {
+    this._event = event;
+  }
+
+  get platform(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+}
+
 export class SystemSetSettlement extends ethereum.Event {
   get params(): SystemSetSettlement__Params {
     return new SystemSetSettlement__Params(this);
@@ -424,6 +408,24 @@ export class SystemSetSubtitleToken__Params {
   }
 
   get token(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+}
+
+export class SystemSetVault extends ethereum.Event {
+  get params(): SystemSetVault__Params {
+    return new SystemSetVault__Params(this);
+  }
+}
+
+export class SystemSetVault__Params {
+  _event: SystemSetVault;
+
+  constructor(event: SystemSetVault) {
+    this._event = event;
+  }
+
+  get vault(): Address {
     return this._event.parameters[0].value.toAddress();
   }
 }
@@ -576,63 +578,29 @@ export class UserWithdraw__Params {
   }
 }
 
-export class VideoCountsUpdate extends ethereum.Event {
-  get params(): VideoCountsUpdate__Params {
-    return new VideoCountsUpdate__Params(this);
+export class UserWithdrawDespoit extends ethereum.Event {
+  get params(): UserWithdrawDespoit__Params {
+    return new UserWithdrawDespoit__Params(this);
   }
 }
 
-export class VideoCountsUpdate__Params {
-  _event: VideoCountsUpdate;
+export class UserWithdrawDespoit__Params {
+  _event: UserWithdrawDespoit;
 
-  constructor(event: VideoCountsUpdate) {
+  constructor(event: UserWithdrawDespoit) {
     this._event = event;
   }
 
-  get platform(): Address {
+  get user(): Address {
     return this._event.parameters[0].value.toAddress();
   }
 
-  get id(): Array<BigInt> {
-    return this._event.parameters[1].value.toBigIntArray();
-  }
-
-  get counts(): Array<BigInt> {
-    return this._event.parameters[2].value.toBigIntArray();
-  }
-}
-
-export class VideoCreate extends ethereum.Event {
-  get params(): VideoCreate__Params {
-    return new VideoCreate__Params(this);
-  }
-}
-
-export class VideoCreate__Params {
-  _event: VideoCreate;
-
-  constructor(event: VideoCreate) {
-    this._event = event;
-  }
-
-  get platform(): Address {
-    return this._event.parameters[0].value.toAddress();
-  }
-
-  get realId(): BigInt {
+  get amount(): BigInt {
     return this._event.parameters[1].value.toBigInt();
   }
 
-  get id(): BigInt {
+  get balance(): BigInt {
     return this._event.parameters[2].value.toBigInt();
-  }
-
-  get symbol(): string {
-    return this._event.parameters[3].value.toString();
-  }
-
-  get creator(): Address {
-    return this._event.parameters[4].value.toAddress();
   }
 }
 
@@ -662,7 +630,32 @@ export class VideoPreExtract__Params {
   }
 }
 
-export class SubtitleSystem__getSubtitleAuditInfoResult {
+export class Murmes__getSettlementStrategyBaseInfoResult {
+  value0: Address;
+  value1: string;
+
+  constructor(value0: Address, value1: string) {
+    this.value0 = value0;
+    this.value1 = value1;
+  }
+
+  toMap(): TypedMap<string, ethereum.Value> {
+    let map = new TypedMap<string, ethereum.Value>();
+    map.set("value0", ethereum.Value.fromAddress(this.value0));
+    map.set("value1", ethereum.Value.fromString(this.value1));
+    return map;
+  }
+
+  getValue0(): Address {
+    return this.value0;
+  }
+
+  getValue1(): string {
+    return this.value1;
+  }
+}
+
+export class Murmes__getSubtitleAuditInfoResult {
   value0: BigInt;
   value1: BigInt;
   value2: BigInt;
@@ -714,7 +707,62 @@ export class SubtitleSystem__getSubtitleAuditInfoResult {
   }
 }
 
-export class SubtitleSystem__getUserBaseInfoResult {
+export class Murmes__getSubtitleBaseInfoResult {
+  value0: i32;
+  value1: BigInt;
+  value2: BigInt;
+  value3: Array<Address>;
+  value4: Array<Address>;
+
+  constructor(
+    value0: i32,
+    value1: BigInt,
+    value2: BigInt,
+    value3: Array<Address>,
+    value4: Array<Address>
+  ) {
+    this.value0 = value0;
+    this.value1 = value1;
+    this.value2 = value2;
+    this.value3 = value3;
+    this.value4 = value4;
+  }
+
+  toMap(): TypedMap<string, ethereum.Value> {
+    let map = new TypedMap<string, ethereum.Value>();
+    map.set(
+      "value0",
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(this.value0))
+    );
+    map.set("value1", ethereum.Value.fromUnsignedBigInt(this.value1));
+    map.set("value2", ethereum.Value.fromUnsignedBigInt(this.value2));
+    map.set("value3", ethereum.Value.fromAddressArray(this.value3));
+    map.set("value4", ethereum.Value.fromAddressArray(this.value4));
+    return map;
+  }
+
+  getValue0(): i32 {
+    return this.value0;
+  }
+
+  getValue1(): BigInt {
+    return this.value1;
+  }
+
+  getValue2(): BigInt {
+    return this.value2;
+  }
+
+  getValue3(): Array<Address> {
+    return this.value3;
+  }
+
+  getValue4(): Array<Address> {
+    return this.value4;
+  }
+}
+
+export class Murmes__getUserBaseInfoResult {
   value0: BigInt;
   value1: BigInt;
 
@@ -739,156 +787,7 @@ export class SubtitleSystem__getUserBaseInfoResult {
   }
 }
 
-export class SubtitleSystem__platformRateResult {
-  value0: i32;
-  value1: i32;
-
-  constructor(value0: i32, value1: i32) {
-    this.value0 = value0;
-    this.value1 = value1;
-  }
-
-  toMap(): TypedMap<string, ethereum.Value> {
-    let map = new TypedMap<string, ethereum.Value>();
-    map.set(
-      "value0",
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(this.value0))
-    );
-    map.set(
-      "value1",
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(this.value1))
-    );
-    return map;
-  }
-
-  getValue0(): i32 {
-    return this.value0;
-  }
-
-  getValue1(): i32 {
-    return this.value1;
-  }
-}
-
-export class SubtitleSystem__platformsResult {
-  value0: string;
-  value1: string;
-  value2: BigInt;
-  value3: i32;
-  value4: i32;
-
-  constructor(
-    value0: string,
-    value1: string,
-    value2: BigInt,
-    value3: i32,
-    value4: i32
-  ) {
-    this.value0 = value0;
-    this.value1 = value1;
-    this.value2 = value2;
-    this.value3 = value3;
-    this.value4 = value4;
-  }
-
-  toMap(): TypedMap<string, ethereum.Value> {
-    let map = new TypedMap<string, ethereum.Value>();
-    map.set("value0", ethereum.Value.fromString(this.value0));
-    map.set("value1", ethereum.Value.fromString(this.value1));
-    map.set("value2", ethereum.Value.fromUnsignedBigInt(this.value2));
-    map.set(
-      "value3",
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(this.value3))
-    );
-    map.set(
-      "value4",
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(this.value4))
-    );
-    return map;
-  }
-
-  getName(): string {
-    return this.value0;
-  }
-
-  getSymbol(): string {
-    return this.value1;
-  }
-
-  getPlatformId(): BigInt {
-    return this.value2;
-  }
-
-  getRateCountsToProfit(): i32 {
-    return this.value3;
-  }
-
-  getRateAuditorDivide(): i32 {
-    return this.value4;
-  }
-}
-
-export class SubtitleSystem__settlementStrategyResult {
-  value0: Address;
-  value1: string;
-
-  constructor(value0: Address, value1: string) {
-    this.value0 = value0;
-    this.value1 = value1;
-  }
-
-  toMap(): TypedMap<string, ethereum.Value> {
-    let map = new TypedMap<string, ethereum.Value>();
-    map.set("value0", ethereum.Value.fromAddress(this.value0));
-    map.set("value1", ethereum.Value.fromString(this.value1));
-    return map;
-  }
-
-  getStrategy(): Address {
-    return this.value0;
-  }
-
-  getNotes(): string {
-    return this.value1;
-  }
-}
-
-export class SubtitleSystem__subtitleNFTResult {
-  value0: BigInt;
-  value1: i32;
-  value2: BigInt;
-
-  constructor(value0: BigInt, value1: i32, value2: BigInt) {
-    this.value0 = value0;
-    this.value1 = value1;
-    this.value2 = value2;
-  }
-
-  toMap(): TypedMap<string, ethereum.Value> {
-    let map = new TypedMap<string, ethereum.Value>();
-    map.set("value0", ethereum.Value.fromUnsignedBigInt(this.value0));
-    map.set(
-      "value1",
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(this.value1))
-    );
-    map.set("value2", ethereum.Value.fromUnsignedBigInt(this.value2));
-    return map;
-  }
-
-  getApplyId(): BigInt {
-    return this.value0;
-  }
-
-  getState(): i32 {
-    return this.value1;
-  }
-
-  getStateChangeTime(): BigInt {
-    return this.value2;
-  }
-}
-
-export class SubtitleSystem__totalApplysResult {
+export class Murmes__tasksResult {
   value0: Address;
   value1: Address;
   value2: BigInt;
@@ -978,84 +877,9 @@ export class SubtitleSystem__totalApplysResult {
   }
 }
 
-export class SubtitleSystem__videosResult {
-  value0: Address;
-  value1: BigInt;
-  value2: string;
-  value3: Address;
-  value4: BigInt;
-  value5: BigInt;
-
-  constructor(
-    value0: Address,
-    value1: BigInt,
-    value2: string,
-    value3: Address,
-    value4: BigInt,
-    value5: BigInt
-  ) {
-    this.value0 = value0;
-    this.value1 = value1;
-    this.value2 = value2;
-    this.value3 = value3;
-    this.value4 = value4;
-    this.value5 = value5;
-  }
-
-  toMap(): TypedMap<string, ethereum.Value> {
-    let map = new TypedMap<string, ethereum.Value>();
-    map.set("value0", ethereum.Value.fromAddress(this.value0));
-    map.set("value1", ethereum.Value.fromUnsignedBigInt(this.value1));
-    map.set("value2", ethereum.Value.fromString(this.value2));
-    map.set("value3", ethereum.Value.fromAddress(this.value3));
-    map.set("value4", ethereum.Value.fromUnsignedBigInt(this.value4));
-    map.set("value5", ethereum.Value.fromUnsignedBigInt(this.value5));
-    return map;
-  }
-
-  getPlatform(): Address {
-    return this.value0;
-  }
-
-  getId(): BigInt {
-    return this.value1;
-  }
-
-  getSymbol(): string {
-    return this.value2;
-  }
-
-  getCreator(): Address {
-    return this.value3;
-  }
-
-  getTotalViewCouts(): BigInt {
-    return this.value4;
-  }
-
-  getUnsettled(): BigInt {
-    return this.value5;
-  }
-}
-
-export class SubtitleSystem extends ethereum.SmartContract {
-  static bind(address: Address): SubtitleSystem {
-    return new SubtitleSystem("SubtitleSystem", address);
-  }
-
-  Despoit(): BigInt {
-    let result = super.call("Despoit", "Despoit():(uint256)", []);
-
-    return result[0].toBigInt();
-  }
-
-  try_Despoit(): ethereum.CallResult<BigInt> {
-    let result = super.tryCall("Despoit", "Despoit():(uint256)", []);
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBigInt());
+export class Murmes extends ethereum.SmartContract {
+  static bind(address: Address): Murmes {
+    return new Murmes("Murmes", address);
   }
 
   accessStrategy(): Address {
@@ -1096,34 +920,14 @@ export class SubtitleSystem extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
-  createVideo(id: BigInt, symbol: string, creator: Address): BigInt {
-    let result = super.call(
-      "createVideo",
-      "createVideo(uint256,string,address):(uint256)",
-      [
-        ethereum.Value.fromUnsignedBigInt(id),
-        ethereum.Value.fromString(symbol),
-        ethereum.Value.fromAddress(creator)
-      ]
-    );
+  deposit(): BigInt {
+    let result = super.call("deposit", "deposit():(uint256)", []);
 
     return result[0].toBigInt();
   }
 
-  try_createVideo(
-    id: BigInt,
-    symbol: string,
-    creator: Address
-  ): ethereum.CallResult<BigInt> {
-    let result = super.tryCall(
-      "createVideo",
-      "createVideo(uint256,string,address):(uint256)",
-      [
-        ethereum.Value.fromUnsignedBigInt(id),
-        ethereum.Value.fromString(symbol),
-        ethereum.Value.fromAddress(creator)
-      ]
-    );
+  try_deposit(): ethereum.CallResult<BigInt> {
+    let result = super.tryCall("deposit", "deposit():(uint256)", []);
     if (result.reverted) {
       return new ethereum.CallResult();
     }
@@ -1154,20 +958,58 @@ export class SubtitleSystem extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
-  getLanguageType(languageId: i32): string {
+  fee(): i32 {
+    let result = super.call("fee", "fee():(uint16)", []);
+
+    return result[0].toI32();
+  }
+
+  try_fee(): ethereum.CallResult<i32> {
+    let result = super.tryCall("fee", "fee():(uint16)", []);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toI32());
+  }
+
+  getLanguageIdByNote(language: string): i32 {
     let result = super.call(
-      "getLanguageType",
-      "getLanguageType(uint16):(string)",
+      "getLanguageIdByNote",
+      "getLanguageIdByNote(string):(uint16)",
+      [ethereum.Value.fromString(language)]
+    );
+
+    return result[0].toI32();
+  }
+
+  try_getLanguageIdByNote(language: string): ethereum.CallResult<i32> {
+    let result = super.tryCall(
+      "getLanguageIdByNote",
+      "getLanguageIdByNote(string):(uint16)",
+      [ethereum.Value.fromString(language)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toI32());
+  }
+
+  getLanguageNoteById(languageId: i32): string {
+    let result = super.call(
+      "getLanguageNoteById",
+      "getLanguageNoteById(uint16):(string)",
       [ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(languageId))]
     );
 
     return result[0].toString();
   }
 
-  try_getLanguageType(languageId: i32): ethereum.CallResult<string> {
+  try_getLanguageNoteById(languageId: i32): ethereum.CallResult<string> {
     let result = super.tryCall(
-      "getLanguageType",
-      "getLanguageType(uint16):(string)",
+      "getLanguageNoteById",
+      "getLanguageNoteById(uint16):(string)",
       [ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(languageId))]
     );
     if (result.reverted) {
@@ -1177,16 +1019,49 @@ export class SubtitleSystem extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toString());
   }
 
-  getSubtitleAuditInfo(
-    subtitleId: BigInt
-  ): SubtitleSystem__getSubtitleAuditInfoResult {
+  getSettlementStrategyBaseInfo(
+    strategyId: i32
+  ): Murmes__getSettlementStrategyBaseInfoResult {
+    let result = super.call(
+      "getSettlementStrategyBaseInfo",
+      "getSettlementStrategyBaseInfo(uint8):(address,string)",
+      [ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(strategyId))]
+    );
+
+    return new Murmes__getSettlementStrategyBaseInfoResult(
+      result[0].toAddress(),
+      result[1].toString()
+    );
+  }
+
+  try_getSettlementStrategyBaseInfo(
+    strategyId: i32
+  ): ethereum.CallResult<Murmes__getSettlementStrategyBaseInfoResult> {
+    let result = super.tryCall(
+      "getSettlementStrategyBaseInfo",
+      "getSettlementStrategyBaseInfo(uint8):(address,string)",
+      [ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(strategyId))]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(
+      new Murmes__getSettlementStrategyBaseInfoResult(
+        value[0].toAddress(),
+        value[1].toString()
+      )
+    );
+  }
+
+  getSubtitleAuditInfo(subtitleId: BigInt): Murmes__getSubtitleAuditInfoResult {
     let result = super.call(
       "getSubtitleAuditInfo",
       "getSubtitleAuditInfo(uint256):(uint256,uint256,uint256,uint256,uint256)",
       [ethereum.Value.fromUnsignedBigInt(subtitleId)]
     );
 
-    return new SubtitleSystem__getSubtitleAuditInfoResult(
+    return new Murmes__getSubtitleAuditInfoResult(
       result[0].toBigInt(),
       result[1].toBigInt(),
       result[2].toBigInt(),
@@ -1197,7 +1072,7 @@ export class SubtitleSystem extends ethereum.SmartContract {
 
   try_getSubtitleAuditInfo(
     subtitleId: BigInt
-  ): ethereum.CallResult<SubtitleSystem__getSubtitleAuditInfoResult> {
+  ): ethereum.CallResult<Murmes__getSubtitleAuditInfoResult> {
     let result = super.tryCall(
       "getSubtitleAuditInfo",
       "getSubtitleAuditInfo(uint256):(uint256,uint256,uint256,uint256,uint256)",
@@ -1208,7 +1083,7 @@ export class SubtitleSystem extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(
-      new SubtitleSystem__getSubtitleAuditInfoResult(
+      new Murmes__getSubtitleAuditInfoResult(
         value[0].toBigInt(),
         value[1].toBigInt(),
         value[2].toBigInt(),
@@ -1218,14 +1093,53 @@ export class SubtitleSystem extends ethereum.SmartContract {
     );
   }
 
-  getUserBaseInfo(usr: Address): SubtitleSystem__getUserBaseInfoResult {
+  getSubtitleBaseInfo(subtitleId: BigInt): Murmes__getSubtitleBaseInfoResult {
+    let result = super.call(
+      "getSubtitleBaseInfo",
+      "getSubtitleBaseInfo(uint256):(uint8,uint256,uint256,address[],address[])",
+      [ethereum.Value.fromUnsignedBigInt(subtitleId)]
+    );
+
+    return new Murmes__getSubtitleBaseInfoResult(
+      result[0].toI32(),
+      result[1].toBigInt(),
+      result[2].toBigInt(),
+      result[3].toAddressArray(),
+      result[4].toAddressArray()
+    );
+  }
+
+  try_getSubtitleBaseInfo(
+    subtitleId: BigInt
+  ): ethereum.CallResult<Murmes__getSubtitleBaseInfoResult> {
+    let result = super.tryCall(
+      "getSubtitleBaseInfo",
+      "getSubtitleBaseInfo(uint256):(uint8,uint256,uint256,address[],address[])",
+      [ethereum.Value.fromUnsignedBigInt(subtitleId)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(
+      new Murmes__getSubtitleBaseInfoResult(
+        value[0].toI32(),
+        value[1].toBigInt(),
+        value[2].toBigInt(),
+        value[3].toAddressArray(),
+        value[4].toAddressArray()
+      )
+    );
+  }
+
+  getUserBaseInfo(usr: Address): Murmes__getUserBaseInfoResult {
     let result = super.call(
       "getUserBaseInfo",
       "getUserBaseInfo(address):(uint256,int256)",
       [ethereum.Value.fromAddress(usr)]
     );
 
-    return new SubtitleSystem__getUserBaseInfoResult(
+    return new Murmes__getUserBaseInfoResult(
       result[0].toBigInt(),
       result[1].toBigInt()
     );
@@ -1233,7 +1147,7 @@ export class SubtitleSystem extends ethereum.SmartContract {
 
   try_getUserBaseInfo(
     usr: Address
-  ): ethereum.CallResult<SubtitleSystem__getUserBaseInfoResult> {
+  ): ethereum.CallResult<Murmes__getUserBaseInfoResult> {
     let result = super.tryCall(
       "getUserBaseInfo",
       "getUserBaseInfo(address):(uint256,int256)",
@@ -1244,7 +1158,7 @@ export class SubtitleSystem extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(
-      new SubtitleSystem__getUserBaseInfoResult(
+      new Murmes__getUserBaseInfoResult(
         value[0].toBigInt(),
         value[1].toBigInt()
       )
@@ -1286,23 +1200,23 @@ export class SubtitleSystem extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
-  languages(param0: string): i32 {
-    let result = super.call("languages", "languages(string):(uint16)", [
-      ethereum.Value.fromString(param0)
+  isOperator(operator: Address): boolean {
+    let result = super.call("isOperator", "isOperator(address):(bool)", [
+      ethereum.Value.fromAddress(operator)
     ]);
 
-    return result[0].toI32();
+    return result[0].toBoolean();
   }
 
-  try_languages(param0: string): ethereum.CallResult<i32> {
-    let result = super.tryCall("languages", "languages(string):(uint16)", [
-      ethereum.Value.fromString(param0)
+  try_isOperator(operator: Address): ethereum.CallResult<boolean> {
+    let result = super.tryCall("isOperator", "isOperator(address):(bool)", [
+      ethereum.Value.fromAddress(operator)
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
     }
     let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toI32());
+    return ethereum.CallResult.fromValue(value[0].toBoolean());
   }
 
   lockUpTime(): BigInt {
@@ -1335,142 +1249,19 @@ export class SubtitleSystem extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
-  penalty(): BigInt {
-    let result = super.call("penalty", "penalty():(uint256)", []);
+  platforms(): Address {
+    let result = super.call("platforms", "platforms():(address)", []);
 
-    return result[0].toBigInt();
+    return result[0].toAddress();
   }
 
-  try_penalty(): ethereum.CallResult<BigInt> {
-    let result = super.tryCall("penalty", "penalty():(uint256)", []);
+  try_platforms(): ethereum.CallResult<Address> {
+    let result = super.tryCall("platforms", "platforms():(address)", []);
     if (result.reverted) {
       return new ethereum.CallResult();
     }
     let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBigInt());
-  }
-
-  platformRate(rate1: i32, rate2: i32): SubtitleSystem__platformRateResult {
-    let result = super.call(
-      "platformRate",
-      "platformRate(uint16,uint16):(uint16,uint16)",
-      [
-        ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(rate1)),
-        ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(rate2))
-      ]
-    );
-
-    return new SubtitleSystem__platformRateResult(
-      result[0].toI32(),
-      result[1].toI32()
-    );
-  }
-
-  try_platformRate(
-    rate1: i32,
-    rate2: i32
-  ): ethereum.CallResult<SubtitleSystem__platformRateResult> {
-    let result = super.tryCall(
-      "platformRate",
-      "platformRate(uint16,uint16):(uint16,uint16)",
-      [
-        ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(rate1)),
-        ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(rate2))
-      ]
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(
-      new SubtitleSystem__platformRateResult(value[0].toI32(), value[1].toI32())
-    );
-  }
-
-  platforms(param0: Address): SubtitleSystem__platformsResult {
-    let result = super.call(
-      "platforms",
-      "platforms(address):(string,string,uint256,uint16,uint16)",
-      [ethereum.Value.fromAddress(param0)]
-    );
-
-    return new SubtitleSystem__platformsResult(
-      result[0].toString(),
-      result[1].toString(),
-      result[2].toBigInt(),
-      result[3].toI32(),
-      result[4].toI32()
-    );
-  }
-
-  try_platforms(
-    param0: Address
-  ): ethereum.CallResult<SubtitleSystem__platformsResult> {
-    let result = super.tryCall(
-      "platforms",
-      "platforms(address):(string,string,uint256,uint16,uint16)",
-      [ethereum.Value.fromAddress(param0)]
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(
-      new SubtitleSystem__platformsResult(
-        value[0].toString(),
-        value[1].toString(),
-        value[2].toBigInt(),
-        value[3].toI32(),
-        value[4].toI32()
-      )
-    );
-  }
-
-  platfromJoin(
-    platfrom: Address,
-    name: string,
-    symbol: string,
-    rate1: i32,
-    rate2: i32
-  ): BigInt {
-    let result = super.call(
-      "platfromJoin",
-      "platfromJoin(address,string,string,uint16,uint16):(uint256)",
-      [
-        ethereum.Value.fromAddress(platfrom),
-        ethereum.Value.fromString(name),
-        ethereum.Value.fromString(symbol),
-        ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(rate1)),
-        ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(rate2))
-      ]
-    );
-
-    return result[0].toBigInt();
-  }
-
-  try_platfromJoin(
-    platfrom: Address,
-    name: string,
-    symbol: string,
-    rate1: i32,
-    rate2: i32
-  ): ethereum.CallResult<BigInt> {
-    let result = super.tryCall(
-      "platfromJoin",
-      "platfromJoin(address,string,string,uint16,uint16):(uint256)",
-      [
-        ethereum.Value.fromAddress(platfrom),
-        ethereum.Value.fromString(name),
-        ethereum.Value.fromString(symbol),
-        ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(rate1)),
-        ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(rate2))
-      ]
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBigInt());
+    return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
   preExtractOther(videoId: BigInt): BigInt {
@@ -1517,39 +1308,6 @@ export class SubtitleSystem extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toI32());
-  }
-
-  settlementStrategy(param0: i32): SubtitleSystem__settlementStrategyResult {
-    let result = super.call(
-      "settlementStrategy",
-      "settlementStrategy(uint8):(address,string)",
-      [ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(param0))]
-    );
-
-    return new SubtitleSystem__settlementStrategyResult(
-      result[0].toAddress(),
-      result[1].toString()
-    );
-  }
-
-  try_settlementStrategy(
-    param0: i32
-  ): ethereum.CallResult<SubtitleSystem__settlementStrategyResult> {
-    let result = super.tryCall(
-      "settlementStrategy",
-      "settlementStrategy(uint8):(address,string)",
-      [ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(param0))]
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(
-      new SubtitleSystem__settlementStrategyResult(
-        value[0].toAddress(),
-        value[1].toString()
-      )
-    );
   }
 
   submitApplication(
@@ -1607,41 +1365,6 @@ export class SubtitleSystem extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
-  subtitleNFT(param0: BigInt): SubtitleSystem__subtitleNFTResult {
-    let result = super.call(
-      "subtitleNFT",
-      "subtitleNFT(uint256):(uint256,uint8,uint256)",
-      [ethereum.Value.fromUnsignedBigInt(param0)]
-    );
-
-    return new SubtitleSystem__subtitleNFTResult(
-      result[0].toBigInt(),
-      result[1].toI32(),
-      result[2].toBigInt()
-    );
-  }
-
-  try_subtitleNFT(
-    param0: BigInt
-  ): ethereum.CallResult<SubtitleSystem__subtitleNFTResult> {
-    let result = super.tryCall(
-      "subtitleNFT",
-      "subtitleNFT(uint256):(uint256,uint8,uint256)",
-      [ethereum.Value.fromUnsignedBigInt(param0)]
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(
-      new SubtitleSystem__subtitleNFTResult(
-        value[0].toBigInt(),
-        value[1].toI32(),
-        value[2].toBigInt()
-      )
-    );
-  }
-
   subtitleToken(): Address {
     let result = super.call("subtitleToken", "subtitleToken():(address)", []);
 
@@ -1661,37 +1384,14 @@ export class SubtitleSystem extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
-  totalApplyNumber(): BigInt {
+  tasks(param0: BigInt): Murmes__tasksResult {
     let result = super.call(
-      "totalApplyNumber",
-      "totalApplyNumber():(uint256)",
-      []
-    );
-
-    return result[0].toBigInt();
-  }
-
-  try_totalApplyNumber(): ethereum.CallResult<BigInt> {
-    let result = super.tryCall(
-      "totalApplyNumber",
-      "totalApplyNumber():(uint256)",
-      []
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBigInt());
-  }
-
-  totalApplys(param0: BigInt): SubtitleSystem__totalApplysResult {
-    let result = super.call(
-      "totalApplys",
-      "totalApplys(uint256):(address,address,uint256,string,uint8,uint256,uint16,uint256,uint256)",
+      "tasks",
+      "tasks(uint256):(address,address,uint256,string,uint8,uint256,uint16,uint256,uint256)",
       [ethereum.Value.fromUnsignedBigInt(param0)]
     );
 
-    return new SubtitleSystem__totalApplysResult(
+    return new Murmes__tasksResult(
       result[0].toAddress(),
       result[1].toAddress(),
       result[2].toBigInt(),
@@ -1704,12 +1404,10 @@ export class SubtitleSystem extends ethereum.SmartContract {
     );
   }
 
-  try_totalApplys(
-    param0: BigInt
-  ): ethereum.CallResult<SubtitleSystem__totalApplysResult> {
+  try_tasks(param0: BigInt): ethereum.CallResult<Murmes__tasksResult> {
     let result = super.tryCall(
-      "totalApplys",
-      "totalApplys(uint256):(address,address,uint256,string,uint8,uint256,uint16,uint256,uint256)",
+      "tasks",
+      "tasks(uint256):(address,address,uint256,string,uint8,uint256,uint16,uint256,uint256)",
       [ethereum.Value.fromUnsignedBigInt(param0)]
     );
     if (result.reverted) {
@@ -1717,7 +1415,7 @@ export class SubtitleSystem extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(
-      new SubtitleSystem__totalApplysResult(
+      new Murmes__tasksResult(
         value[0].toAddress(),
         value[1].toAddress(),
         value[2].toBigInt(),
@@ -1731,41 +1429,14 @@ export class SubtitleSystem extends ethereum.SmartContract {
     );
   }
 
-  totalPlatforms(): BigInt {
-    let result = super.call("totalPlatforms", "totalPlatforms():(uint256)", []);
+  totalTasks(): BigInt {
+    let result = super.call("totalTasks", "totalTasks():(uint256)", []);
 
     return result[0].toBigInt();
   }
 
-  try_totalPlatforms(): ethereum.CallResult<BigInt> {
-    let result = super.tryCall(
-      "totalPlatforms",
-      "totalPlatforms():(uint256)",
-      []
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBigInt());
-  }
-
-  totalVideoNumber(): BigInt {
-    let result = super.call(
-      "totalVideoNumber",
-      "totalVideoNumber():(uint256)",
-      []
-    );
-
-    return result[0].toBigInt();
-  }
-
-  try_totalVideoNumber(): ethereum.CallResult<BigInt> {
-    let result = super.tryCall(
-      "totalVideoNumber",
-      "totalVideoNumber():(uint256)",
-      []
-    );
+  try_totalTasks(): ethereum.CallResult<BigInt> {
+    let result = super.tryCall("totalTasks", "totalTasks():(uint256)", []);
     if (result.reverted) {
       return new ethereum.CallResult();
     }
@@ -1774,7 +1445,7 @@ export class SubtitleSystem extends ethereum.SmartContract {
   }
 
   uploadSubtitle(
-    applyId: BigInt,
+    taskId: BigInt,
     cid: string,
     languageId: i32,
     fingerprint: BigInt
@@ -1783,7 +1454,7 @@ export class SubtitleSystem extends ethereum.SmartContract {
       "uploadSubtitle",
       "uploadSubtitle(uint256,string,uint16,uint256):(uint256)",
       [
-        ethereum.Value.fromUnsignedBigInt(applyId),
+        ethereum.Value.fromUnsignedBigInt(taskId),
         ethereum.Value.fromString(cid),
         ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(languageId)),
         ethereum.Value.fromUnsignedBigInt(fingerprint)
@@ -1794,7 +1465,7 @@ export class SubtitleSystem extends ethereum.SmartContract {
   }
 
   try_uploadSubtitle(
-    applyId: BigInt,
+    taskId: BigInt,
     cid: string,
     languageId: i32,
     fingerprint: BigInt
@@ -1803,7 +1474,7 @@ export class SubtitleSystem extends ethereum.SmartContract {
       "uploadSubtitle",
       "uploadSubtitle(uint256,string,uint16,uint256):(uint256)",
       [
-        ethereum.Value.fromUnsignedBigInt(applyId),
+        ethereum.Value.fromUnsignedBigInt(taskId),
         ethereum.Value.fromString(cid),
         ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(languageId)),
         ethereum.Value.fromUnsignedBigInt(fingerprint)
@@ -1814,6 +1485,21 @@ export class SubtitleSystem extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+
+  vault(): Address {
+    let result = super.call("vault", "vault():(address)", []);
+
+    return result[0].toAddress();
+  }
+
+  try_vault(): ethereum.CallResult<Address> {
+    let result = super.tryCall("vault", "vault():(address)", []);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
   videoToken(): Address {
@@ -1829,47 +1515,6 @@ export class SubtitleSystem extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toAddress());
-  }
-
-  videos(param0: BigInt): SubtitleSystem__videosResult {
-    let result = super.call(
-      "videos",
-      "videos(uint256):(address,uint256,string,address,uint256,uint256)",
-      [ethereum.Value.fromUnsignedBigInt(param0)]
-    );
-
-    return new SubtitleSystem__videosResult(
-      result[0].toAddress(),
-      result[1].toBigInt(),
-      result[2].toString(),
-      result[3].toAddress(),
-      result[4].toBigInt(),
-      result[5].toBigInt()
-    );
-  }
-
-  try_videos(
-    param0: BigInt
-  ): ethereum.CallResult<SubtitleSystem__videosResult> {
-    let result = super.tryCall(
-      "videos",
-      "videos(uint256):(address,uint256,string,address,uint256,uint256)",
-      [ethereum.Value.fromUnsignedBigInt(param0)]
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(
-      new SubtitleSystem__videosResult(
-        value[0].toAddress(),
-        value[1].toBigInt(),
-        value[2].toString(),
-        value[3].toAddress(),
-        value[4].toBigInt(),
-        value[5].toBigInt()
-      )
-    );
   }
 
   withdraw(platform: Address, day: Array<BigInt>): BigInt {
@@ -1896,29 +1541,6 @@ export class SubtitleSystem extends ethereum.SmartContract {
         ethereum.Value.fromAddress(platform),
         ethereum.Value.fromUnsignedBigIntArray(day)
       ]
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBigInt());
-  }
-
-  withdrawDeposit(amount: BigInt): BigInt {
-    let result = super.call(
-      "withdrawDeposit",
-      "withdrawDeposit(uint256):(uint256)",
-      [ethereum.Value.fromUnsignedBigInt(amount)]
-    );
-
-    return result[0].toBigInt();
-  }
-
-  try_withdrawDeposit(amount: BigInt): ethereum.CallResult<BigInt> {
-    let result = super.tryCall(
-      "withdrawDeposit",
-      "withdrawDeposit(uint256):(uint256)",
-      [ethereum.Value.fromUnsignedBigInt(amount)]
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -1973,78 +1595,6 @@ export class ConstructorCall__Outputs {
   }
 }
 
-export class CancelCall extends ethereum.Call {
-  get inputs(): CancelCall__Inputs {
-    return new CancelCall__Inputs(this);
-  }
-
-  get outputs(): CancelCall__Outputs {
-    return new CancelCall__Outputs(this);
-  }
-}
-
-export class CancelCall__Inputs {
-  _call: CancelCall;
-
-  constructor(call: CancelCall) {
-    this._call = call;
-  }
-
-  get applyId(): BigInt {
-    return this._call.inputValues[0].value.toBigInt();
-  }
-}
-
-export class CancelCall__Outputs {
-  _call: CancelCall;
-
-  constructor(call: CancelCall) {
-    this._call = call;
-  }
-}
-
-export class CreateVideoCall extends ethereum.Call {
-  get inputs(): CreateVideoCall__Inputs {
-    return new CreateVideoCall__Inputs(this);
-  }
-
-  get outputs(): CreateVideoCall__Outputs {
-    return new CreateVideoCall__Outputs(this);
-  }
-}
-
-export class CreateVideoCall__Inputs {
-  _call: CreateVideoCall;
-
-  constructor(call: CreateVideoCall) {
-    this._call = call;
-  }
-
-  get id(): BigInt {
-    return this._call.inputValues[0].value.toBigInt();
-  }
-
-  get symbol(): string {
-    return this._call.inputValues[1].value.toString();
-  }
-
-  get creator(): Address {
-    return this._call.inputValues[2].value.toAddress();
-  }
-}
-
-export class CreateVideoCall__Outputs {
-  _call: CreateVideoCall;
-
-  constructor(call: CreateVideoCall) {
-    this._call = call;
-  }
-
-  get value0(): BigInt {
-    return this._call.outputValues[0].value.toBigInt();
-  }
-}
-
 export class EvaluateSubtitleCall extends ethereum.Call {
   get inputs(): EvaluateSubtitleCall__Inputs {
     return new EvaluateSubtitleCall__Inputs(this);
@@ -2076,98 +1626,6 @@ export class EvaluateSubtitleCall__Outputs {
 
   constructor(call: EvaluateSubtitleCall) {
     this._call = call;
-  }
-}
-
-export class PlatformRateCall extends ethereum.Call {
-  get inputs(): PlatformRateCall__Inputs {
-    return new PlatformRateCall__Inputs(this);
-  }
-
-  get outputs(): PlatformRateCall__Outputs {
-    return new PlatformRateCall__Outputs(this);
-  }
-}
-
-export class PlatformRateCall__Inputs {
-  _call: PlatformRateCall;
-
-  constructor(call: PlatformRateCall) {
-    this._call = call;
-  }
-
-  get rate1(): i32 {
-    return this._call.inputValues[0].value.toI32();
-  }
-
-  get rate2(): i32 {
-    return this._call.inputValues[1].value.toI32();
-  }
-}
-
-export class PlatformRateCall__Outputs {
-  _call: PlatformRateCall;
-
-  constructor(call: PlatformRateCall) {
-    this._call = call;
-  }
-
-  get value0(): i32 {
-    return this._call.outputValues[0].value.toI32();
-  }
-
-  get value1(): i32 {
-    return this._call.outputValues[1].value.toI32();
-  }
-}
-
-export class PlatfromJoinCall extends ethereum.Call {
-  get inputs(): PlatfromJoinCall__Inputs {
-    return new PlatfromJoinCall__Inputs(this);
-  }
-
-  get outputs(): PlatfromJoinCall__Outputs {
-    return new PlatfromJoinCall__Outputs(this);
-  }
-}
-
-export class PlatfromJoinCall__Inputs {
-  _call: PlatfromJoinCall;
-
-  constructor(call: PlatfromJoinCall) {
-    this._call = call;
-  }
-
-  get platfrom(): Address {
-    return this._call.inputValues[0].value.toAddress();
-  }
-
-  get name(): string {
-    return this._call.inputValues[1].value.toString();
-  }
-
-  get symbol(): string {
-    return this._call.inputValues[2].value.toString();
-  }
-
-  get rate1(): i32 {
-    return this._call.inputValues[3].value.toI32();
-  }
-
-  get rate2(): i32 {
-    return this._call.inputValues[4].value.toI32();
-  }
-}
-
-export class PlatfromJoinCall__Outputs {
-  _call: PlatfromJoinCall;
-
-  constructor(call: PlatfromJoinCall) {
-    this._call = call;
-  }
-
-  get value0(): BigInt {
-    return this._call.outputValues[0].value.toBigInt();
   }
 }
 
@@ -2264,7 +1722,7 @@ export class PreExtract0Call__Inputs {
     this._call = call;
   }
 
-  get applyId(): BigInt {
+  get taskId(): BigInt {
     return this._call.inputValues[0].value.toBigInt();
   }
 }
@@ -2328,7 +1786,7 @@ export class RecoverCall__Inputs {
     this._call = call;
   }
 
-  get applyId(): BigInt {
+  get taskId(): BigInt {
     return this._call.inputValues[0].value.toBigInt();
   }
 
@@ -2380,6 +1838,40 @@ export class RegisterLanguageCall__Outputs {
 
   get value0(): i32 {
     return this._call.outputValues[0].value.toI32();
+  }
+}
+
+export class ResetApplicationCall extends ethereum.Call {
+  get inputs(): ResetApplicationCall__Inputs {
+    return new ResetApplicationCall__Inputs(this);
+  }
+
+  get outputs(): ResetApplicationCall__Outputs {
+    return new ResetApplicationCall__Outputs(this);
+  }
+}
+
+export class ResetApplicationCall__Inputs {
+  _call: ResetApplicationCall;
+
+  constructor(call: ResetApplicationCall) {
+    this._call = call;
+  }
+
+  get taskId(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+
+  get amount(): BigInt {
+    return this._call.inputValues[1].value.toBigInt();
+  }
+}
+
+export class ResetApplicationCall__Outputs {
+  _call: ResetApplicationCall;
+
+  constructor(call: ResetApplicationCall) {
+    this._call = call;
   }
 }
 
@@ -2439,6 +1931,70 @@ export class SetAuditStrategyCall__Outputs {
   _call: SetAuditStrategyCall;
 
   constructor(call: SetAuditStrategyCall) {
+    this._call = call;
+  }
+}
+
+export class SetAuditorDivideRateCall extends ethereum.Call {
+  get inputs(): SetAuditorDivideRateCall__Inputs {
+    return new SetAuditorDivideRateCall__Inputs(this);
+  }
+
+  get outputs(): SetAuditorDivideRateCall__Outputs {
+    return new SetAuditorDivideRateCall__Outputs(this);
+  }
+}
+
+export class SetAuditorDivideRateCall__Inputs {
+  _call: SetAuditorDivideRateCall;
+
+  constructor(call: SetAuditorDivideRateCall) {
+    this._call = call;
+  }
+
+  get auditorDivide(): i32 {
+    return this._call.inputValues[0].value.toI32();
+  }
+}
+
+export class SetAuditorDivideRateCall__Outputs {
+  _call: SetAuditorDivideRateCall;
+
+  constructor(call: SetAuditorDivideRateCall) {
+    this._call = call;
+  }
+}
+
+export class SetComponentsAddressCall extends ethereum.Call {
+  get inputs(): SetComponentsAddressCall__Inputs {
+    return new SetComponentsAddressCall__Inputs(this);
+  }
+
+  get outputs(): SetComponentsAddressCall__Outputs {
+    return new SetComponentsAddressCall__Outputs(this);
+  }
+}
+
+export class SetComponentsAddressCall__Inputs {
+  _call: SetComponentsAddressCall;
+
+  constructor(call: SetComponentsAddressCall) {
+    this._call = call;
+  }
+
+  get note(): i32 {
+    return this._call.inputValues[0].value.toI32();
+  }
+
+  get addr(): Address {
+    return this._call.inputValues[1].value.toAddress();
+  }
+}
+
+export class SetComponentsAddressCall__Outputs {
+  _call: SetComponentsAddressCall;
+
+  constructor(call: SetComponentsAddressCall) {
     this._call = call;
   }
 }
@@ -2575,96 +2131,6 @@ export class SetSettlementStrategyCall__Outputs {
   }
 }
 
-export class SetSubtitleTokenCall extends ethereum.Call {
-  get inputs(): SetSubtitleTokenCall__Inputs {
-    return new SetSubtitleTokenCall__Inputs(this);
-  }
-
-  get outputs(): SetSubtitleTokenCall__Outputs {
-    return new SetSubtitleTokenCall__Outputs(this);
-  }
-}
-
-export class SetSubtitleTokenCall__Inputs {
-  _call: SetSubtitleTokenCall;
-
-  constructor(call: SetSubtitleTokenCall) {
-    this._call = call;
-  }
-
-  get token(): Address {
-    return this._call.inputValues[0].value.toAddress();
-  }
-}
-
-export class SetSubtitleTokenCall__Outputs {
-  _call: SetSubtitleTokenCall;
-
-  constructor(call: SetSubtitleTokenCall) {
-    this._call = call;
-  }
-}
-
-export class SetVideoTokenCall extends ethereum.Call {
-  get inputs(): SetVideoTokenCall__Inputs {
-    return new SetVideoTokenCall__Inputs(this);
-  }
-
-  get outputs(): SetVideoTokenCall__Outputs {
-    return new SetVideoTokenCall__Outputs(this);
-  }
-}
-
-export class SetVideoTokenCall__Inputs {
-  _call: SetVideoTokenCall;
-
-  constructor(call: SetVideoTokenCall) {
-    this._call = call;
-  }
-
-  get token(): Address {
-    return this._call.inputValues[0].value.toAddress();
-  }
-}
-
-export class SetVideoTokenCall__Outputs {
-  _call: SetVideoTokenCall;
-
-  constructor(call: SetVideoTokenCall) {
-    this._call = call;
-  }
-}
-
-export class SetZimuTokenCall extends ethereum.Call {
-  get inputs(): SetZimuTokenCall__Inputs {
-    return new SetZimuTokenCall__Inputs(this);
-  }
-
-  get outputs(): SetZimuTokenCall__Outputs {
-    return new SetZimuTokenCall__Outputs(this);
-  }
-}
-
-export class SetZimuTokenCall__Inputs {
-  _call: SetZimuTokenCall;
-
-  constructor(call: SetZimuTokenCall) {
-    this._call = call;
-  }
-
-  get token(): Address {
-    return this._call.inputValues[0].value.toAddress();
-  }
-}
-
-export class SetZimuTokenCall__Outputs {
-  _call: SetZimuTokenCall;
-
-  constructor(call: SetZimuTokenCall) {
-    this._call = call;
-  }
-}
-
 export class SubmitApplicationCall extends ethereum.Call {
   get inputs(): SubmitApplicationCall__Inputs {
     return new SubmitApplicationCall__Inputs(this);
@@ -2753,6 +2219,44 @@ export class TransferOwnershipCall__Outputs {
   }
 }
 
+export class UpdateApplicationCall extends ethereum.Call {
+  get inputs(): UpdateApplicationCall__Inputs {
+    return new UpdateApplicationCall__Inputs(this);
+  }
+
+  get outputs(): UpdateApplicationCall__Outputs {
+    return new UpdateApplicationCall__Outputs(this);
+  }
+}
+
+export class UpdateApplicationCall__Inputs {
+  _call: UpdateApplicationCall;
+
+  constructor(call: UpdateApplicationCall) {
+    this._call = call;
+  }
+
+  get taskId(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+
+  get plusAmount(): BigInt {
+    return this._call.inputValues[1].value.toBigInt();
+  }
+
+  get plusTime(): BigInt {
+    return this._call.inputValues[2].value.toBigInt();
+  }
+}
+
+export class UpdateApplicationCall__Outputs {
+  _call: UpdateApplicationCall;
+
+  constructor(call: UpdateApplicationCall) {
+    this._call = call;
+  }
+}
+
 export class UpdateUsageCountsCall extends ethereum.Call {
   get inputs(): UpdateUsageCountsCall__Inputs {
     return new UpdateUsageCountsCall__Inputs(this);
@@ -2787,40 +2291,6 @@ export class UpdateUsageCountsCall__Outputs {
   }
 }
 
-export class UpdateViewCountsCall extends ethereum.Call {
-  get inputs(): UpdateViewCountsCall__Inputs {
-    return new UpdateViewCountsCall__Inputs(this);
-  }
-
-  get outputs(): UpdateViewCountsCall__Outputs {
-    return new UpdateViewCountsCall__Outputs(this);
-  }
-}
-
-export class UpdateViewCountsCall__Inputs {
-  _call: UpdateViewCountsCall;
-
-  constructor(call: UpdateViewCountsCall) {
-    this._call = call;
-  }
-
-  get id(): Array<BigInt> {
-    return this._call.inputValues[0].value.toBigIntArray();
-  }
-
-  get vs(): Array<BigInt> {
-    return this._call.inputValues[1].value.toBigIntArray();
-  }
-}
-
-export class UpdateViewCountsCall__Outputs {
-  _call: UpdateViewCountsCall;
-
-  constructor(call: UpdateViewCountsCall) {
-    this._call = call;
-  }
-}
-
 export class UploadSubtitleCall extends ethereum.Call {
   get inputs(): UploadSubtitleCall__Inputs {
     return new UploadSubtitleCall__Inputs(this);
@@ -2838,7 +2308,7 @@ export class UploadSubtitleCall__Inputs {
     this._call = call;
   }
 
-  get applyId(): BigInt {
+  get taskId(): BigInt {
     return this._call.inputValues[0].value.toBigInt();
   }
 
@@ -2888,7 +2358,7 @@ export class UserJoinCall__Inputs {
     return this._call.inputValues[0].value.toAddress();
   }
 
-  get despoit(): BigInt {
+  get deposit_(): BigInt {
     return this._call.inputValues[1].value.toBigInt();
   }
 }
@@ -2966,9 +2436,5 @@ export class WithdrawDepositCall__Outputs {
 
   constructor(call: WithdrawDepositCall) {
     this._call = call;
-  }
-
-  get value0(): BigInt {
-    return this._call.outputValues[0].value.toBigInt();
   }
 }

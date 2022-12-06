@@ -3,12 +3,12 @@ schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum
-    name: SubtitleSystem
+    name: Murmes
     network: goerli
     source:
-      startBlock: 7977385
-      address: "0x780EEE0D38101f100eC01C391EF6f623BC652866"
-      abi: SubtitleSystem
+      # startBlock: 7977385
+      address: "0x6D1e477D84cbb8765d2dfd839C2BC1Ce540bD83A"
+      abi: Murmes
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -21,18 +21,16 @@ dataSources:
         - SettlementStrategy
         - Language
         - Subtitle
-        - Platform
-        - Video
       abis:
-        - name: SubtitleSystem
-          file: ./abis/SubtitleSystem.json
+        - name: Murmes
+          file: ./abis/Murmes.json
+        - name: Platforms
+          file: ./abis/Platforms.json
+        - name: SubtitleToken
+          file: ./abis/SubtitleToken.json
       eventHandlers:
         - event: ApplicationSubmit(address,address,uint256,uint8,uint256,uint16,uint256,uint256,string)
           handler: handleApplicationSubmit
-        - event: PlatformJoin(address,uint256,string,string,uint16,uint16)
-          handler: handlePlatformJoin
-        - event: PlatformSetRate(address,uint16,uint16)
-          handler: handlePlatformSetRate
         - event: RegisterLanguage(string,uint16)
           handler: handleRegisterLanguage
         - event: SubitlteGetEvaluation(uint256,address,uint8)
@@ -49,17 +47,43 @@ dataSources:
           handler: handleUserLockRewardUpdate
         - event: UserWithdraw(address,address,uint256[],uint256)
           handler: handleUserWithdraw
+      file: ./src/murmes.ts
+
+  - kind: ethereum/contract
+    name: Platforms
+    network: goerli
+    source:
+      # startBlock: 7977385
+      abi: Platforms
+      address: "0xB66235cBcCa9B72F9b73c59700f19Cde2E892426"
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Platform
+        - Video
+      abis:
+        - name: Platforms
+          file: ./abis/Platforms.json
+        - name: Murmes
+          file: ./abis/Murmes.json
+      eventHandlers:
+        - event: PlatformJoin(address,uint256,string,string,uint16,uint16)
+          handler: handlePlatformJoin
+        - event: PlatformSetRate(address,uint16,uint16)
+          handler: handlePlatformSetRate
         - event: VideoCreate(address,uint256,uint256,string,address)
           handler: handleVideoCreate
-      file: ./src/subtitle-system.ts
+      file: ./src/components/platforms.ts
 
   - kind: ethereum/contract
     name: SubtitleToken
     network: goerli
     source:
-      startBlock: 7977385
+      # startBlock: 7977385
       abi: SubtitleToken
-      address: "0x13a5318b68e95e46C4dF661083142afB1eC4868F"
+      address: "0x589ee2d09ea4f135066931a1f396A3F2bF528525"
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -69,6 +93,8 @@ dataSources:
       abis:
         - name: SubtitleToken
           file: ./abis/SubtitleToken.json
+        - name: Murmes
+          file: ./abis/Murmes.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleSTTransfer
