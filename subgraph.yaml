@@ -6,8 +6,8 @@ dataSources:
     name: Murmes
     network: goerli
     source:
-      # startBlock: 7977385
-      address: "0x6D1e477D84cbb8765d2dfd839C2BC1Ce540bD83A"
+      startBlock: 8090416
+      address: "0xD18bD5B3439c7994988534F2Bdbb64A0556085BB"
       abi: Murmes
     mapping:
       kind: ethereum/events
@@ -53,9 +53,9 @@ dataSources:
     name: Platforms
     network: goerli
     source:
-      # startBlock: 7977385
+      startBlock: 8090416
       abi: Platforms
-      address: "0xB66235cBcCa9B72F9b73c59700f19Cde2E892426"
+      address: "0xcf757954A689834dE86182476E38e22A3fE645d4"
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -81,9 +81,9 @@ dataSources:
     name: SubtitleToken
     network: goerli
     source:
-      # startBlock: 7977385
+      startBlock: 8090416
       abi: SubtitleToken
-      address: "0x589ee2d09ea4f135066931a1f396A3F2bF528525"
+      address: "0x223dbc19cA1636cCd044F8eef5c0d829fA632C4c"
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6

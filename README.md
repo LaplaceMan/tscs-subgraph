@@ -16,7 +16,7 @@ This subgraph is used for:
 
 ## Install Dependencies
 
-`git clone git@github.com:LaplaceMan/tscs-subgraph.git`
+`git clone https://github.com/LaplaceMan/tscs-subgraph.git`
 
 `npm install`
 
@@ -32,4 +32,12 @@ This subgraph is used for:
 
 `yarn deploy-local`
 
+## Deploy subgraph on Hosted Service
+
+`yarn deploy`
+
 > Modify the blockchain network and contract address in the Yaml file as needed. Please refer to the [official document](https://thegraph.com/docs/en/deploying/hosted-service/) for the Hosted Service provided by The Graph.
+
+## Deployed
+
+- Goerli: https://thegraph.com/explorer/subgraph/laplaceman/murmes-goerli
