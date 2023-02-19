@@ -40,4 +40,5 @@ This subgraph is used for:
 
 ## Deployed
 
-- Goerli: https://thegraph.com/explorer/subgraph/laplaceman/murmes-goerli
+- Goerli: https://thegraph.com/hosted-service/subgraph/laplaceman/murmes-goerli
+- Mumbai: https://thegraph.com/hosted-service/subgraph/laplaceman/murmes-mumbai

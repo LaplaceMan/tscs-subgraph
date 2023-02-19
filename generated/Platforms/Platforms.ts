@@ -74,21 +74,25 @@ export class PlatformSetRate__Params {
   }
 }
 
-export class SystemChangeOpeator extends ethereum.Event {
-  get params(): SystemChangeOpeator__Params {
-    return new SystemChangeOpeator__Params(this);
+export class PlatformSetTokenGlobal extends ethereum.Event {
+  get params(): PlatformSetTokenGlobal__Params {
+    return new PlatformSetTokenGlobal__Params(this);
   }
 }
 
-export class SystemChangeOpeator__Params {
-  _event: SystemChangeOpeator;
+export class PlatformSetTokenGlobal__Params {
+  _event: PlatformSetTokenGlobal;
 
-  constructor(event: SystemChangeOpeator) {
+  constructor(event: PlatformSetTokenGlobal) {
     this._event = event;
   }
 
-  get newOpeator(): Address {
+  get oldToken(): Address {
     return this._event.parameters[0].value.toAddress();
+  }
+
+  get newToken(): Address {
+    return this._event.parameters[1].value.toAddress();
   }
 }
 
@@ -149,6 +153,10 @@ export class VideoCreate__Params {
 
   get creator(): Address {
     return this._event.parameters[4].value.toAddress();
+  }
+
+  get initializeView(): BigInt {
+    return this._event.parameters[5].value.toBigInt();
   }
 }
 
@@ -329,14 +337,22 @@ export class Platforms extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
-  createVideo(id: BigInt, symbol: string, creator: Address): BigInt {
+  createVideo(
+    id: BigInt,
+    symbol: string,
+    creator: Address,
+    initialize: BigInt,
+    from: Address
+  ): BigInt {
     let result = super.call(
       "createVideo",
-      "createVideo(uint256,string,address):(uint256)",
+      "createVideo(uint256,string,address,uint256,address):(uint256)",
       [
         ethereum.Value.fromUnsignedBigInt(id),
         ethereum.Value.fromString(symbol),
-        ethereum.Value.fromAddress(creator)
+        ethereum.Value.fromAddress(creator),
+        ethereum.Value.fromUnsignedBigInt(initialize),
+        ethereum.Value.fromAddress(from)
       ]
     );
 
@@ -346,15 +362,19 @@ export class Platforms extends ethereum.SmartContract {
   try_createVideo(
     id: BigInt,
     symbol: string,
-    creator: Address
+    creator: Address,
+    initialize: BigInt,
+    from: Address
   ): ethereum.CallResult<BigInt> {
     let result = super.tryCall(
       "createVideo",
-      "createVideo(uint256,string,address):(uint256)",
+      "createVideo(uint256,string,address,uint256,address):(uint256)",
       [
         ethereum.Value.fromUnsignedBigInt(id),
         ethereum.Value.fromString(symbol),
-        ethereum.Value.fromAddress(creator)
+        ethereum.Value.fromAddress(creator),
+        ethereum.Value.fromUnsignedBigInt(initialize),
+        ethereum.Value.fromAddress(from)
       ]
     );
     if (result.reverted) {
@@ -403,6 +423,29 @@ export class Platforms extends ethereum.SmartContract {
     );
   }
 
+  getPlatformIdByAddress(platform: Address): BigInt {
+    let result = super.call(
+      "getPlatformIdByAddress",
+      "getPlatformIdByAddress(address):(uint256)",
+      [ethereum.Value.fromAddress(platform)]
+    );
+
+    return result[0].toBigInt();
+  }
+
+  try_getPlatformIdByAddress(platform: Address): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "getPlatformIdByAddress",
+      "getPlatformIdByAddress(address):(uint256)",
+      [ethereum.Value.fromAddress(platform)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+
   getVideoBaseInfo(videoId: BigInt): Platforms__getVideoBaseInfoResult {
     let result = super.call(
       "getVideoBaseInfo",
@@ -446,19 +489,36 @@ export class Platforms extends ethereum.SmartContract {
     );
   }
 
-  opeator(): Address {
-    let result = super.call("opeator", "opeator():(address)", []);
+  getVideoOrderIdByRealId(platfrom: Address, realId: BigInt): BigInt {
+    let result = super.call(
+      "getVideoOrderIdByRealId",
+      "getVideoOrderIdByRealId(address,uint256):(uint256)",
+      [
+        ethereum.Value.fromAddress(platfrom),
+        ethereum.Value.fromUnsignedBigInt(realId)
+      ]
+    );
 
-    return result[0].toAddress();
+    return result[0].toBigInt();
   }
 
-  try_opeator(): ethereum.CallResult<Address> {
-    let result = super.tryCall("opeator", "opeator():(address)", []);
+  try_getVideoOrderIdByRealId(
+    platfrom: Address,
+    realId: BigInt
+  ): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "getVideoOrderIdByRealId",
+      "getVideoOrderIdByRealId(address,uint256):(uint256)",
+      [
+        ethereum.Value.fromAddress(platfrom),
+        ethereum.Value.fromUnsignedBigInt(realId)
+      ]
+    );
     if (result.reverted) {
       return new ethereum.CallResult();
     }
     let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toAddress());
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
   platformRate(rate1: i32, rate2: i32): Platforms__platformRateResult {
@@ -496,6 +556,21 @@ export class Platforms extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(
       new Platforms__platformRateResult(value[0].toI32(), value[1].toI32())
     );
+  }
+
+  tokenGlobal(): Address {
+    let result = super.call("tokenGlobal", "tokenGlobal():(address)", []);
+
+    return result[0].toAddress();
+  }
+
+  try_tokenGlobal(): ethereum.CallResult<Address> {
+    let result = super.tryCall("tokenGlobal", "tokenGlobal():(address)", []);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
   totalPlatforms(): BigInt {
@@ -550,11 +625,11 @@ export class ConstructorCall__Inputs {
     this._call = call;
   }
 
-  get op(): Address {
+  get ms(): Address {
     return this._call.inputValues[0].value.toAddress();
   }
 
-  get murmes(): Address {
+  get token(): Address {
     return this._call.inputValues[1].value.toAddress();
   }
 }
@@ -563,36 +638,6 @@ export class ConstructorCall__Outputs {
   _call: ConstructorCall;
 
   constructor(call: ConstructorCall) {
-    this._call = call;
-  }
-}
-
-export class ChangeOpeatorCall extends ethereum.Call {
-  get inputs(): ChangeOpeatorCall__Inputs {
-    return new ChangeOpeatorCall__Inputs(this);
-  }
-
-  get outputs(): ChangeOpeatorCall__Outputs {
-    return new ChangeOpeatorCall__Outputs(this);
-  }
-}
-
-export class ChangeOpeatorCall__Inputs {
-  _call: ChangeOpeatorCall;
-
-  constructor(call: ChangeOpeatorCall) {
-    this._call = call;
-  }
-
-  get newOpeator(): Address {
-    return this._call.inputValues[0].value.toAddress();
-  }
-}
-
-export class ChangeOpeatorCall__Outputs {
-  _call: ChangeOpeatorCall;
-
-  constructor(call: ChangeOpeatorCall) {
     this._call = call;
   }
 }
@@ -624,6 +669,14 @@ export class CreateVideoCall__Inputs {
 
   get creator(): Address {
     return this._call.inputValues[2].value.toAddress();
+  }
+
+  get initialize(): BigInt {
+    return this._call.inputValues[3].value.toBigInt();
+  }
+
+  get from(): Address {
+    return this._call.inputValues[4].value.toAddress();
   }
 }
 
@@ -753,6 +806,36 @@ export class SetMurmesAuditorDivideRateCall__Outputs {
   _call: SetMurmesAuditorDivideRateCall;
 
   constructor(call: SetMurmesAuditorDivideRateCall) {
+    this._call = call;
+  }
+}
+
+export class SetTokenGlobalCall extends ethereum.Call {
+  get inputs(): SetTokenGlobalCall__Inputs {
+    return new SetTokenGlobalCall__Inputs(this);
+  }
+
+  get outputs(): SetTokenGlobalCall__Outputs {
+    return new SetTokenGlobalCall__Outputs(this);
+  }
+}
+
+export class SetTokenGlobalCall__Inputs {
+  _call: SetTokenGlobalCall;
+
+  constructor(call: SetTokenGlobalCall) {
+    this._call = call;
+  }
+
+  get token(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+}
+
+export class SetTokenGlobalCall__Outputs {
+  _call: SetTokenGlobalCall;
+
+  constructor(call: SetTokenGlobalCall) {
     this._call = call;
   }
 }

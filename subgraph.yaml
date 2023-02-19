@@ -4,10 +4,10 @@ schema:
 dataSources:
   - kind: ethereum
     name: Murmes
-    network: goerli
+    network: mumbai
     source:
-      startBlock: 8090416
-      address: "0xD18bD5B3439c7994988534F2Bdbb64A0556085BB"
+      startBlock: 32188776
+      address: "0x54A902e28c6301D54ad6E8e46815E1Baddd36D4f"
       abi: Murmes
     mapping:
       kind: ethereum/events
@@ -29,15 +29,15 @@ dataSources:
         - name: SubtitleToken
           file: ./abis/SubtitleToken.json
       eventHandlers:
-        - event: ApplicationSubmit(address,address,uint256,uint8,uint256,uint16,uint256,uint256,string)
+        - event: ApplicationSubmit(address,address,uint256,uint8,uint256,uint32,uint256,uint256,string)
           handler: handleApplicationSubmit
-        - event: RegisterLanguage(string,uint16)
+        - event: RegisterLanguage(string,uint32)
           handler: handleRegisterLanguage
         - event: SubitlteGetEvaluation(uint256,address,uint8)
           handler: handleSubitlteGetEvaluation
         - event: SubtilteStateChange(uint256,uint8,uint256)
           handler: handleSubtilteStateChange
-        - event: SystemSetSettlement(uint8,address,string)
+        - event: SystemSetSettlementStrategy(uint8,address,string)
           handler: handleSystemSetSettlement
         - event: UserJoin(address,uint256,int256)
           handler: handleUserJoin
@@ -51,11 +51,11 @@ dataSources:
 
   - kind: ethereum/contract
     name: Platforms
-    network: goerli
+    network: mumbai
     source:
-      startBlock: 8090416
+      startBlock: 32188776
       abi: Platforms
-      address: "0xcf757954A689834dE86182476E38e22A3fE645d4"
+      address: "0xF0D5f127AC8e8582a2C3fE228203c1015c397d3E"
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -73,17 +73,17 @@ dataSources:
           handler: handlePlatformJoin
         - event: PlatformSetRate(address,uint16,uint16)
           handler: handlePlatformSetRate
-        - event: VideoCreate(address,uint256,uint256,string,address)
+        - event: VideoCreate(address,uint256,uint256,string,address,uint256)
           handler: handleVideoCreate
       file: ./src/components/platforms.ts
 
   - kind: ethereum/contract
     name: SubtitleToken
-    network: goerli
+    network: mumbai
     source:
-      startBlock: 8090416
+      startBlock: 32188776
       abi: SubtitleToken
-      address: "0x223dbc19cA1636cCd044F8eef5c0d829fA632C4c"
+      address: "0xD18bD5B3439c7994988534F2Bdbb64A0556085BB"
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -98,6 +98,6 @@ dataSources:
       eventHandlers:
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleSTTransfer
-        - event: SubtitleUpload(address,uint256,uint256,string,uint16,uint256)
+        - event: SubtitleUpload(address,uint256,uint256,string,uint32,uint256)
           handler: handleSubtitleUpload
       file: ./src/components/subtitle-token.ts

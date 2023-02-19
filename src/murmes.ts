@@ -5,7 +5,7 @@ import {
   RegisterLanguage,
   SubitlteGetEvaluation,
   SubtilteStateChange,
-  SystemSetSettlement,
+  SystemSetSettlementStrategy,
   UserJoin,
   UserInfoUpdate,
   UserLockRewardUpdate,
@@ -90,10 +90,12 @@ export function handleUserWithdraw(event: UserWithdraw): void {
   }
 }
 
-export function handleSystemSetSettlement(event: SystemSetSettlement): void {
+export function handleSystemSetSettlement(
+  event: SystemSetSettlementStrategy
+): void {
   let settlement = new SettlementStrategy(event.params.strategyId.toString());
   settlement.address = event.params.strategy;
-  settlement.notes = event.params.notes;
+  settlement.notes = event.params.note;
   let dashboard = getOrCreateDashboard();
   dashboard.settlementStrategyCount += 1;
   dashboard.save();
@@ -215,7 +217,7 @@ export function getOrCreateDashboard(): Dashboard {
   return dashboard;
 }
 
-export function getOrCreateLanguage(languageId: i32): Language {
+export function getOrCreateLanguage(languageId: BigInt): Language {
   let language = Language.load(languageId.toString());
   if (language === null) {
     language = new Language(languageId.toString());

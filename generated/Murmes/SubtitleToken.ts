@@ -91,8 +91,8 @@ export class SubtitleUpload__Params {
     return this._event.parameters[3].value.toString();
   }
 
-  get languageId(): i32 {
-    return this._event.parameters[4].value.toI32();
+  get languageId(): BigInt {
+    return this._event.parameters[4].value.toBigInt();
   }
 
   get fingerprint(): BigInt {
@@ -129,10 +129,10 @@ export class Transfer__Params {
 export class SubtitleToken__getSTBaseInfoResult {
   value0: Address;
   value1: BigInt;
-  value2: i32;
+  value2: BigInt;
   value3: BigInt;
 
-  constructor(value0: Address, value1: BigInt, value2: i32, value3: BigInt) {
+  constructor(value0: Address, value1: BigInt, value2: BigInt, value3: BigInt) {
     this.value0 = value0;
     this.value1 = value1;
     this.value2 = value2;
@@ -143,10 +143,7 @@ export class SubtitleToken__getSTBaseInfoResult {
     let map = new TypedMap<string, ethereum.Value>();
     map.set("value0", ethereum.Value.fromAddress(this.value0));
     map.set("value1", ethereum.Value.fromUnsignedBigInt(this.value1));
-    map.set(
-      "value2",
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(this.value2))
-    );
+    map.set("value2", ethereum.Value.fromUnsignedBigInt(this.value2));
     map.set("value3", ethereum.Value.fromUnsignedBigInt(this.value3));
     return map;
   }
@@ -159,7 +156,7 @@ export class SubtitleToken__getSTBaseInfoResult {
     return this.value1;
   }
 
-  getValue2(): i32 {
+  getValue2(): BigInt {
     return this.value2;
   }
 
@@ -231,14 +228,14 @@ export class SubtitleToken extends ethereum.SmartContract {
   getSTBaseInfo(subtitleId: BigInt): SubtitleToken__getSTBaseInfoResult {
     let result = super.call(
       "getSTBaseInfo",
-      "getSTBaseInfo(uint256):(address,uint256,uint16,uint256)",
+      "getSTBaseInfo(uint256):(address,uint256,uint32,uint256)",
       [ethereum.Value.fromUnsignedBigInt(subtitleId)]
     );
 
     return new SubtitleToken__getSTBaseInfoResult(
       result[0].toAddress(),
       result[1].toBigInt(),
-      result[2].toI32(),
+      result[2].toBigInt(),
       result[3].toBigInt()
     );
   }
@@ -248,7 +245,7 @@ export class SubtitleToken extends ethereum.SmartContract {
   ): ethereum.CallResult<SubtitleToken__getSTBaseInfoResult> {
     let result = super.tryCall(
       "getSTBaseInfo",
-      "getSTBaseInfo(uint256):(address,uint256,uint16,uint256)",
+      "getSTBaseInfo(uint256):(address,uint256,uint32,uint256)",
       [ethereum.Value.fromUnsignedBigInt(subtitleId)]
     );
     if (result.reverted) {
@@ -259,7 +256,7 @@ export class SubtitleToken extends ethereum.SmartContract {
       new SubtitleToken__getSTBaseInfoResult(
         value[0].toAddress(),
         value[1].toBigInt(),
-        value[2].toI32(),
+        value[2].toBigInt(),
         value[3].toBigInt()
       )
     );
@@ -318,17 +315,17 @@ export class SubtitleToken extends ethereum.SmartContract {
     maker: Address,
     taskId: BigInt,
     cid: string,
-    languageId: i32,
+    languageId: BigInt,
     fingerprint: BigInt
   ): BigInt {
     let result = super.call(
       "mintST",
-      "mintST(address,uint256,string,uint16,uint256):(uint256)",
+      "mintST(address,uint256,string,uint32,uint256):(uint256)",
       [
         ethereum.Value.fromAddress(maker),
         ethereum.Value.fromUnsignedBigInt(taskId),
         ethereum.Value.fromString(cid),
-        ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(languageId)),
+        ethereum.Value.fromUnsignedBigInt(languageId),
         ethereum.Value.fromUnsignedBigInt(fingerprint)
       ]
     );
@@ -340,17 +337,17 @@ export class SubtitleToken extends ethereum.SmartContract {
     maker: Address,
     taskId: BigInt,
     cid: string,
-    languageId: i32,
+    languageId: BigInt,
     fingerprint: BigInt
   ): ethereum.CallResult<BigInt> {
     let result = super.tryCall(
       "mintST",
-      "mintST(address,uint256,string,uint16,uint256):(uint256)",
+      "mintST(address,uint256,string,uint32,uint256):(uint256)",
       [
         ethereum.Value.fromAddress(maker),
         ethereum.Value.fromUnsignedBigInt(taskId),
         ethereum.Value.fromString(cid),
-        ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(languageId)),
+        ethereum.Value.fromUnsignedBigInt(languageId),
         ethereum.Value.fromUnsignedBigInt(fingerprint)
       ]
     );
@@ -546,8 +543,8 @@ export class MintSTCall__Inputs {
     return this._call.inputValues[2].value.toString();
   }
 
-  get languageId(): i32 {
-    return this._call.inputValues[3].value.toI32();
+  get languageId(): BigInt {
+    return this._call.inputValues[3].value.toBigInt();
   }
 
   get fingerprint(): BigInt {
