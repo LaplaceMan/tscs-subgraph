@@ -4,7 +4,7 @@
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --access-token ''  --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ laplaceman/murmes-mumbai",
+    "deploy": "graph deploy --access-token ''  --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ laplaceman/murmes-mumbai-v5",
     "create-local": "graph create --node http://10.201.1.236:8020/ tscs-subgrpah",
     "remove-local": "graph remove --node http://10.201.1.236:8020/ tscs-subgrpah",
     "deploy-local": "graph deploy --node http://10.201.1.236:8020/ --ipfs http://10.201.1.237:5001 tscs-subgrpah",

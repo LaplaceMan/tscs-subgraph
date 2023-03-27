@@ -62,44 +62,6 @@ export class ApprovalForAll__Params {
   }
 }
 
-export class SubtitleUpload extends ethereum.Event {
-  get params(): SubtitleUpload__Params {
-    return new SubtitleUpload__Params(this);
-  }
-}
-
-export class SubtitleUpload__Params {
-  _event: SubtitleUpload;
-
-  constructor(event: SubtitleUpload) {
-    this._event = event;
-  }
-
-  get maker(): Address {
-    return this._event.parameters[0].value.toAddress();
-  }
-
-  get taskId(): BigInt {
-    return this._event.parameters[1].value.toBigInt();
-  }
-
-  get subtitleId(): BigInt {
-    return this._event.parameters[2].value.toBigInt();
-  }
-
-  get cid(): string {
-    return this._event.parameters[3].value.toString();
-  }
-
-  get languageId(): BigInt {
-    return this._event.parameters[4].value.toBigInt();
-  }
-
-  get fingerprint(): BigInt {
-    return this._event.parameters[5].value.toBigInt();
-  }
-}
-
 export class Transfer extends ethereum.Event {
   get params(): Transfer__Params {
     return new Transfer__Params(this);
@@ -126,17 +88,15 @@ export class Transfer__Params {
   }
 }
 
-export class SubtitleToken__getSTBaseInfoResult {
+export class ItemToken__getItemBaseDataResult {
   value0: Address;
   value1: BigInt;
   value2: BigInt;
-  value3: BigInt;
 
-  constructor(value0: Address, value1: BigInt, value2: BigInt, value3: BigInt) {
+  constructor(value0: Address, value1: BigInt, value2: BigInt) {
     this.value0 = value0;
     this.value1 = value1;
     this.value2 = value2;
-    this.value3 = value3;
   }
 
   toMap(): TypedMap<string, ethereum.Value> {
@@ -144,7 +104,6 @@ export class SubtitleToken__getSTBaseInfoResult {
     map.set("value0", ethereum.Value.fromAddress(this.value0));
     map.set("value1", ethereum.Value.fromUnsignedBigInt(this.value1));
     map.set("value2", ethereum.Value.fromUnsignedBigInt(this.value2));
-    map.set("value3", ethereum.Value.fromUnsignedBigInt(this.value3));
     return map;
   }
 
@@ -159,15 +118,29 @@ export class SubtitleToken__getSTBaseInfoResult {
   getValue2(): BigInt {
     return this.value2;
   }
+}
 
-  getValue3(): BigInt {
-    return this.value3;
+export class ItemToken__mintItemTokenByMurmesInputVarsStruct extends ethereum.Tuple {
+  get taskId(): BigInt {
+    return this[0].toBigInt();
+  }
+
+  get cid(): string {
+    return this[1].toString();
+  }
+
+  get requireId(): BigInt {
+    return this[2].toBigInt();
+  }
+
+  get fingerprint(): BigInt {
+    return this[3].toBigInt();
   }
 }
 
-export class SubtitleToken extends ethereum.SmartContract {
-  static bind(address: Address): SubtitleToken {
-    return new SubtitleToken("SubtitleToken", address);
+export class ItemToken extends ethereum.SmartContract {
+  static bind(address: Address): ItemToken {
+    return new ItemToken("ItemToken", address);
   }
 
   Murmes(): Address {
@@ -225,57 +198,55 @@ export class SubtitleToken extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
-  getSTBaseInfo(subtitleId: BigInt): SubtitleToken__getSTBaseInfoResult {
+  getItemBaseData(itemId: BigInt): ItemToken__getItemBaseDataResult {
     let result = super.call(
-      "getSTBaseInfo",
-      "getSTBaseInfo(uint256):(address,uint256,uint32,uint256)",
-      [ethereum.Value.fromUnsignedBigInt(subtitleId)]
+      "getItemBaseData",
+      "getItemBaseData(uint256):(address,uint256,uint256)",
+      [ethereum.Value.fromUnsignedBigInt(itemId)]
     );
 
-    return new SubtitleToken__getSTBaseInfoResult(
+    return new ItemToken__getItemBaseDataResult(
       result[0].toAddress(),
       result[1].toBigInt(),
-      result[2].toBigInt(),
-      result[3].toBigInt()
+      result[2].toBigInt()
     );
   }
 
-  try_getSTBaseInfo(
-    subtitleId: BigInt
-  ): ethereum.CallResult<SubtitleToken__getSTBaseInfoResult> {
+  try_getItemBaseData(
+    itemId: BigInt
+  ): ethereum.CallResult<ItemToken__getItemBaseDataResult> {
     let result = super.tryCall(
-      "getSTBaseInfo",
-      "getSTBaseInfo(uint256):(address,uint256,uint32,uint256)",
-      [ethereum.Value.fromUnsignedBigInt(subtitleId)]
+      "getItemBaseData",
+      "getItemBaseData(uint256):(address,uint256,uint256)",
+      [ethereum.Value.fromUnsignedBigInt(itemId)]
     );
     if (result.reverted) {
       return new ethereum.CallResult();
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(
-      new SubtitleToken__getSTBaseInfoResult(
+      new ItemToken__getItemBaseDataResult(
         value[0].toAddress(),
         value[1].toBigInt(),
-        value[2].toBigInt(),
-        value[3].toBigInt()
+        value[2].toBigInt()
       )
     );
   }
 
-  getSTFingerprint(tokenId: BigInt): BigInt {
+  getItemFingerprint(tokenId: BigInt): BigInt {
     let result = super.call(
-      "getSTFingerprint",
-      "getSTFingerprint(uint256):(uint256)",
+      "getItemFingerprint",
+      "getItemFingerprint(uint256):(uint256)",
       [ethereum.Value.fromUnsignedBigInt(tokenId)]
     );
 
     return result[0].toBigInt();
   }
 
-  try_getSTFingerprint(tokenId: BigInt): ethereum.CallResult<BigInt> {
+  try_getItemFingerprint(tokenId: BigInt): ethereum.CallResult<BigInt> {
     let result = super.tryCall(
-      "getSTFingerprint",
-      "getSTFingerprint(uint256):(uint256)",
+      "getItemFingerprint",
+      "getItemFingerprint(uint256):(uint256)",
       [ethereum.Value.fromUnsignedBigInt(tokenId)]
     );
     if (result.reverted) {
@@ -311,45 +282,27 @@ export class SubtitleToken extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBoolean());
   }
 
-  mintST(
+  mintItemTokenByMurmes(
     maker: Address,
-    taskId: BigInt,
-    cid: string,
-    languageId: BigInt,
-    fingerprint: BigInt
+    vars: ItemToken__mintItemTokenByMurmesInputVarsStruct
   ): BigInt {
     let result = super.call(
-      "mintST",
-      "mintST(address,uint256,string,uint32,uint256):(uint256)",
-      [
-        ethereum.Value.fromAddress(maker),
-        ethereum.Value.fromUnsignedBigInt(taskId),
-        ethereum.Value.fromString(cid),
-        ethereum.Value.fromUnsignedBigInt(languageId),
-        ethereum.Value.fromUnsignedBigInt(fingerprint)
-      ]
+      "mintItemTokenByMurmes",
+      "mintItemTokenByMurmes(address,(uint256,string,uint256,uint256)):(uint256)",
+      [ethereum.Value.fromAddress(maker), ethereum.Value.fromTuple(vars)]
     );
 
     return result[0].toBigInt();
   }
 
-  try_mintST(
+  try_mintItemTokenByMurmes(
     maker: Address,
-    taskId: BigInt,
-    cid: string,
-    languageId: BigInt,
-    fingerprint: BigInt
+    vars: ItemToken__mintItemTokenByMurmesInputVarsStruct
   ): ethereum.CallResult<BigInt> {
     let result = super.tryCall(
-      "mintST",
-      "mintST(address,uint256,string,uint32,uint256):(uint256)",
-      [
-        ethereum.Value.fromAddress(maker),
-        ethereum.Value.fromUnsignedBigInt(taskId),
-        ethereum.Value.fromString(cid),
-        ethereum.Value.fromUnsignedBigInt(languageId),
-        ethereum.Value.fromUnsignedBigInt(fingerprint)
-      ]
+      "mintItemTokenByMurmes",
+      "mintItemTokenByMurmes(address,(uint256,string,uint256,uint256)):(uint256)",
+      [ethereum.Value.fromAddress(maker), ethereum.Value.fromTuple(vars)]
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -514,20 +467,20 @@ export class ApproveCall__Outputs {
   }
 }
 
-export class MintSTCall extends ethereum.Call {
-  get inputs(): MintSTCall__Inputs {
-    return new MintSTCall__Inputs(this);
+export class MintItemTokenByMurmesCall extends ethereum.Call {
+  get inputs(): MintItemTokenByMurmesCall__Inputs {
+    return new MintItemTokenByMurmesCall__Inputs(this);
   }
 
-  get outputs(): MintSTCall__Outputs {
-    return new MintSTCall__Outputs(this);
+  get outputs(): MintItemTokenByMurmesCall__Outputs {
+    return new MintItemTokenByMurmesCall__Outputs(this);
   }
 }
 
-export class MintSTCall__Inputs {
-  _call: MintSTCall;
+export class MintItemTokenByMurmesCall__Inputs {
+  _call: MintItemTokenByMurmesCall;
 
-  constructor(call: MintSTCall) {
+  constructor(call: MintItemTokenByMurmesCall) {
     this._call = call;
   }
 
@@ -535,32 +488,40 @@ export class MintSTCall__Inputs {
     return this._call.inputValues[0].value.toAddress();
   }
 
-  get taskId(): BigInt {
-    return this._call.inputValues[1].value.toBigInt();
-  }
-
-  get cid(): string {
-    return this._call.inputValues[2].value.toString();
-  }
-
-  get languageId(): BigInt {
-    return this._call.inputValues[3].value.toBigInt();
-  }
-
-  get fingerprint(): BigInt {
-    return this._call.inputValues[4].value.toBigInt();
+  get vars(): MintItemTokenByMurmesCallVarsStruct {
+    return changetype<MintItemTokenByMurmesCallVarsStruct>(
+      this._call.inputValues[1].value.toTuple()
+    );
   }
 }
 
-export class MintSTCall__Outputs {
-  _call: MintSTCall;
+export class MintItemTokenByMurmesCall__Outputs {
+  _call: MintItemTokenByMurmesCall;
 
-  constructor(call: MintSTCall) {
+  constructor(call: MintItemTokenByMurmesCall) {
     this._call = call;
   }
 
   get value0(): BigInt {
     return this._call.outputValues[0].value.toBigInt();
+  }
+}
+
+export class MintItemTokenByMurmesCallVarsStruct extends ethereum.Tuple {
+  get taskId(): BigInt {
+    return this[0].toBigInt();
+  }
+
+  get cid(): string {
+    return this[1].toString();
+  }
+
+  get requireId(): BigInt {
+    return this[2].toBigInt();
+  }
+
+  get fingerprint(): BigInt {
+    return this[3].toBigInt();
   }
 }
 

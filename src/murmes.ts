@@ -1,51 +1,56 @@
 import { BigInt, Address, ethereum } from "@graphprotocol/graph-ts";
 import {
-  Murmes,
-  ApplicationSubmit,
-  RegisterLanguage,
-  SubitlteGetEvaluation,
-  SubtilteStateChange,
-  SystemSetSettlementStrategy,
+  TaskPosted,
+  RegisterRepuire,
+  ItemSubmitted,
+  ItemAudited,
+  ItemStateUpdate,
   UserJoin,
-  UserInfoUpdate,
-  UserLockRewardUpdate,
-  UserWithdraw,
-} from "../generated/Murmes/Murmes";
+  UserBaseDataUpdate,
+  UserLockedRevenueUpdate,
+  UserWithdrawDeposit,
+  UserWithdrawRevenue,
+  UserGuardUpdate,
+  TaskStateUpdate,
+  TaskCancelled,
+  TaskReset,
+} from "../generated/Murmes/Events";
+import { Murmes } from "../generated/Murmes/Murmes";
 
 import {
   Dashboard,
   DayData,
-  Application,
+  Task,
   User,
-  Reward,
-  SettlementStrategy,
-  Language,
+  Revenue,
+  Require,
   Audit,
+  Item,
 } from "../generated/schema";
-import { MURMES_SYSTEM, ZERO_BI, ONE_BI } from "./utils";
-import { getOrCreateSubtitle } from "./components/subtitle-token";
+import { MURMES_SYSTEM, ZERO_BI, ONE_BI, SETTLEMENT } from "./utils";
+import { getOrCreateItem } from "./components/itemToken";
 import { getOrCreateVideo, getOrCreatePlatform } from "./components/platforms";
 
-export let MURMES = Murmes.bind(Address.fromString(MURMES_SYSTEM));
+export const MurmesContract = Murmes.bind(Address.fromString(MURMES_SYSTEM));
 
-export function handleRegisterLanguage(event: RegisterLanguage): void {
-  let languageId = event.params.id;
-  let language = new Language(languageId.toString());
-  language.notes = event.params.language;
+export function handleRegisterRepuire(event: RegisterRepuire): void {
+  let requireId = event.params.id;
+  let requires = new Require(requireId.toString());
+  requires.notes = event.params.require;
   let dashboard = getOrCreateDashboard();
-  dashboard.languageCount += 1;
-  language.save();
+  dashboard.requireCount += 1;
+  requires.save();
   dashboard.save();
 }
 
 export function handleUserJoin(event: UserJoin): void {
   let user = new User(event.params.user.toHexString());
   user.time = event.block.timestamp.toI32();
-  user.applicationCount = ZERO_BI;
-  user.makeSubtitleCount = ZERO_BI;
+  user.taskCount = ZERO_BI;
+  user.makeItemCount = ZERO_BI;
   user.reputation = event.params.reputation;
   user.deposit = event.params.deposit;
-  user.ownSubtitleCount = ZERO_BI;
+  user.ownItemCount = ZERO_BI;
   user.auditCount = ZERO_BI;
   user.adoptedCount = ZERO_BI;
   let dashboard = getOrCreateDashboard();
@@ -57,29 +62,31 @@ export function handleUserJoin(event: UserJoin): void {
   dashboard.save();
 }
 
-export function handleUserInfoUpdate(event: UserInfoUpdate): void {
-  let user = getOrCreateUser(event.params.usr, event);
-  user.reputation = event.params.reputationSpread;
-  user.deposit = event.params.tokenSpread;
+export function handleUserBaseDataUpdate(event: UserBaseDataUpdate): void {
+  let user = getOrCreateUser(event.params.user, event);
+  user.reputation = user.reputation.plus(event.params.reputationSpread);
+  user.deposit = user.deposit.plus(event.params.tokenSpread);
   user.save();
 }
 
-export function handleUserLockRewardUpdate(event: UserLockRewardUpdate): void {
-  let reward = getOrCreateReward(
+export function handleUserLockedRevenueUpdate(
+  event: UserLockedRevenueUpdate
+): void {
+  let reward = getOrCreateRevenue(
     event.params.user,
     event.params.platform,
     event.params.day,
     event
   );
-  reward.locked = reward.locked.plus(event.params.reward);
+  reward.locked = reward.locked.plus(event.params.revenue);
   reward.save();
 }
 
-export function handleUserWithdraw(event: UserWithdraw): void {
+export function handleUserWithdrawRevenue(event: UserWithdrawRevenue): void {
   let days = event.params.day;
   for (let i = 0; i < days.length; i++) {
-    let reward = getOrCreateReward(
-      event.params.user,
+    let reward = getOrCreateRevenue(
+      event.params.caller,
       event.params.platform,
       days[i],
       event
@@ -90,96 +97,112 @@ export function handleUserWithdraw(event: UserWithdraw): void {
   }
 }
 
-export function handleSystemSetSettlement(
-  event: SystemSetSettlementStrategy
-): void {
-  let settlement = new SettlementStrategy(event.params.strategyId.toString());
-  settlement.address = event.params.strategy;
-  settlement.notes = event.params.note;
-  let dashboard = getOrCreateDashboard();
-  dashboard.settlementStrategyCount += 1;
-  dashboard.save();
-  settlement.save();
-}
-
-export function handleApplicationSubmit(event: ApplicationSubmit): void {
+export function handlePostTask(event: TaskPosted): void {
   let taskId = event.params.taskId;
-  let application = new Application(taskId.toString());
-  let user = getOrCreateUser(event.params.applicant, event);
-  let video = getOrCreateVideo(
-    event.params.platform,
-    event.params.videoId,
+  let task = new Task(taskId.toString());
+  let user = getOrCreateUser(event.params.caller, event);
+  let box = getOrCreateVideo(
+    event.params.vars.platform,
+    event.params.vars.sourceId,
     event
   );
-  video.applicationCount = video.applicationCount.plus(ONE_BI);
-  user.applicationCount = user.applicationCount.plus(ONE_BI);
-  application.video = video.id;
-  application.applicant = user.id;
-  application.amount = event.params.amount;
-  application.start = event.block.timestamp.toI32();
-  application.deadline = event.params.deadline;
-  application.source = event.params.src;
-  application.subtitleCount = ZERO_BI;
-  application.adopted = null;
-  application.txHash = event.transaction.hash;
-  application.language = getOrCreateLanguage(event.params.language).id;
-  application.strategy = getOrCreateSettlement(event.params.strategy).id;
+  box.taskCount = box.taskCount.plus(ONE_BI);
+  user.taskCount = user.taskCount.plus(ONE_BI);
+  task.box = box.id;
+  task.applicant = user.id;
+  task.amount = event.params.vars.amount;
+  task.start = event.block.timestamp.toI32();
+  task.deadline = event.params.vars.deadline;
+  task.source = event.params.vars.source;
+  task.itemCount = ZERO_BI;
+  task.adopted = null;
+  task.txHash = event.transaction.hash;
+  task.requires = getOrCreateRequire(event.params.vars.requireId).id;
+  task.strategy = SETTLEMENT[event.params.vars.settlement];
+  task.currency = event.params.vars.currency;
+  task.auditModule = event.params.vars.auditModule;
+  task.detectionModule = event.params.vars.detectionModule;
   let dashboard = getOrCreateDashboard();
-  dashboard.applicationCount = dashboard.applicationCount.plus(ONE_BI);
+  dashboard.taskCount = dashboard.taskCount.plus(ONE_BI);
   let dayData = getOrCreateDayData(event);
-  dayData.applicationCount = dayData.applicationCount.plus(ONE_BI);
+  dayData.taskCount = dayData.taskCount.plus(ONE_BI);
   user.save();
-  video.save();
+  box.save();
+  task.save();
   dayData.save();
   dashboard.save();
-  application.save();
 }
 
-export function handleSubitlteGetEvaluation(
-  event: SubitlteGetEvaluation
-): void {
-  let subtitle = getOrCreateSubtitle(event.params.subtitleId, event);
+export function handleSubmitItem(event: ItemSubmitted): void {
+  let item = new Item(event.params.itemId.toString());
+  let maker = getOrCreateUser(event.params.maker, event);
+  let task = getOrCreateTask(event.params.vars.taskId, event);
+  maker.makeItemCount = maker.makeItemCount.plus(ONE_BI);
+  maker.ownItemCount = maker.ownItemCount.plus(ONE_BI);
+  task.itemCount = task.itemCount.plus(ONE_BI);
+  item.maker = maker.id;
+  item.owner = getOrCreateUser(event.params.maker, event).id;
+  item.requires = getOrCreateRequire(event.params.vars.requireId).id;
+  item.cid = event.params.vars.cid;
+  item.task = task.id;
+  item.state = "NORMAL";
+  item.fingerprint = event.params.vars.fingerprint;
+  item.time = event.block.timestamp.toI32();
+  item.supporterCount = ZERO_BI;
+  item.opponentCount = ZERO_BI;
+  item.txHash = event.transaction.hash;
+  let dashboard = getOrCreateDashboard();
+  dashboard.itemCount = dashboard.itemCount.plus(ONE_BI);
+  let dayData = getOrCreateDayData(event);
+  dayData.itemCount = dayData.itemCount.plus(ONE_BI);
+  task.save();
+  item.save();
+  maker.save();
+  dayData.save();
+  dashboard.save();
+}
+
+export function handleAuditItem(event: ItemAudited): void {
+  let item = getOrCreateItem(event.params.itemId, event);
   let attitude = event.params.attitude;
-  let user = getOrCreateUser(event.params.evaluator, event);
+  let user = getOrCreateUser(event.params.auditor, event);
   let attitudeText = "";
   if (attitude == 0) {
-    subtitle.supporterCount = subtitle.supporterCount.plus(ONE_BI);
+    item.supporterCount = item.supporterCount.plus(ONE_BI);
     attitudeText = "SUPPORT";
   } else {
-    subtitle.dissenterCount = subtitle.dissenterCount.plus(ONE_BI);
-    attitudeText = "OPPOSITION";
+    item.opponentCount = item.opponentCount.plus(ONE_BI);
+    attitudeText = "OPPOSE";
   }
   let audit = new Audit(
-    event.params.evaluator.toHexString() +
-      "-" +
-      event.params.subtitleId.toString()
+    event.params.auditor.toHexString() + "-" + event.params.itemId.toString()
   );
   user.auditCount = user.auditCount.plus(ONE_BI);
   audit.auditor = user.id;
-  audit.subtitle = subtitle.id;
+  audit.item = item.id;
   audit.attitude = attitudeText;
   audit.txHash = event.transaction.hash;
   audit.time = event.block.timestamp.toI32();
+  item.save();
   user.save();
   audit.save();
-  subtitle.save();
 }
 
-export function handleSubtilteStateChange(event: SubtilteStateChange): void {
-  let subtitle = getOrCreateSubtitle(event.params.subtitleId, event);
+export function handleItemStateUpdate(event: ItemStateUpdate): void {
+  let item = getOrCreateItem(event.params.itemId, event);
   let state = event.params.state;
   if (state == 1) {
-    subtitle.state = "ADOPTED";
-    let application = getOrCreateApplication(event.params.taskId, event);
-    let maker = getOrCreateUser(Address.fromString(subtitle.maker), event);
+    item.state = "ADOPTED";
+    let task = getOrCreateTask(BigInt.fromString(item.task), event);
+    let maker = getOrCreateUser(Address.fromString(item.maker), event);
     maker.adoptedCount = maker.adoptedCount.plus(ONE_BI);
-    application.adopted = subtitle.id;
+    task.adopted = item.id;
+    task.save();
     maker.save();
-    application.save();
   } else if (state == 2) {
-    subtitle.state = "DELETED";
+    item.state = "DELETED";
   }
-  subtitle.save();
+  item.save();
 }
 
 export function getOrCreateUser(address: Address, event: ethereum.Event): User {
@@ -187,13 +210,13 @@ export function getOrCreateUser(address: Address, event: ethereum.Event): User {
   if (user === null) {
     user = new User(address.toHexString());
     user.adoptedCount = ZERO_BI;
-    user.applicationCount = ZERO_BI;
-    user.makeSubtitleCount = ZERO_BI;
-    user.ownSubtitleCount = ZERO_BI;
+    user.taskCount = ZERO_BI;
+    user.makeItemCount = ZERO_BI;
+    user.ownItemCount = ZERO_BI;
     user.auditCount = ZERO_BI;
     user.time = event.block.timestamp.toI32();
     let contract = Murmes.bind(Address.fromString(MURMES_SYSTEM));
-    let base = contract.getUserBaseInfo(address);
+    let base = contract.getUserBaseData(address);
     user.reputation = base.getValue0();
     user.deposit = base.getValue1();
     user.save();
@@ -205,104 +228,91 @@ export function getOrCreateDashboard(): Dashboard {
   let dashboard = Dashboard.load(MURMES_SYSTEM);
   if (dashboard === null) {
     dashboard = new Dashboard(MURMES_SYSTEM);
-    dashboard.applicationCount = ZERO_BI;
-    dashboard.subtitleCount = ZERO_BI;
-    dashboard.languageCount = 0;
+    dashboard.taskCount = ZERO_BI;
+    dashboard.itemCount = ZERO_BI;
+    dashboard.requireCount = 0;
     dashboard.platformCount = ZERO_BI;
-    dashboard.videoCount = ZERO_BI;
+    dashboard.boxCount = ZERO_BI;
     dashboard.userCount = ZERO_BI;
-    dashboard.settlementStrategyCount = 0;
     dashboard.save();
   }
   return dashboard;
 }
 
-export function getOrCreateLanguage(languageId: BigInt): Language {
-  let language = Language.load(languageId.toString());
-  if (language === null) {
-    language = new Language(languageId.toString());
-    let base = MURMES.getLanguageNoteById(languageId);
-    language.notes = base;
-    language.save();
+export function getOrCreateRequire(requireId: BigInt): Require {
+  let requires = Require.load(requireId.toString());
+  if (requires === null) {
+    requires = new Require(requireId.toString());
+    let base = MurmesContract.getRequiresNoteById(requireId);
+    requires.notes = base;
+    requires.save();
   }
-  return language;
+  return requires;
 }
 
-export function getOrCreateSettlement(strategyId: i32): SettlementStrategy {
-  let settlement = SettlementStrategy.load(strategyId.toString());
-  if (settlement === null) {
-    settlement = new SettlementStrategy(strategyId.toString());
-    let base = MURMES.getSettlementStrategyBaseInfo(strategyId);
-    settlement.address = base.getValue0();
-    settlement.notes = base.getValue1();
-    settlement.save();
-  }
-  return settlement;
-}
-
-export function getOrCreateReward(
+export function getOrCreateRevenue(
   ownerAddress: Address,
   platformAddress: Address,
   day: BigInt,
   event: ethereum.Event
-): Reward {
-  let reward = Reward.load(
+): Revenue {
+  let revenue = Revenue.load(
     ownerAddress.toHexString() +
       "-" +
       platformAddress.toHexString() +
       "-" +
       day.toString()
   );
-  if (reward === null) {
-    reward = new Reward(
+  if (revenue === null) {
+    revenue = new Revenue(
       ownerAddress.toHexString() +
         "-" +
         platformAddress.toHexString() +
         "-" +
         day.toString()
     );
-    reward.day = day;
-    reward.user = getOrCreateUser(ownerAddress, event).id;
-    reward.platform = getOrCreatePlatform(platformAddress, event).id;
-    reward.locked = ZERO_BI;
-    reward.extracted = ZERO_BI;
-    reward.save();
+    revenue.day = day;
+    revenue.user = getOrCreateUser(ownerAddress, event).id;
+    revenue.platform = getOrCreatePlatform(platformAddress, event).id;
+    revenue.locked = ZERO_BI;
+    revenue.extracted = ZERO_BI;
+    revenue.save();
   }
-  return reward;
+  return revenue;
 }
 
-export function getOrCreateApplication(
-  taskId: BigInt,
-  event: ethereum.Event
-): Application {
-  let application = Application.load(taskId.toString());
-  if (application === null) {
-    application = new Application(taskId.toString());
-    let base = MURMES.try_tasks(taskId);
+export function getOrCreateTask(taskId: BigInt, event: ethereum.Event): Task {
+  let task = Task.load(taskId.toString());
+  if (task === null) {
+    task = new Task(taskId.toString());
+    let base = MurmesContract.try_tasks(taskId);
     if (!base.reverted) {
       let user = getOrCreateUser(base.value.getApplicant(), event);
-      let video = getOrCreateVideo(
+      let box = getOrCreateVideo(
         base.value.getPlatform(),
-        base.value.getVideoId(),
+        base.value.getBoxId(),
         event
       );
-      user.applicationCount = user.applicationCount.plus(ONE_BI);
-      application.video = video.id;
-      application.applicant = user.id;
-      application.amount = base.value.getAmount();
-      application.deadline = base.value.getDeadline();
-      application.source = base.value.getSource();
-      application.language = getOrCreateLanguage(base.value.getLanguage()).id;
-      application.strategy = getOrCreateSettlement(base.value.getStrategy()).id;
+      user.taskCount = user.taskCount.plus(ONE_BI);
+      task.box = box.id;
+      task.applicant = user.id;
+      task.amount = base.value.getAmount();
+      task.deadline = base.value.getDeadline();
+      task.source = base.value.getSource();
+      task.requires = getOrCreateRequire(base.value.getRequireId()).id;
+      task.strategy = SETTLEMENT[base.value.getSettlement()];
+      task.currency = base.value.getCurrency();
+      task.auditModule = base.value.getAuditModule();
+      task.detectionModule = base.value.getDetectionModule();
+      box.save();
       user.save();
-      video.save();
     }
-    application.start = event.block.timestamp.toI32();
-    application.subtitleCount = ZERO_BI;
-    application.adopted = null;
-    application.save();
+    task.start = event.block.timestamp.toI32();
+    task.itemCount = ZERO_BI;
+    task.adopted = null;
+    task.save();
   }
-  return application;
+  return task;
 }
 
 export function getOrCreateDayData(event: ethereum.Event): DayData {
@@ -314,10 +324,10 @@ export function getOrCreateDayData(event: ethereum.Event): DayData {
     let dashboard = getOrCreateDashboard();
     dayData.dashboard = dashboard.id;
     dayData.day = dayId;
-    dayData.applicationCount = ZERO_BI;
+    dayData.taskCount = ZERO_BI;
     dayData.platformCount = ZERO_BI;
-    dayData.subtitleCount = ZERO_BI;
-    dayData.videoCount = ZERO_BI;
+    dayData.itemCount = ZERO_BI;
+    dayData.boxCount = ZERO_BI;
     dayData.userCount = ZERO_BI;
     dayData.save();
   }

@@ -6,98 +6,140 @@ dataSources:
     name: Murmes
     network: mumbai
     source:
-      startBlock: 32188776
-      address: "0x54A902e28c6301D54ad6E8e46815E1Baddd36D4f"
-      abi: Murmes
+      address: "0x87042950BFCE9b365E3C1E21C5DD343Cb8AcDA95"
+      abi: Events
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
         - Dashboard
-        - Application
+        - Task
         - User
         - Reward
-        - SettlementStrategy
-        - Language
-        - Subtitle
+        - Require
+        - Item
       abis:
         - name: Murmes
           file: ./abis/Murmes.json
         - name: Platforms
           file: ./abis/Platforms.json
-        - name: SubtitleToken
-          file: ./abis/SubtitleToken.json
+        - name: ItemToken
+          file: ./abis/ItemToken.json
+        - name: ItemVersionManagement
+          file: ./abis/ItemVersionManagement.json
+        - name: Events
+          file: ./abis/Events.json
       eventHandlers:
-        - event: ApplicationSubmit(address,address,uint256,uint8,uint256,uint32,uint256,uint256,string)
-          handler: handleApplicationSubmit
-        - event: RegisterLanguage(string,uint32)
-          handler: handleRegisterLanguage
-        - event: SubitlteGetEvaluation(uint256,address,uint8)
-          handler: handleSubitlteGetEvaluation
-        - event: SubtilteStateChange(uint256,uint8,uint256)
-          handler: handleSubtilteStateChange
-        - event: SystemSetSettlementStrategy(uint8,address,string)
-          handler: handleSystemSetSettlement
+        - event: RegisterRepuire(string,uint256)
+          handler: handleRegisterRepuire
+        - event: TaskPosted((address,uint256,uint256,string,uint8,uint256,address,address,address,uint256),uint256,address)
+          handler: handlePostTask
+        - event: ItemSubmitted((uint256,string,uint256,uint256),uint256,address)
+          handler: handleSubmitItem
+        - event: ItemAudited(uint256,uint8,address)
+          handler: handleAuditItem
+        - event: ItemStateUpdate(uint256,uint8)
+          handler: handleItemStateUpdate
         - event: UserJoin(address,uint256,int256)
           handler: handleUserJoin
-        - event: UserInfoUpdate(address,int256,int256)
-          handler: handleUserInfoUpdate
-        - event: UserLockRewardUpdate(address,address,uint256,int256)
-          handler: handleUserLockRewardUpdate
-        - event: UserWithdraw(address,address,uint256[],uint256)
-          handler: handleUserWithdraw
+        - event: UserBaseDataUpdate(address,int256,int256)
+          handler: handleUserBaseDataUpdate
+        - event: UserLockedRevenueUpdate(address,address,uint256,int256)
+          handler: handleUserLockedRevenueUpdate
+        - event: UserWithdrawDeposit(address,uint256)
+          handler: handleUserWithdrawDeposit
+        - event: UserWithdrawRevenue(address,uint256[],uint256,address)
+          handler: handleUserWithdrawRevenue
+        - event: UserGuardUpdate(address,address)
+          handler: handleUserGuardUpdate
+        - event: TaskStateUpdate(uint256,uint256,uint256)
+          handler: handleTaskStateUpdate
+        - event: TaskCancelled(uint256)
+          handler: handleTaskCancelled
+        - event: TaskReset(uint256,uint256)
+          handler: handleTaskReset
       file: ./src/murmes.ts
 
   - kind: ethereum/contract
     name: Platforms
     network: mumbai
     source:
-      startBlock: 32188776
-      abi: Platforms
-      address: "0xF0D5f127AC8e8582a2C3fE228203c1015c397d3E"
+      address: "0xa671E667552218A495B2F5a53ec0B681f1c965c5"
+      abi: Events
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
         - Platform
-        - Video
+        - Box
       abis:
         - name: Platforms
           file: ./abis/Platforms.json
         - name: Murmes
           file: ./abis/Murmes.json
+        - name: ItemToken
+          file: ./abis/ItemToken.json
+        - name: ItemVersionManagement
+          file: ./abis/ItemVersionManagement.json
+        - name: Events
+          file: ./abis/Events.json
       eventHandlers:
-        - event: PlatformJoin(address,uint256,string,string,uint16,uint16)
-          handler: handlePlatformJoin
-        - event: PlatformSetRate(address,uint16,uint16)
-          handler: handlePlatformSetRate
-        - event: VideoCreate(address,uint256,uint256,string,address,uint256)
-          handler: handleVideoCreate
+        - event: RegisterPlatform(address,string,string,uint16,uint16,address,uint256)
+          handler: handleRegisterPlatform
+        - event: PlatformStateUpdate(address,uint16,uint16)
+          handler: handlePlatformStateUpdate
+        - event: BoxCreated(uint256,address,address,uint256)
+          handler: handleBoxCreated
       file: ./src/components/platforms.ts
 
   - kind: ethereum/contract
-    name: SubtitleToken
+    name: ItemToken
     network: mumbai
     source:
-      startBlock: 32188776
-      abi: SubtitleToken
-      address: "0xD18bD5B3439c7994988534F2Bdbb64A0556085BB"
+      address: "0xF5A0BAcB03958E1b5EBdA72C6963C9FC19e021dF"
+      abi: ItemToken
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
-        - Subtitle
+        - Item
       abis:
-        - name: SubtitleToken
-          file: ./abis/SubtitleToken.json
+        - name: ItemToken
+          file: ./abis/ItemToken.json
         - name: Murmes
           file: ./abis/Murmes.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,indexed uint256)
-          handler: handleSTTransfer
-        - event: SubtitleUpload(address,uint256,uint256,string,uint32,uint256)
-          handler: handleSubtitleUpload
-      file: ./src/components/subtitle-token.ts
+          handler: handleItemTransfer
+      file: ./src/components/itemToken.ts
+
+  - kind: ethereum/contract
+    name: ItemVersionManagement
+    network: mumbai
+    source:
+      address: "0xF5A0BAcB03958E1b5EBdA72C6963C9FC19e021dF"
+      abi: Events
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Version
+      abis:
+        - name: ItemToken
+          file: ./abis/ItemToken.json
+        - name: Murmes
+          file: ./abis/Murmes.json
+        - name: ItemVersionManagement
+          file: ./abis/ItemVersionManagement.json
+        - name: Events
+          file: ./abis/Events.json
+      eventHandlers:
+        - event: ItemVersionUpdate(uint256,uint256,string,uint256)
+          handler: handleItemVersionUpdate
+        - event: ItemVersionReportInvaild(uint256,uint256)
+          handler: handleItemVersionReportInvaild
+      file: ./src/components/itemVersionManagement.ts

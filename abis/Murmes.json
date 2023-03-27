@@ -16,581 +16,21 @@
     "type": "constructor"
   },
   {
-    "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
         "internalType": "uint256",
-        "name": "taskId",
-        "type": "uint256"
-      }
-    ],
-    "name": "ApplicationCancel",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "taskId",
+        "name": "itemId",
         "type": "uint256"
       },
       {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "deadline",
-        "type": "uint256"
-      }
-    ],
-    "name": "ApplicationRecover",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "taskId",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "ApplicationReset",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "applicant",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "platform",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "videoId",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint8",
-        "name": "strategy",
-        "type": "uint8"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint32",
-        "name": "language",
-        "type": "uint32"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "deadline",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "taskId",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "src",
-        "type": "string"
-      }
-    ],
-    "name": "ApplicationSubmit",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "taskId",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "newAmount",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "newDeadline",
-        "type": "uint256"
-      }
-    ],
-    "name": "ApplicationUpdate",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "previousMutliSig",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "newMutliSig",
-        "type": "address"
-      }
-    ],
-    "name": "MutliSigTransferred",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "previousOwner",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "newOwner",
-        "type": "address"
-      }
-    ],
-    "name": "OwnershipTransferred",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "language",
-        "type": "string"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint32",
-        "name": "id",
-        "type": "uint32"
-      }
-    ],
-    "name": "RegisterLanguage",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "subtitleId",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "evaluator",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint8",
+        "internalType": "enum DataTypes.AuditAttitude",
         "name": "attitude",
         "type": "uint8"
       }
     ],
-    "name": "SubitlteGetEvaluation",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "subtitleId",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint8",
-        "name": "state",
-        "type": "uint8"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "taskId",
-        "type": "uint256"
-      }
-    ],
-    "name": "SubtilteStateChange",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "taskId",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "counts",
-        "type": "uint256"
-      }
-    ],
-    "name": "SubtitleCountsUpdate",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint8",
-        "name": "id",
-        "type": "uint8"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "addr",
-        "type": "address"
-      }
-    ],
-    "name": "SystemSetAddress",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint16",
-        "name": "old",
-        "type": "uint16"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint16",
-        "name": "fee",
-        "type": "uint16"
-      }
-    ],
-    "name": "SystemSetFee",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "time",
-        "type": "uint256"
-      }
-    ],
-    "name": "SystemSetLockUpTime",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint8",
-        "name": "note",
-        "type": "uint8"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "newAudit",
-        "type": "address"
-      }
-    ],
-    "name": "SystemSetNormalStrategy",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint8",
-        "name": "strategyId",
-        "type": "uint8"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "strategy",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "note",
-        "type": "string"
-      }
-    ],
-    "name": "SystemSetSettlementStrategy",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "usr",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "int256",
-        "name": "reputationSpread",
-        "type": "int256"
-      },
-      {
-        "indexed": false,
-        "internalType": "int256",
-        "name": "tokenSpread",
-        "type": "int256"
-      }
-    ],
-    "name": "UserInfoUpdate",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "reputation",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "int256",
-        "name": "deposit",
-        "type": "int256"
-      }
-    ],
-    "name": "UserJoin",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "platform",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "day",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "int256",
-        "name": "reward",
-        "type": "int256"
-      }
-    ],
-    "name": "UserLockRewardUpdate",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "platform",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256[]",
-        "name": "day",
-        "type": "uint256[]"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "all",
-        "type": "uint256"
-      }
-    ],
-    "name": "UserWithdraw",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "balance",
-        "type": "uint256"
-      }
-    ],
-    "name": "UserWithdrawDespoit",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "videoId",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "unsettled",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "surplus",
-        "type": "uint256"
-      }
-    ],
-    "name": "VideoPreExtract",
-    "type": "event"
-  },
-  {
-    "inputs": [],
-    "name": "accessStrategy",
-    "outputs": [
-      {
-        "internalType": "contract IAccessStrategy",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "arbitration",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "auditStrategy",
-    "outputs": [
-      {
-        "internalType": "contract IAuditStrategy",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "authorityStrategy",
-    "outputs": [
-      {
-        "internalType": "contract IAuthorityStrategy",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
+    "name": "auditItem",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -601,101 +41,19 @@
         "type": "uint256"
       }
     ],
-    "name": "cancel",
+    "name": "cancelTask",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [],
-    "name": "deposit",
+    "name": "componentGlobal",
     "outputs": [
       {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "detectionStrategy",
-    "outputs": [
-      {
-        "internalType": "contract IDetectionStrategy",
+        "internalType": "address",
         "name": "",
         "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "subtitleId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint8",
-        "name": "attitude",
-        "type": "uint8"
-      }
-    ],
-    "name": "evaluateSubtitle",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "fee",
-    "outputs": [
-      {
-        "internalType": "uint16",
-        "name": "",
-        "type": "uint16"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "language",
-        "type": "string"
-      }
-    ],
-    "name": "getLanguageIdByNote",
-    "outputs": [
-      {
-        "internalType": "uint32",
-        "name": "",
-        "type": "uint32"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint32",
-        "name": "languageId",
-        "type": "uint32"
-      }
-    ],
-    "name": "getLanguageNoteById",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
       }
     ],
     "stateMutability": "view",
@@ -709,109 +67,17 @@
         "type": "uint256"
       }
     ],
-    "name": "getPlatformByTaskId",
+    "name": "getAdoptedItemData",
     "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
       {
         "internalType": "address",
         "name": "",
         "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint8",
-        "name": "strategyId",
-        "type": "uint8"
-      }
-    ],
-    "name": "getSettlementStrategyBaseInfo",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      },
-      {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "subtitleId",
-        "type": "uint256"
-      }
-    ],
-    "name": "getSubtitleAuditInfo",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "subtitleId",
-        "type": "uint256"
-      }
-    ],
-    "name": "getSubtitleBaseInfo",
-    "outputs": [
-      {
-        "internalType": "uint8",
-        "name": "",
-        "type": "uint8"
-      },
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      },
-      {
-        "internalType": "address[]",
-        "name": "",
-        "type": "address[]"
       },
       {
         "internalType": "address[]",
@@ -826,21 +92,245 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "taskId",
+        "name": "itemId",
         "type": "uint256"
       }
     ],
-    "name": "getTaskPaymentStrategyAndSubtitles",
+    "name": "getItem",
     "outputs": [
       {
-        "internalType": "uint8",
+        "components": [
+          {
+            "internalType": "enum DataTypes.ItemState",
+            "name": "state",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint256",
+            "name": "taskId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address[]",
+            "name": "supporters",
+            "type": "address[]"
+          },
+          {
+            "internalType": "address[]",
+            "name": "opponents",
+            "type": "address[]"
+          },
+          {
+            "internalType": "uint256",
+            "name": "stateChangeTime",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct DataTypes.ItemStruct",
         "name": "",
-        "type": "uint8"
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "itemId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getItemAuditData",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       },
       {
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "itemId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getItemCustomModuleOfTask",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "taskId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getPlatformAddressByTaskId",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "note",
+        "type": "string"
+      }
+    ],
+    "name": "getRequiresIdByNote",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "requireId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getRequiresNoteById",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "taskId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getTaskItemsState",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "taskId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getTaskSettlementData",
+    "outputs": [
+      {
+        "internalType": "enum DataTypes.SettlementType",
+        "name": "",
+        "type": "uint8"
+      },
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "taskId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getTaskSettlementModuleAndItems",
+    "outputs": [
+      {
+        "internalType": "enum DataTypes.SettlementType",
+        "name": "",
+        "type": "uint8"
       },
       {
         "internalType": "uint256[]",
@@ -855,11 +345,11 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "usr",
+        "name": "user",
         "type": "address"
       }
     ],
-    "name": "getUserBaseInfo",
+    "name": "getUserBaseData",
     "outputs": [
       {
         "internalType": "uint256",
@@ -879,7 +369,26 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "usr",
+        "name": "user",
+        "type": "address"
+      }
+    ],
+    "name": "getUserGuard",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "user",
         "type": "address"
       },
       {
@@ -907,36 +416,17 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "usr",
-        "type": "address"
-      }
-    ],
-    "name": "gutUserGuard",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
         "internalType": "uint256",
-        "name": "id",
+        "name": "itemId",
         "type": "uint256"
       },
       {
-        "internalType": "uint8",
+        "internalType": "enum DataTypes.ItemState",
         "name": "state",
         "type": "uint8"
       }
     ],
-    "name": "holdSubtitleStateByDAO",
+    "name": "holdItemStateByDAO",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -962,12 +452,12 @@
   },
   {
     "inputs": [],
-    "name": "lockUpTime",
+    "name": "moduleGlobal",
     "outputs": [
       {
-        "internalType": "uint256",
+        "internalType": "address",
         "name": "",
-        "type": "uint256"
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -1000,38 +490,73 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "platforms",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "platform",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "to",
-        "type": "address"
-      },
+        "components": [
+          {
+            "internalType": "address",
+            "name": "platform",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "sourceId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "requireId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "source",
+            "type": "string"
+          },
+          {
+            "internalType": "enum DataTypes.SettlementType",
+            "name": "settlement",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "currency",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "auditModule",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "detectionModule",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "deadline",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct DataTypes.PostTaskData",
+        "name": "vars",
+        "type": "tuple"
+      }
+    ],
+    "name": "postTask",
+    "outputs": [
       {
         "internalType": "uint256",
-        "name": "amount",
+        "name": "",
         "type": "uint256"
       }
     ],
-    "name": "preDivide",
-    "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
@@ -1053,168 +578,7 @@
         "type": "uint256"
       }
     ],
-    "name": "preDivideBatch",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "taskId",
-        "type": "uint256"
-      }
-    ],
-    "name": "preExtract0",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "videoId",
-        "type": "uint256"
-      }
-    ],
-    "name": "preExtractOther",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "string[]",
-        "name": "language",
-        "type": "string[]"
-      }
-    ],
-    "name": "registerLanguage",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "taskId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "resetApplication",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint8",
-        "name": "note",
-        "type": "uint8"
-      },
-      {
-        "internalType": "address",
-        "name": "addr",
-        "type": "address"
-      }
-    ],
-    "name": "setComponentsAddress",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint16",
-        "name": "rate",
-        "type": "uint16"
-      }
-    ],
-    "name": "setFee",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "guard",
-        "type": "address"
-      }
-    ],
-    "name": "setGuard",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "time",
-        "type": "uint256"
-      }
-    ],
-    "name": "setLockUpTime",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint8",
-        "name": "note",
-        "type": "uint8"
-      },
-      {
-        "internalType": "address",
-        "name": "addr",
-        "type": "address"
-      }
-    ],
-    "name": "setNormalStrategy",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint8",
-        "name": "strategyId",
-        "type": "uint8"
-      },
-      {
-        "internalType": "address",
-        "name": "strategy",
-        "type": "address"
-      },
-      {
-        "internalType": "string",
-        "name": "note",
-        "type": "string"
-      }
-    ],
-    "name": "setSettlementStrategy",
+    "name": "preDivideBatchBySettlementModule",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -1227,37 +591,132 @@
         "type": "address"
       },
       {
-        "internalType": "uint256",
-        "name": "videoId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint8",
-        "name": "strategy",
-        "type": "uint8"
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
       },
       {
         "internalType": "uint256",
         "name": "amount",
         "type": "uint256"
-      },
+      }
+    ],
+    "name": "preDivideBySettlementModule",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
       {
-        "internalType": "uint32",
-        "name": "language",
-        "type": "uint32"
-      },
+        "internalType": "string[]",
+        "name": "notes",
+        "type": "string[]"
+      }
+    ],
+    "name": "registerRequires",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
       {
         "internalType": "uint256",
-        "name": "deadline",
+        "name": "taskId",
         "type": "uint256"
       },
       {
-        "internalType": "string",
-        "name": "source",
-        "type": "string"
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
       }
     ],
-    "name": "submitApplication",
+    "name": "resetTask",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint8",
+        "name": "note",
+        "type": "uint8"
+      },
+      {
+        "internalType": "address",
+        "name": "addr",
+        "type": "address"
+      }
+    ],
+    "name": "setGlobalContract",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "old",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "replace",
+        "type": "address"
+      }
+    ],
+    "name": "setOperatorByTool",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "guard",
+        "type": "address"
+      }
+    ],
+    "name": "setUserGuard",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "taskId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "cid",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "requireId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "fingerprint",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct DataTypes.ItemMetadata",
+        "name": "vars",
+        "type": "tuple"
+      }
+    ],
+    "name": "submitItem",
     "outputs": [
       {
         "internalType": "uint256",
@@ -1266,19 +725,6 @@
       }
     ],
     "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "subtitleToken",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -1303,7 +749,12 @@
       },
       {
         "internalType": "uint256",
-        "name": "videoId",
+        "name": "boxId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "requireId",
         "type": "uint256"
       },
       {
@@ -1312,8 +763,8 @@
         "type": "string"
       },
       {
-        "internalType": "uint8",
-        "name": "strategy",
+        "internalType": "enum DataTypes.SettlementType",
+        "name": "settlement",
         "type": "uint8"
       },
       {
@@ -1322,9 +773,19 @@
         "type": "uint256"
       },
       {
-        "internalType": "uint32",
-        "name": "language",
-        "type": "uint32"
+        "internalType": "address",
+        "name": "currency",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "auditModule",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "detectionModule",
+        "type": "address"
       },
       {
         "internalType": "uint256",
@@ -1382,29 +843,6 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "taskId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "plusAmount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "plusTime",
-        "type": "uint256"
-      }
-    ],
-    "name": "updateApplication",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
         "internalType": "address",
         "name": "platform",
         "type": "address"
@@ -1421,7 +859,7 @@
       },
       {
         "internalType": "address",
-        "name": "usr",
+        "name": "user",
         "type": "address"
       }
     ],
@@ -1439,16 +877,16 @@
       },
       {
         "internalType": "uint256",
-        "name": "counts",
+        "name": "plusAmount",
         "type": "uint256"
       },
       {
-        "internalType": "uint16",
-        "name": "rateCountsToProfit",
-        "type": "uint16"
+        "internalType": "uint256",
+        "name": "plusTime",
+        "type": "uint256"
       }
     ],
-    "name": "updateUsageCounts",
+    "name": "updateTask",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -1457,7 +895,7 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "usr",
+        "name": "user",
         "type": "address"
       },
       {
@@ -1471,7 +909,7 @@
         "type": "int256"
       }
     ],
-    "name": "updaterUser",
+    "name": "updateUser",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -1479,92 +917,19 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "taskId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "string",
-        "name": "cid",
-        "type": "string"
-      },
-      {
-        "internalType": "uint32",
-        "name": "languageId",
-        "type": "uint32"
-      },
-      {
-        "internalType": "uint256",
-        "name": "fingerprint",
-        "type": "uint256"
-      }
-    ],
-    "name": "uploadSubtitle",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
         "internalType": "address",
-        "name": "usr",
+        "name": "user",
         "type": "address"
       },
       {
         "internalType": "uint256",
-        "name": "deposit_",
+        "name": "deposit",
         "type": "uint256"
       }
     ],
     "name": "userJoin",
     "outputs": [],
     "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "vault",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "versionManagement",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "videoToken",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -1602,19 +967,6 @@
     "name": "withdrawDeposit",
     "outputs": [],
     "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "zimuToken",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
     "type": "function"
   }
 ]

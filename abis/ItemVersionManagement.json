@@ -1,0 +1,175 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "ms",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "inputs": [],
+    "name": "Murmes",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "itemId",
+        "type": "uint256"
+      }
+    ],
+    "name": "deleteInvaildItem",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "itemId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getAllVersion",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "itemId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getLatestValidVersion",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "itemId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "versionId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getSpecifyVersion",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "source",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "fingerprint",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "invalid",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct DataTypes.VersionStruct",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "itemId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "versionId",
+        "type": "uint256"
+      }
+    ],
+    "name": "reportInvalidVersion",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "itemId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "fingerprint",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "source",
+        "type": "string"
+      }
+    ],
+    "name": "updateItemVersion",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]

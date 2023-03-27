@@ -1,12 +1,11 @@
 type Dashboard @entity {
   id: ID!
-  applicationCount: BigInt!
-  subtitleCount: BigInt!
-  languageCount: Int!
+  taskCount: BigInt!
+  itemCount: BigInt!
+  requireCount: Int!
   platformCount: BigInt!
-  videoCount: BigInt!
+  boxCount: BigInt!
   userCount: BigInt!
-  settlementStrategyCount: Int!
   dayData: [DayData!] @derivedFrom(field: "dashboard")
 }
 
@@ -14,26 +13,29 @@ type DayData @entity {
   id: ID!
   dashboard: Dashboard!
   day: Int!
-  applicationCount: BigInt!
-  subtitleCount: BigInt!
+  taskCount: BigInt!
+  itemCount: BigInt!
   platformCount: BigInt!
-  videoCount: BigInt!
+  boxCount: BigInt!
   userCount: BigInt!
 }
 
-type Application @entity {
+type Task @entity {
   id: ID!
   applicant: User!
-  video: Video!
-  strategy: SettlementStrategy!
+  box: Box!
+  strategy: SettlementType!
+  currency: Bytes!
+  auditModule: Bytes!
+  detectionModule: Bytes!
   amount: BigInt!
-  language: Language!
+  requires: Require!
   start: Int!
   deadline: BigInt!
   source: String!
-  subtitleCount: BigInt!
-  subtitles: [Subtitle!] @derivedFrom(field: "application")
-  adopted: Subtitle
+  itemCount: BigInt!
+  items: [Item!] @derivedFrom(field: "task")
+  adopted: Item
   txHash: Bytes
 }
 
@@ -42,19 +44,20 @@ type User @entity {
   time: Int!
   reputation: BigInt!
   deposit: BigInt!
-  applicationCount: BigInt!
-  makeSubtitleCount: BigInt!
-  ownSubtitleCount: BigInt!
+  taskCount: BigInt!
+  makeItemCount: BigInt!
+  ownItemCount: BigInt!
   auditCount: BigInt!
   adoptedCount: BigInt!
-  rewards: [Reward!] @derivedFrom(field: "user")
-  applications: [Application!] @derivedFrom(field: "applicant")
-  subtitlesMaker: [Subtitle!] @derivedFrom(field: "maker")
-  subtitlesOwner: [Subtitle!] @derivedFrom(field: "owner")
+  guard: Bytes
+  revenues: [Revenue!] @derivedFrom(field: "user")
+  tasks: [Task!] @derivedFrom(field: "applicant")
+  itemsMaker: [Item!] @derivedFrom(field: "maker")
+  itemsOwner: [Item!] @derivedFrom(field: "owner")
   audits: [Audit!] @derivedFrom(field: "auditor")
 }
 
-type Reward @entity {
+type Revenue @entity {
   id: ID!
   day: BigInt!
   user: User!
@@ -63,33 +66,36 @@ type Reward @entity {
   extracted: BigInt!
 }
 
-type SettlementStrategy @entity {
-  id: ID!
-  address: Bytes!
-  notes: String!
-}
-
-type Language @entity {
+type Require @entity {
   id: ID!
   notes: String!
-  applications: [Application!] @derivedFrom(field: "language")
-  subtitles: [Subtitle!] @derivedFrom(field: "language")
+  tasks: [Task!] @derivedFrom(field: "requires")
+  items: [Item!] @derivedFrom(field: "requires")
 }
 
-type Subtitle @entity {
+type Item @entity {
   id: ID!
   maker: User!
   owner: User!
   time: Int!
-  application: Application!
-  language: Language!
+  task: Task!
+  requires: Require!
   cid: String!
   fingerprint: BigInt!
-  state: SubtitleState!
+  state: ItemState!
   supporterCount: BigInt!
-  dissenterCount: BigInt!
+  opponentCount: BigInt!
+  audits: [Audit!] @derivedFrom(field: "item")
+  versions: [Version!] @derivedFrom(field: "item")
   txHash: Bytes
-  audits: [Audit!] @derivedFrom(field: "subtitle")
+}
+
+type Version @entity {
+  id: ID!
+  item: Item!
+  cid: String!
+  vaild: Boolean!
+  fingerprint: BigInt!
 }
 
 type Platform @entity {
@@ -97,34 +103,35 @@ type Platform @entity {
   name: String!
   symbol: String!
   time: Int!
+  authorityModule: Bytes
   platformId: BigInt!
-  videoCount: BigInt!
+  boxCount: BigInt!
   rateCountsToProfit: Int!
   rateAuditorDivide: Int!
-  videos: [Video!] @derivedFrom(field: "platform")
+  boxs: [Box!] @derivedFrom(field: "platform")
 }
 
-type Video @entity {
+type Box @entity {
   id: ID!
   platform: Platform!
   realId: BigInt!
   orderId: BigInt!
   creator: User!
   time: Int!
-  applicationCount: BigInt!
-  applications: [Application!] @derivedFrom(field: "video")
+  taskCount: BigInt!
+  tasks: [Task!] @derivedFrom(field: "box")
 }
 
 type Audit @entity {
   id: ID!
   time: Int!
   auditor: User!
-  subtitle: Subtitle!
+  item: Item!
   attitude: AuditAttitude!
   txHash: Bytes
 }
 
-enum SubtitleState {
+enum ItemState {
   NORMAL
   ADOPTED
   DELETED
@@ -132,5 +139,11 @@ enum SubtitleState {
 
 enum AuditAttitude {
   SUPPORT
-  OPPOSITION
+  OPPOSE
+}
+
+enum SettlementType {
+  ONETIME
+  DIVIDEND
+  ONETIME_MORTGAGE
 }

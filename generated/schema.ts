@@ -42,31 +42,31 @@ export class Dashboard extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get applicationCount(): BigInt {
-    let value = this.get("applicationCount");
+  get taskCount(): BigInt {
+    let value = this.get("taskCount");
     return value!.toBigInt();
   }
 
-  set applicationCount(value: BigInt) {
-    this.set("applicationCount", Value.fromBigInt(value));
+  set taskCount(value: BigInt) {
+    this.set("taskCount", Value.fromBigInt(value));
   }
 
-  get subtitleCount(): BigInt {
-    let value = this.get("subtitleCount");
+  get itemCount(): BigInt {
+    let value = this.get("itemCount");
     return value!.toBigInt();
   }
 
-  set subtitleCount(value: BigInt) {
-    this.set("subtitleCount", Value.fromBigInt(value));
+  set itemCount(value: BigInt) {
+    this.set("itemCount", Value.fromBigInt(value));
   }
 
-  get languageCount(): i32 {
-    let value = this.get("languageCount");
+  get requireCount(): i32 {
+    let value = this.get("requireCount");
     return value!.toI32();
   }
 
-  set languageCount(value: i32) {
-    this.set("languageCount", Value.fromI32(value));
+  set requireCount(value: i32) {
+    this.set("requireCount", Value.fromI32(value));
   }
 
   get platformCount(): BigInt {
@@ -78,13 +78,13 @@ export class Dashboard extends Entity {
     this.set("platformCount", Value.fromBigInt(value));
   }
 
-  get videoCount(): BigInt {
-    let value = this.get("videoCount");
+  get boxCount(): BigInt {
+    let value = this.get("boxCount");
     return value!.toBigInt();
   }
 
-  set videoCount(value: BigInt) {
-    this.set("videoCount", Value.fromBigInt(value));
+  set boxCount(value: BigInt) {
+    this.set("boxCount", Value.fromBigInt(value));
   }
 
   get userCount(): BigInt {
@@ -94,15 +94,6 @@ export class Dashboard extends Entity {
 
   set userCount(value: BigInt) {
     this.set("userCount", Value.fromBigInt(value));
-  }
-
-  get settlementStrategyCount(): i32 {
-    let value = this.get("settlementStrategyCount");
-    return value!.toI32();
-  }
-
-  set settlementStrategyCount(value: i32) {
-    this.set("settlementStrategyCount", Value.fromI32(value));
   }
 
   get dayData(): Array<string> | null {
@@ -172,22 +163,22 @@ export class DayData extends Entity {
     this.set("day", Value.fromI32(value));
   }
 
-  get applicationCount(): BigInt {
-    let value = this.get("applicationCount");
+  get taskCount(): BigInt {
+    let value = this.get("taskCount");
     return value!.toBigInt();
   }
 
-  set applicationCount(value: BigInt) {
-    this.set("applicationCount", Value.fromBigInt(value));
+  set taskCount(value: BigInt) {
+    this.set("taskCount", Value.fromBigInt(value));
   }
 
-  get subtitleCount(): BigInt {
-    let value = this.get("subtitleCount");
+  get itemCount(): BigInt {
+    let value = this.get("itemCount");
     return value!.toBigInt();
   }
 
-  set subtitleCount(value: BigInt) {
-    this.set("subtitleCount", Value.fromBigInt(value));
+  set itemCount(value: BigInt) {
+    this.set("itemCount", Value.fromBigInt(value));
   }
 
   get platformCount(): BigInt {
@@ -199,13 +190,13 @@ export class DayData extends Entity {
     this.set("platformCount", Value.fromBigInt(value));
   }
 
-  get videoCount(): BigInt {
-    let value = this.get("videoCount");
+  get boxCount(): BigInt {
+    let value = this.get("boxCount");
     return value!.toBigInt();
   }
 
-  set videoCount(value: BigInt) {
-    this.set("videoCount", Value.fromBigInt(value));
+  set boxCount(value: BigInt) {
+    this.set("boxCount", Value.fromBigInt(value));
   }
 
   get userCount(): BigInt {
@@ -218,7 +209,7 @@ export class DayData extends Entity {
   }
 }
 
-export class Application extends Entity {
+export class Task extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -226,18 +217,18 @@ export class Application extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id != null, "Cannot save Application entity without an ID");
+    assert(id != null, "Cannot save Task entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.STRING,
-        `Entities of type Application must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type Task must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
       );
-      store.set("Application", id.toString(), this);
+      store.set("Task", id.toString(), this);
     }
   }
 
-  static load(id: string): Application | null {
-    return changetype<Application | null>(store.get("Application", id));
+  static load(id: string): Task | null {
+    return changetype<Task | null>(store.get("Task", id));
   }
 
   get id(): string {
@@ -258,13 +249,13 @@ export class Application extends Entity {
     this.set("applicant", Value.fromString(value));
   }
 
-  get video(): string {
-    let value = this.get("video");
+  get box(): string {
+    let value = this.get("box");
     return value!.toString();
   }
 
-  set video(value: string) {
-    this.set("video", Value.fromString(value));
+  set box(value: string) {
+    this.set("box", Value.fromString(value));
   }
 
   get strategy(): string {
@@ -276,6 +267,33 @@ export class Application extends Entity {
     this.set("strategy", Value.fromString(value));
   }
 
+  get currency(): Bytes {
+    let value = this.get("currency");
+    return value!.toBytes();
+  }
+
+  set currency(value: Bytes) {
+    this.set("currency", Value.fromBytes(value));
+  }
+
+  get auditModule(): Bytes {
+    let value = this.get("auditModule");
+    return value!.toBytes();
+  }
+
+  set auditModule(value: Bytes) {
+    this.set("auditModule", Value.fromBytes(value));
+  }
+
+  get detectionModule(): Bytes {
+    let value = this.get("detectionModule");
+    return value!.toBytes();
+  }
+
+  set detectionModule(value: Bytes) {
+    this.set("detectionModule", Value.fromBytes(value));
+  }
+
   get amount(): BigInt {
     let value = this.get("amount");
     return value!.toBigInt();
@@ -285,13 +303,13 @@ export class Application extends Entity {
     this.set("amount", Value.fromBigInt(value));
   }
 
-  get language(): string {
-    let value = this.get("language");
+  get requires(): string {
+    let value = this.get("requires");
     return value!.toString();
   }
 
-  set language(value: string) {
-    this.set("language", Value.fromString(value));
+  set requires(value: string) {
+    this.set("requires", Value.fromString(value));
   }
 
   get start(): i32 {
@@ -321,17 +339,17 @@ export class Application extends Entity {
     this.set("source", Value.fromString(value));
   }
 
-  get subtitleCount(): BigInt {
-    let value = this.get("subtitleCount");
+  get itemCount(): BigInt {
+    let value = this.get("itemCount");
     return value!.toBigInt();
   }
 
-  set subtitleCount(value: BigInt) {
-    this.set("subtitleCount", Value.fromBigInt(value));
+  set itemCount(value: BigInt) {
+    this.set("itemCount", Value.fromBigInt(value));
   }
 
-  get subtitles(): Array<string> | null {
-    let value = this.get("subtitles");
+  get items(): Array<string> | null {
+    let value = this.get("items");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
@@ -339,11 +357,11 @@ export class Application extends Entity {
     }
   }
 
-  set subtitles(value: Array<string> | null) {
+  set items(value: Array<string> | null) {
     if (!value) {
-      this.unset("subtitles");
+      this.unset("items");
     } else {
-      this.set("subtitles", Value.fromStringArray(<Array<string>>value));
+      this.set("items", Value.fromStringArray(<Array<string>>value));
     }
   }
 
@@ -440,31 +458,31 @@ export class User extends Entity {
     this.set("deposit", Value.fromBigInt(value));
   }
 
-  get applicationCount(): BigInt {
-    let value = this.get("applicationCount");
+  get taskCount(): BigInt {
+    let value = this.get("taskCount");
     return value!.toBigInt();
   }
 
-  set applicationCount(value: BigInt) {
-    this.set("applicationCount", Value.fromBigInt(value));
+  set taskCount(value: BigInt) {
+    this.set("taskCount", Value.fromBigInt(value));
   }
 
-  get makeSubtitleCount(): BigInt {
-    let value = this.get("makeSubtitleCount");
+  get makeItemCount(): BigInt {
+    let value = this.get("makeItemCount");
     return value!.toBigInt();
   }
 
-  set makeSubtitleCount(value: BigInt) {
-    this.set("makeSubtitleCount", Value.fromBigInt(value));
+  set makeItemCount(value: BigInt) {
+    this.set("makeItemCount", Value.fromBigInt(value));
   }
 
-  get ownSubtitleCount(): BigInt {
-    let value = this.get("ownSubtitleCount");
+  get ownItemCount(): BigInt {
+    let value = this.get("ownItemCount");
     return value!.toBigInt();
   }
 
-  set ownSubtitleCount(value: BigInt) {
-    this.set("ownSubtitleCount", Value.fromBigInt(value));
+  set ownItemCount(value: BigInt) {
+    this.set("ownItemCount", Value.fromBigInt(value));
   }
 
   get auditCount(): BigInt {
@@ -485,8 +503,25 @@ export class User extends Entity {
     this.set("adoptedCount", Value.fromBigInt(value));
   }
 
-  get rewards(): Array<string> | null {
-    let value = this.get("rewards");
+  get guard(): Bytes | null {
+    let value = this.get("guard");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set guard(value: Bytes | null) {
+    if (!value) {
+      this.unset("guard");
+    } else {
+      this.set("guard", Value.fromBytes(<Bytes>value));
+    }
+  }
+
+  get revenues(): Array<string> | null {
+    let value = this.get("revenues");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
@@ -494,16 +529,16 @@ export class User extends Entity {
     }
   }
 
-  set rewards(value: Array<string> | null) {
+  set revenues(value: Array<string> | null) {
     if (!value) {
-      this.unset("rewards");
+      this.unset("revenues");
     } else {
-      this.set("rewards", Value.fromStringArray(<Array<string>>value));
+      this.set("revenues", Value.fromStringArray(<Array<string>>value));
     }
   }
 
-  get applications(): Array<string> | null {
-    let value = this.get("applications");
+  get tasks(): Array<string> | null {
+    let value = this.get("tasks");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
@@ -511,16 +546,16 @@ export class User extends Entity {
     }
   }
 
-  set applications(value: Array<string> | null) {
+  set tasks(value: Array<string> | null) {
     if (!value) {
-      this.unset("applications");
+      this.unset("tasks");
     } else {
-      this.set("applications", Value.fromStringArray(<Array<string>>value));
+      this.set("tasks", Value.fromStringArray(<Array<string>>value));
     }
   }
 
-  get subtitlesMaker(): Array<string> | null {
-    let value = this.get("subtitlesMaker");
+  get itemsMaker(): Array<string> | null {
+    let value = this.get("itemsMaker");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
@@ -528,16 +563,16 @@ export class User extends Entity {
     }
   }
 
-  set subtitlesMaker(value: Array<string> | null) {
+  set itemsMaker(value: Array<string> | null) {
     if (!value) {
-      this.unset("subtitlesMaker");
+      this.unset("itemsMaker");
     } else {
-      this.set("subtitlesMaker", Value.fromStringArray(<Array<string>>value));
+      this.set("itemsMaker", Value.fromStringArray(<Array<string>>value));
     }
   }
 
-  get subtitlesOwner(): Array<string> | null {
-    let value = this.get("subtitlesOwner");
+  get itemsOwner(): Array<string> | null {
+    let value = this.get("itemsOwner");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
@@ -545,11 +580,11 @@ export class User extends Entity {
     }
   }
 
-  set subtitlesOwner(value: Array<string> | null) {
+  set itemsOwner(value: Array<string> | null) {
     if (!value) {
-      this.unset("subtitlesOwner");
+      this.unset("itemsOwner");
     } else {
-      this.set("subtitlesOwner", Value.fromStringArray(<Array<string>>value));
+      this.set("itemsOwner", Value.fromStringArray(<Array<string>>value));
     }
   }
 
@@ -571,7 +606,7 @@ export class User extends Entity {
   }
 }
 
-export class Reward extends Entity {
+export class Revenue extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -579,18 +614,18 @@ export class Reward extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id != null, "Cannot save Reward entity without an ID");
+    assert(id != null, "Cannot save Revenue entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.STRING,
-        `Entities of type Reward must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type Revenue must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
       );
-      store.set("Reward", id.toString(), this);
+      store.set("Revenue", id.toString(), this);
     }
   }
 
-  static load(id: string): Reward | null {
-    return changetype<Reward | null>(store.get("Reward", id));
+  static load(id: string): Revenue | null {
+    return changetype<Revenue | null>(store.get("Revenue", id));
   }
 
   get id(): string {
@@ -648,7 +683,7 @@ export class Reward extends Entity {
   }
 }
 
-export class SettlementStrategy extends Entity {
+export class Require extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -656,70 +691,18 @@ export class SettlementStrategy extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id != null, "Cannot save SettlementStrategy entity without an ID");
+    assert(id != null, "Cannot save Require entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.STRING,
-        `Entities of type SettlementStrategy must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type Require must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
       );
-      store.set("SettlementStrategy", id.toString(), this);
+      store.set("Require", id.toString(), this);
     }
   }
 
-  static load(id: string): SettlementStrategy | null {
-    return changetype<SettlementStrategy | null>(
-      store.get("SettlementStrategy", id)
-    );
-  }
-
-  get id(): string {
-    let value = this.get("id");
-    return value!.toString();
-  }
-
-  set id(value: string) {
-    this.set("id", Value.fromString(value));
-  }
-
-  get address(): Bytes {
-    let value = this.get("address");
-    return value!.toBytes();
-  }
-
-  set address(value: Bytes) {
-    this.set("address", Value.fromBytes(value));
-  }
-
-  get notes(): string {
-    let value = this.get("notes");
-    return value!.toString();
-  }
-
-  set notes(value: string) {
-    this.set("notes", Value.fromString(value));
-  }
-}
-
-export class Language extends Entity {
-  constructor(id: string) {
-    super();
-    this.set("id", Value.fromString(id));
-  }
-
-  save(): void {
-    let id = this.get("id");
-    assert(id != null, "Cannot save Language entity without an ID");
-    if (id) {
-      assert(
-        id.kind == ValueKind.STRING,
-        `Entities of type Language must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
-      );
-      store.set("Language", id.toString(), this);
-    }
-  }
-
-  static load(id: string): Language | null {
-    return changetype<Language | null>(store.get("Language", id));
+  static load(id: string): Require | null {
+    return changetype<Require | null>(store.get("Require", id));
   }
 
   get id(): string {
@@ -740,8 +723,8 @@ export class Language extends Entity {
     this.set("notes", Value.fromString(value));
   }
 
-  get applications(): Array<string> | null {
-    let value = this.get("applications");
+  get tasks(): Array<string> | null {
+    let value = this.get("tasks");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
@@ -749,16 +732,16 @@ export class Language extends Entity {
     }
   }
 
-  set applications(value: Array<string> | null) {
+  set tasks(value: Array<string> | null) {
     if (!value) {
-      this.unset("applications");
+      this.unset("tasks");
     } else {
-      this.set("applications", Value.fromStringArray(<Array<string>>value));
+      this.set("tasks", Value.fromStringArray(<Array<string>>value));
     }
   }
 
-  get subtitles(): Array<string> | null {
-    let value = this.get("subtitles");
+  get items(): Array<string> | null {
+    let value = this.get("items");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
@@ -766,16 +749,16 @@ export class Language extends Entity {
     }
   }
 
-  set subtitles(value: Array<string> | null) {
+  set items(value: Array<string> | null) {
     if (!value) {
-      this.unset("subtitles");
+      this.unset("items");
     } else {
-      this.set("subtitles", Value.fromStringArray(<Array<string>>value));
+      this.set("items", Value.fromStringArray(<Array<string>>value));
     }
   }
 }
 
-export class Subtitle extends Entity {
+export class Item extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -783,18 +766,18 @@ export class Subtitle extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id != null, "Cannot save Subtitle entity without an ID");
+    assert(id != null, "Cannot save Item entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.STRING,
-        `Entities of type Subtitle must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type Item must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
       );
-      store.set("Subtitle", id.toString(), this);
+      store.set("Item", id.toString(), this);
     }
   }
 
-  static load(id: string): Subtitle | null {
-    return changetype<Subtitle | null>(store.get("Subtitle", id));
+  static load(id: string): Item | null {
+    return changetype<Item | null>(store.get("Item", id));
   }
 
   get id(): string {
@@ -833,22 +816,22 @@ export class Subtitle extends Entity {
     this.set("time", Value.fromI32(value));
   }
 
-  get application(): string {
-    let value = this.get("application");
+  get task(): string {
+    let value = this.get("task");
     return value!.toString();
   }
 
-  set application(value: string) {
-    this.set("application", Value.fromString(value));
+  set task(value: string) {
+    this.set("task", Value.fromString(value));
   }
 
-  get language(): string {
-    let value = this.get("language");
+  get requires(): string {
+    let value = this.get("requires");
     return value!.toString();
   }
 
-  set language(value: string) {
-    this.set("language", Value.fromString(value));
+  set requires(value: string) {
+    this.set("requires", Value.fromString(value));
   }
 
   get cid(): string {
@@ -887,13 +870,47 @@ export class Subtitle extends Entity {
     this.set("supporterCount", Value.fromBigInt(value));
   }
 
-  get dissenterCount(): BigInt {
-    let value = this.get("dissenterCount");
+  get opponentCount(): BigInt {
+    let value = this.get("opponentCount");
     return value!.toBigInt();
   }
 
-  set dissenterCount(value: BigInt) {
-    this.set("dissenterCount", Value.fromBigInt(value));
+  set opponentCount(value: BigInt) {
+    this.set("opponentCount", Value.fromBigInt(value));
+  }
+
+  get audits(): Array<string> | null {
+    let value = this.get("audits");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set audits(value: Array<string> | null) {
+    if (!value) {
+      this.unset("audits");
+    } else {
+      this.set("audits", Value.fromStringArray(<Array<string>>value));
+    }
+  }
+
+  get versions(): Array<string> | null {
+    let value = this.get("versions");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set versions(value: Array<string> | null) {
+    if (!value) {
+      this.unset("versions");
+    } else {
+      this.set("versions", Value.fromStringArray(<Array<string>>value));
+    }
   }
 
   get txHash(): Bytes | null {
@@ -912,22 +929,73 @@ export class Subtitle extends Entity {
       this.set("txHash", Value.fromBytes(<Bytes>value));
     }
   }
+}
 
-  get audits(): Array<string> | null {
-    let value = this.get("audits");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toStringArray();
+export class Version extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Version entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type Version must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("Version", id.toString(), this);
     }
   }
 
-  set audits(value: Array<string> | null) {
-    if (!value) {
-      this.unset("audits");
-    } else {
-      this.set("audits", Value.fromStringArray(<Array<string>>value));
-    }
+  static load(id: string): Version | null {
+    return changetype<Version | null>(store.get("Version", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get item(): string {
+    let value = this.get("item");
+    return value!.toString();
+  }
+
+  set item(value: string) {
+    this.set("item", Value.fromString(value));
+  }
+
+  get cid(): string {
+    let value = this.get("cid");
+    return value!.toString();
+  }
+
+  set cid(value: string) {
+    this.set("cid", Value.fromString(value));
+  }
+
+  get vaild(): boolean {
+    let value = this.get("vaild");
+    return value!.toBoolean();
+  }
+
+  set vaild(value: boolean) {
+    this.set("vaild", Value.fromBoolean(value));
+  }
+
+  get fingerprint(): BigInt {
+    let value = this.get("fingerprint");
+    return value!.toBigInt();
+  }
+
+  set fingerprint(value: BigInt) {
+    this.set("fingerprint", Value.fromBigInt(value));
   }
 }
 
@@ -989,6 +1057,23 @@ export class Platform extends Entity {
     this.set("time", Value.fromI32(value));
   }
 
+  get authorityModule(): Bytes | null {
+    let value = this.get("authorityModule");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set authorityModule(value: Bytes | null) {
+    if (!value) {
+      this.unset("authorityModule");
+    } else {
+      this.set("authorityModule", Value.fromBytes(<Bytes>value));
+    }
+  }
+
   get platformId(): BigInt {
     let value = this.get("platformId");
     return value!.toBigInt();
@@ -998,13 +1083,13 @@ export class Platform extends Entity {
     this.set("platformId", Value.fromBigInt(value));
   }
 
-  get videoCount(): BigInt {
-    let value = this.get("videoCount");
+  get boxCount(): BigInt {
+    let value = this.get("boxCount");
     return value!.toBigInt();
   }
 
-  set videoCount(value: BigInt) {
-    this.set("videoCount", Value.fromBigInt(value));
+  set boxCount(value: BigInt) {
+    this.set("boxCount", Value.fromBigInt(value));
   }
 
   get rateCountsToProfit(): i32 {
@@ -1025,8 +1110,8 @@ export class Platform extends Entity {
     this.set("rateAuditorDivide", Value.fromI32(value));
   }
 
-  get videos(): Array<string> | null {
-    let value = this.get("videos");
+  get boxs(): Array<string> | null {
+    let value = this.get("boxs");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
@@ -1034,16 +1119,16 @@ export class Platform extends Entity {
     }
   }
 
-  set videos(value: Array<string> | null) {
+  set boxs(value: Array<string> | null) {
     if (!value) {
-      this.unset("videos");
+      this.unset("boxs");
     } else {
-      this.set("videos", Value.fromStringArray(<Array<string>>value));
+      this.set("boxs", Value.fromStringArray(<Array<string>>value));
     }
   }
 }
 
-export class Video extends Entity {
+export class Box extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -1051,18 +1136,18 @@ export class Video extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id != null, "Cannot save Video entity without an ID");
+    assert(id != null, "Cannot save Box entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.STRING,
-        `Entities of type Video must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type Box must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
       );
-      store.set("Video", id.toString(), this);
+      store.set("Box", id.toString(), this);
     }
   }
 
-  static load(id: string): Video | null {
-    return changetype<Video | null>(store.get("Video", id));
+  static load(id: string): Box | null {
+    return changetype<Box | null>(store.get("Box", id));
   }
 
   get id(): string {
@@ -1119,17 +1204,17 @@ export class Video extends Entity {
     this.set("time", Value.fromI32(value));
   }
 
-  get applicationCount(): BigInt {
-    let value = this.get("applicationCount");
+  get taskCount(): BigInt {
+    let value = this.get("taskCount");
     return value!.toBigInt();
   }
 
-  set applicationCount(value: BigInt) {
-    this.set("applicationCount", Value.fromBigInt(value));
+  set taskCount(value: BigInt) {
+    this.set("taskCount", Value.fromBigInt(value));
   }
 
-  get applications(): Array<string> | null {
-    let value = this.get("applications");
+  get tasks(): Array<string> | null {
+    let value = this.get("tasks");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
@@ -1137,11 +1222,11 @@ export class Video extends Entity {
     }
   }
 
-  set applications(value: Array<string> | null) {
+  set tasks(value: Array<string> | null) {
     if (!value) {
-      this.unset("applications");
+      this.unset("tasks");
     } else {
-      this.set("applications", Value.fromStringArray(<Array<string>>value));
+      this.set("tasks", Value.fromStringArray(<Array<string>>value));
     }
   }
 }
@@ -1195,13 +1280,13 @@ export class Audit extends Entity {
     this.set("auditor", Value.fromString(value));
   }
 
-  get subtitle(): string {
-    let value = this.get("subtitle");
+  get item(): string {
+    let value = this.get("item");
     return value!.toString();
   }
 
-  set subtitle(value: string) {
-    this.set("subtitle", Value.fromString(value));
+  set item(value: string) {
+    this.set("item", Value.fromString(value));
   }
 
   get attitude(): string {

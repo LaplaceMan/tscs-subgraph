@@ -5,11 +5,6 @@
         "internalType": "address",
         "name": "ms",
         "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
       }
     ],
     "stateMutability": "nonpayable",
@@ -23,12 +18,6 @@
         "internalType": "address",
         "name": "platform",
         "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "id",
-        "type": "uint256"
       },
       {
         "indexed": false,
@@ -53,121 +42,15 @@
         "internalType": "uint16",
         "name": "rate2",
         "type": "uint16"
-      }
-    ],
-    "name": "PlatformJoin",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "platform",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint16",
-        "name": "rate1",
-        "type": "uint16"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint16",
-        "name": "rate2",
-        "type": "uint16"
-      }
-    ],
-    "name": "PlatformSetRate",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "oldToken",
-        "type": "address"
       },
       {
         "indexed": false,
         "internalType": "address",
-        "name": "newToken",
+        "name": "authority",
         "type": "address"
       }
     ],
-    "name": "PlatformSetTokenGlobal",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "platform",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256[]",
-        "name": "id",
-        "type": "uint256[]"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256[]",
-        "name": "counts",
-        "type": "uint256[]"
-      }
-    ],
-    "name": "VideoCountsUpdate",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "platform",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "realId",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "id",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "symbol",
-        "type": "string"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "creator",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "initializeView",
-        "type": "uint256"
-      }
-    ],
-    "name": "VideoCreate",
+    "name": "RegisterPlatform",
     "type": "event"
   },
   {
@@ -186,9 +69,14 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "id",
-        "type": "uint256"
+        "internalType": "address",
+        "name": "platform",
+        "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
       },
       {
         "internalType": "string",
@@ -196,22 +84,22 @@
         "type": "string"
       },
       {
-        "internalType": "address",
-        "name": "creator",
-        "type": "address"
+        "internalType": "uint16",
+        "name": "rate1",
+        "type": "uint16"
       },
       {
-        "internalType": "uint256",
-        "name": "initialize",
-        "type": "uint256"
+        "internalType": "uint16",
+        "name": "rate2",
+        "type": "uint16"
       },
       {
         "internalType": "address",
-        "name": "from",
+        "name": "authority",
         "type": "address"
       }
     ],
-    "name": "createVideo",
+    "name": "addPlatform",
     "outputs": [
       {
         "internalType": "uint256",
@@ -225,37 +113,186 @@
   {
     "inputs": [
       {
+        "internalType": "uint256",
+        "name": "realId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "platform",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "creator",
+        "type": "address"
+      }
+    ],
+    "name": "createBox",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "boxId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getBox",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "platform",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "id",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "creator",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "unsettled",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256[]",
+            "name": "tasks",
+            "type": "uint256[]"
+          }
+        ],
+        "internalType": "struct DataTypes.BoxStruct",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "platfrom",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "realId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getBoxOrderIdByRealId",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "boxId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getBoxTasks",
+    "outputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "",
+        "type": "uint256[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "address",
         "name": "platform",
         "type": "address"
       }
     ],
-    "name": "getPlatformBaseInfo",
+    "name": "getPlatform",
     "outputs": [
       {
-        "internalType": "string",
+        "components": [
+          {
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "symbol",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "platformId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint16",
+            "name": "rateCountsToProfit",
+            "type": "uint16"
+          },
+          {
+            "internalType": "uint16",
+            "name": "rateAuditorDivide",
+            "type": "uint16"
+          },
+          {
+            "internalType": "address",
+            "name": "authorityModule",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct DataTypes.PlatformStruct",
         "name": "",
-        "type": "string"
-      },
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
       {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      },
+        "internalType": "address",
+        "name": "platform",
+        "type": "address"
+      }
+    ],
+    "name": "getPlatformAuthorityModule",
+    "outputs": [
       {
-        "internalType": "uint256",
+        "internalType": "address",
         "name": "",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint16",
-        "name": "",
-        "type": "uint16"
-      },
-      {
-        "internalType": "uint16",
-        "name": "",
-        "type": "uint16"
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -283,136 +320,25 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "videoId",
-        "type": "uint256"
+        "internalType": "address",
+        "name": "platform",
+        "type": "address"
       }
     ],
-    "name": "getVideoBaseInfo",
+    "name": "getPlatformRate",
     "outputs": [
       {
-        "internalType": "address",
+        "internalType": "uint16",
         "name": "",
-        "type": "address"
+        "type": "uint16"
       },
       {
-        "internalType": "uint256",
+        "internalType": "uint16",
         "name": "",
-        "type": "uint256"
-      },
-      {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      },
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256[]",
-        "name": "",
-        "type": "uint256[]"
+        "type": "uint16"
       }
     ],
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "platfrom",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "realId",
-        "type": "uint256"
-      }
-    ],
-    "name": "getVideoOrderIdByRealId",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint16",
-        "name": "rate1",
-        "type": "uint16"
-      },
-      {
-        "internalType": "uint16",
-        "name": "rate2",
-        "type": "uint16"
-      }
-    ],
-    "name": "platformRate",
-    "outputs": [
-      {
-        "internalType": "uint16",
-        "name": "",
-        "type": "uint16"
-      },
-      {
-        "internalType": "uint16",
-        "name": "",
-        "type": "uint16"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "platfrom",
-        "type": "address"
-      },
-      {
-        "internalType": "string",
-        "name": "name",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "symbol",
-        "type": "string"
-      },
-      {
-        "internalType": "uint16",
-        "name": "rate1",
-        "type": "uint16"
-      },
-      {
-        "internalType": "uint16",
-        "name": "rate2",
-        "type": "uint16"
-      }
-    ],
-    "name": "platfromJoin",
-    "outputs": [],
-    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -432,23 +358,41 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "token",
+        "name": "newModule",
         "type": "address"
       }
     ],
-    "name": "setTokenGlobal",
+    "name": "setMurmesAuthorityModule",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint16",
+        "name": "rate1",
+        "type": "uint16"
+      },
+      {
+        "internalType": "uint16",
+        "name": "rate2",
+        "type": "uint16"
+      }
+    ],
+    "name": "setPlatformRate",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [],
-    "name": "tokenGlobal",
+    "name": "totalBoxes",
     "outputs": [
       {
-        "internalType": "address",
+        "internalType": "uint256",
         "name": "",
-        "type": "address"
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -468,23 +412,10 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "totalVideos",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "videoId",
+        "name": "boxId",
         "type": "uint256"
       },
       {
@@ -493,7 +424,7 @@
         "type": "uint256[]"
       }
     ],
-    "name": "updateVideoTasks",
+    "name": "updateBoxTasksByMurmes",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -502,7 +433,7 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "videoId",
+        "name": "boxId",
         "type": "uint256"
       },
       {
@@ -511,7 +442,7 @@
         "type": "int256"
       }
     ],
-    "name": "updateVideoUnsettled",
+    "name": "updateBoxUnsettledRevenueByMurmes",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -520,16 +451,16 @@
     "inputs": [
       {
         "internalType": "uint256[]",
-        "name": "id",
+        "name": "ids",
         "type": "uint256[]"
       },
       {
         "internalType": "uint256[]",
-        "name": "vs",
+        "name": "amounts",
         "type": "uint256[]"
       }
     ],
-    "name": "updateViewCounts",
+    "name": "updateBoxesRevenue",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
