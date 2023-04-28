@@ -25,7 +25,7 @@ type Task @entity {
   applicant: User!
   box: Box!
   strategy: SettlementType!
-  currency: Bytes!
+  currency: WhitelistedToken!
   auditModule: Bytes!
   detectionModule: Bytes!
   amount: BigInt!
@@ -36,6 +36,7 @@ type Task @entity {
   itemCount: BigInt!
   items: [Item!] @derivedFrom(field: "task")
   adopted: Item
+  state: TaskState
   txHash: Bytes
 }
 
@@ -131,6 +132,13 @@ type Audit @entity {
   txHash: Bytes
 }
 
+type WhitelistedToken @entity {
+  id: ID!
+  name: String!
+  symbol: String!
+  decimal: Int!
+}
+
 enum ItemState {
   NORMAL
   ADOPTED
@@ -143,7 +151,13 @@ enum AuditAttitude {
 }
 
 enum SettlementType {
-  ONETIME
-  DIVIDEND
-  ONETIME_MORTGAGE
+  OT0
+  D1
+  OTM2
+}
+
+enum TaskState {
+  ONGOING
+  FINISHED
+  CANCELLED
 }

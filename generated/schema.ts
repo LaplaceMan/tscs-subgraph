@@ -267,13 +267,13 @@ export class Task extends Entity {
     this.set("strategy", Value.fromString(value));
   }
 
-  get currency(): Bytes {
+  get currency(): string {
     let value = this.get("currency");
-    return value!.toBytes();
+    return value!.toString();
   }
 
-  set currency(value: Bytes) {
-    this.set("currency", Value.fromBytes(value));
+  set currency(value: string) {
+    this.set("currency", Value.fromString(value));
   }
 
   get auditModule(): Bytes {
@@ -379,6 +379,23 @@ export class Task extends Entity {
       this.unset("adopted");
     } else {
       this.set("adopted", Value.fromString(<string>value));
+    }
+  }
+
+  get state(): string | null {
+    let value = this.get("state");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set state(value: string | null) {
+    if (!value) {
+      this.unset("state");
+    } else {
+      this.set("state", Value.fromString(<string>value));
     }
   }
 
@@ -1313,5 +1330,66 @@ export class Audit extends Entity {
     } else {
       this.set("txHash", Value.fromBytes(<Bytes>value));
     }
+  }
+}
+
+export class WhitelistedToken extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save WhitelistedToken entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type WhitelistedToken must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("WhitelistedToken", id.toString(), this);
+    }
+  }
+
+  static load(id: string): WhitelistedToken | null {
+    return changetype<WhitelistedToken | null>(
+      store.get("WhitelistedToken", id)
+    );
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get name(): string {
+    let value = this.get("name");
+    return value!.toString();
+  }
+
+  set name(value: string) {
+    this.set("name", Value.fromString(value));
+  }
+
+  get symbol(): string {
+    let value = this.get("symbol");
+    return value!.toString();
+  }
+
+  set symbol(value: string) {
+    this.set("symbol", Value.fromString(value));
+  }
+
+  get decimal(): i32 {
+    let value = this.get("decimal");
+    return value!.toI32();
+  }
+
+  set decimal(value: i32) {
+    this.set("decimal", Value.fromI32(value));
   }
 }

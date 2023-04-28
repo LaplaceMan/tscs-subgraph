@@ -4,9 +4,9 @@ schema:
 dataSources:
   - kind: ethereum
     name: Murmes
-    network: mumbai
+    network: mainnet
     source:
-      address: "0x87042950BFCE9b365E3C1E21C5DD343Cb8AcDA95"
+      address: "0x5FbDB2315678afecb367f032d93F642f64180aa3"
       abi: Events
     mapping:
       kind: ethereum/events
@@ -19,6 +19,7 @@ dataSources:
         - Reward
         - Require
         - Item
+        - WhitelistedToken
       abis:
         - name: Murmes
           file: ./abis/Murmes.json
@@ -30,6 +31,10 @@ dataSources:
           file: ./abis/ItemVersionManagement.json
         - name: Events
           file: ./abis/Events.json
+        - name: ERC20
+          file: ./abis/ERC20.json
+        - name: ComponentGlobal
+          file: ./abis/ComponentGlobal.json
       eventHandlers:
         - event: RegisterRepuire(string,uint256)
           handler: handleRegisterRepuire
@@ -63,9 +68,9 @@ dataSources:
 
   - kind: ethereum/contract
     name: Platforms
-    network: mumbai
+    network: mainnet
     source:
-      address: "0xa671E667552218A495B2F5a53ec0B681f1c965c5"
+      address: "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707"
       abi: Events
     mapping:
       kind: ethereum/events
@@ -96,9 +101,9 @@ dataSources:
 
   - kind: ethereum/contract
     name: ItemToken
-    network: mumbai
+    network: mainnet
     source:
-      address: "0xF5A0BAcB03958E1b5EBdA72C6963C9FC19e021dF"
+      address: "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9"
       abi: ItemToken
     mapping:
       kind: ethereum/events
@@ -118,9 +123,9 @@ dataSources:
 
   - kind: ethereum/contract
     name: ItemVersionManagement
-    network: mumbai
+    network: mainnet
     source:
-      address: "0xF5A0BAcB03958E1b5EBdA72C6963C9FC19e021dF"
+      address: "0x8A791620dd6260079BF849Dc5567aDC3F2FdC318"
       abi: Events
     mapping:
       kind: ethereum/events

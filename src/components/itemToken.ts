@@ -6,11 +6,9 @@ import {
   getOrCreateRequire,
   getOrCreateTask,
 } from "../murmes";
-import { ONE_BI, SUBTITLE_TOKEN, ZERO_BI } from "../utils";
+import { ONE_BI, ITEM_TOKEN, ZERO_BI } from "../utils";
 
-export const ItemTokenContract = ItemToken.bind(
-  Address.fromString(SUBTITLE_TOKEN)
-);
+export const ItemTokenContract = ItemToken.bind(Address.fromString(ITEM_TOKEN));
 
 export function handleItemTransfer(event: Transfer): void {
   let item = getOrCreateItem(event.params.tokenId, event);
