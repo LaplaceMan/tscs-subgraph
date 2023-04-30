@@ -45,6 +45,7 @@ export function getOrCreateItem(itemId: BigInt, event: ethereum.Event): Item {
     item.time = event.block.timestamp.toI32();
     item.supporterCount = ZERO_BI;
     item.opponentCount = ZERO_BI;
+    item.versionCount = 1;
     item.save();
   }
   return item;

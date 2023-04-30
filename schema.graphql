@@ -86,6 +86,7 @@ type Item @entity {
   state: ItemState!
   supporterCount: BigInt!
   opponentCount: BigInt!
+  versionCount: Int!
   audits: [Audit!] @derivedFrom(field: "item")
   versions: [Version!] @derivedFrom(field: "item")
   txHash: Bytes

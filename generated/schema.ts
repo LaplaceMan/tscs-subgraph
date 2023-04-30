@@ -896,6 +896,15 @@ export class Item extends Entity {
     this.set("opponentCount", Value.fromBigInt(value));
   }
 
+  get versionCount(): i32 {
+    let value = this.get("versionCount");
+    return value!.toI32();
+  }
+
+  set versionCount(value: i32) {
+    this.set("versionCount", Value.fromI32(value));
+  }
+
   get audits(): Array<string> | null {
     let value = this.get("audits");
     if (!value || value.kind == ValueKind.NULL) {

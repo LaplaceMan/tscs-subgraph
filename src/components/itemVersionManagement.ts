@@ -21,6 +21,8 @@ export function handleItemVersionUpdate(event: ItemVersionUpdate): void {
   version.cid = event.params.source;
   version.fingerprint = event.params.fingerprint;
   version.vaild = true;
+  item.versionCount = item.versionCount + 1;
+  item.save();
   version.save();
 }
 
