@@ -388,21 +388,21 @@ function getOrCreateWhitelistedToken(token: Bytes): WhitelistedToken {
     if (!name.reverted) {
       erc20Token.name = name.value;
     } else {
-      erc20Token.name = "";
+      erc20Token.name = "PT";
     }
 
     let symbol = ERC20Contract.try_symbol();
     if (!symbol.reverted) {
       erc20Token.symbol = symbol.value;
     } else {
-      erc20Token.symbol = "";
+      erc20Token.symbol = "PT";
     }
 
     let decimals = ERC20Contract.try_decimals();
     if (!decimals.reverted) {
       erc20Token.decimal = decimals.value;
     } else {
-      erc20Token.decimal = 0;
+      erc20Token.decimal = 6;
     }
 
     erc20Token.save();
