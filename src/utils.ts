@@ -8,6 +8,7 @@ export const ITEM_VERSION_MANAGER =
 
 export const ZERO_BI = BigInt.fromI32(0);
 export const ONE_BI = BigInt.fromI32(1);
+export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 export const SETTLEMENT = ["OT0", "D1", "OTM2"];
 
 // Murmes Contract: 0x5FbDB2315678afecb367f032d93F642f64180aa3

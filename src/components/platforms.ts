@@ -6,7 +6,7 @@ import {
 } from "../../generated/Platforms/Events";
 import { Platforms } from "../../generated/Platforms/Platforms";
 import { Platform, Box } from "../../generated/schema";
-import { PLATFORM_MANAGER, ZERO_BI, ONE_BI } from "../utils";
+import { PLATFORM_MANAGER, ZERO_BI, ONE_BI, MURMES_SYSTEM } from "../utils";
 import {
   getOrCreateDashboard,
   getOrCreateDayData,
@@ -65,7 +65,7 @@ export function handleBoxCreated(event: BoxCreated): void {
   dashboard.save();
 }
 
-export function getOrCreateVideo(
+export function getOrCreateBox(
   platform: Address,
   boxId: BigInt,
   event: ethereum.Event
@@ -77,9 +77,11 @@ export function getOrCreateVideo(
     box.platform = platform_.id;
     box.time = event.block.timestamp.toI32();
     box.taskCount = ZERO_BI;
-    let base = PlatformsContract.getBox(boxId);
-    box.realId = base.id;
-    box.creator = getOrCreateUser(base.creator, event).id;
+    if (platform != Address.fromString(MURMES_SYSTEM)) {
+      let base = PlatformsContract.getBox(boxId);
+      box.realId = base.id;
+      box.creator = getOrCreateUser(base.creator, event).id;
+    }
     box.orderId = boxId;
     box.save();
   }

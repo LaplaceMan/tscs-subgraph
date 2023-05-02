@@ -43,6 +43,7 @@ type Task @entity {
 type User @entity {
   id: ID!
   time: Int!
+  userId: BigInt!
   reputation: BigInt!
   deposit: BigInt!
   taskCount: BigInt!
@@ -116,9 +117,9 @@ type Platform @entity {
 type Box @entity {
   id: ID!
   platform: Platform!
-  realId: BigInt!
+  realId: BigInt
   orderId: BigInt!
-  creator: User!
+  creator: User
   time: Int!
   taskCount: BigInt!
   tasks: [Task!] @derivedFrom(field: "box")

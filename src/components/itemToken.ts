@@ -6,19 +6,21 @@ import {
   getOrCreateRequire,
   getOrCreateTask,
 } from "../murmes";
-import { ONE_BI, ITEM_TOKEN, ZERO_BI } from "../utils";
+import { ONE_BI, ITEM_TOKEN, ZERO_BI, ZERO_ADDRESS } from "../utils";
 
 export const ItemTokenContract = ItemToken.bind(Address.fromString(ITEM_TOKEN));
 
 export function handleItemTransfer(event: Transfer): void {
   let item = getOrCreateItem(event.params.tokenId, event);
-  let oldOwner = getOrCreateUser(event.params.from, event);
-  let newOwner = getOrCreateUser(event.params.from, event);
-  oldOwner.ownItemCount = oldOwner.ownItemCount.minus(ONE_BI);
+  if (event.params.from != Address.fromString(ZERO_ADDRESS)) {
+    let oldOwner = getOrCreateUser(event.params.from, event);
+    oldOwner.ownItemCount = oldOwner.ownItemCount.minus(ONE_BI);
+    oldOwner.save();
+  }
+  let newOwner = getOrCreateUser(event.params.to, event);
   newOwner.ownItemCount = newOwner.ownItemCount.plus(ONE_BI);
   item.owner = newOwner.id;
   item.save();
-  oldOwner.save();
   newOwner.save();
 }
 

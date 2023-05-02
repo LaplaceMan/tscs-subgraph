@@ -457,6 +457,15 @@ export class User extends Entity {
     this.set("time", Value.fromI32(value));
   }
 
+  get userId(): BigInt {
+    let value = this.get("userId");
+    return value!.toBigInt();
+  }
+
+  set userId(value: BigInt) {
+    this.set("userId", Value.fromBigInt(value));
+  }
+
   get reputation(): BigInt {
     let value = this.get("reputation");
     return value!.toBigInt();
@@ -1194,13 +1203,21 @@ export class Box extends Entity {
     this.set("platform", Value.fromString(value));
   }
 
-  get realId(): BigInt {
+  get realId(): BigInt | null {
     let value = this.get("realId");
-    return value!.toBigInt();
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
   }
 
-  set realId(value: BigInt) {
-    this.set("realId", Value.fromBigInt(value));
+  set realId(value: BigInt | null) {
+    if (!value) {
+      this.unset("realId");
+    } else {
+      this.set("realId", Value.fromBigInt(<BigInt>value));
+    }
   }
 
   get orderId(): BigInt {
@@ -1212,13 +1229,21 @@ export class Box extends Entity {
     this.set("orderId", Value.fromBigInt(value));
   }
 
-  get creator(): string {
+  get creator(): string | null {
     let value = this.get("creator");
-    return value!.toString();
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
   }
 
-  set creator(value: string) {
-    this.set("creator", Value.fromString(value));
+  set creator(value: string | null) {
+    if (!value) {
+      this.unset("creator");
+    } else {
+      this.set("creator", Value.fromString(<string>value));
+    }
   }
 
   get time(): i32 {

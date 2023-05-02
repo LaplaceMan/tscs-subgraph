@@ -37,7 +37,7 @@ import {
   COMPONENT_GLOBAL,
 } from "./utils";
 import { getOrCreateItem } from "./components/itemToken";
-import { getOrCreateVideo, getOrCreatePlatform } from "./components/platforms";
+import { getOrCreateBox, getOrCreatePlatform } from "./components/platforms";
 
 export const MurmesContract = Murmes.bind(Address.fromString(MURMES_SYSTEM));
 
@@ -63,6 +63,7 @@ export function handleUserJoin(event: UserJoin): void {
   user.adoptedCount = ZERO_BI;
   let dashboard = getOrCreateDashboard();
   let dayData = getOrCreateDayData(event);
+  user.userId = dashboard.userCount.plus(ONE_BI);
   dayData.userCount = dayData.userCount.plus(ONE_BI);
   dashboard.userCount = dashboard.userCount.plus(ONE_BI);
   user.save();
@@ -109,7 +110,7 @@ export function handlePostTask(event: TaskPosted): void {
   let taskId = event.params.taskId;
   let task = new Task(taskId.toString());
   let user = getOrCreateUser(event.params.caller, event);
-  let box = getOrCreateVideo(
+  let box = getOrCreateBox(
     event.params.vars.platform,
     event.params.vars.sourceId,
     event
@@ -260,10 +261,14 @@ export function getOrCreateUser(address: Address, event: ethereum.Event): User {
     user.ownItemCount = ZERO_BI;
     user.auditCount = ZERO_BI;
     user.time = event.block.timestamp.toI32();
+    let dashboard = getOrCreateDashboard();
+    user.userId = dashboard.userCount.plus(ONE_BI);
     let contract = Murmes.bind(Address.fromString(MURMES_SYSTEM));
     let base = contract.getUserBaseData(address);
     user.reputation = base.getValue0();
     user.deposit = base.getValue1();
+    dashboard.userCount = dashboard.userCount.plus(ONE_BI);
+    dashboard.save();
     user.save();
   }
   return user;
@@ -333,7 +338,7 @@ export function getOrCreateTask(taskId: BigInt, event: ethereum.Event): Task {
     let base = MurmesContract.try_tasks(taskId);
     if (!base.reverted) {
       let user = getOrCreateUser(base.value.getApplicant(), event);
-      let box = getOrCreateVideo(
+      let box = getOrCreateBox(
         base.value.getPlatform(),
         base.value.getBoxId(),
         event
