@@ -16,7 +16,6 @@ import {
   TaskReset,
 } from "../generated/Murmes/Events";
 import { Murmes } from "../generated/Murmes/Murmes";
-import { ERC20 } from "../generated/Murmes/ERC20";
 import { ComponentGlobal } from "../generated/Murmes/ComponentGlobal";
 import {
   Dashboard,
@@ -27,7 +26,6 @@ import {
   Require,
   Audit,
   Item,
-  WhitelistedToken,
 } from "../generated/schema";
 import {
   MURMES_SYSTEM,
@@ -35,9 +33,15 @@ import {
   ONE_BI,
   SETTLEMENT,
   COMPONENT_GLOBAL,
+  ZERO_ADDRESS,
 } from "./utils";
 import { getOrCreateItem } from "./components/itemToken";
 import { getOrCreateBox, getOrCreatePlatform } from "./components/platforms";
+import {
+  getOrCreateWhitelistedToken,
+  getOrCreateWhitelistedAuditModule,
+  getOrCreateWhitelistedDetectionModule,
+} from "./components/moduleGlobal";
 
 export const MurmesContract = Murmes.bind(Address.fromString(MURMES_SYSTEM));
 
@@ -45,6 +49,10 @@ export function handleRegisterRepuire(event: RegisterRepuire): void {
   let requireId = event.params.id;
   let requires = new Require(requireId.toString());
   requires.notes = event.params.require;
+  requires.registrant = event.transaction.from;
+  requires.time = event.block.timestamp.toI32();
+  requires.taskCount = ZERO_BI;
+  requires.itemCount = ZERO_BI;
   let dashboard = getOrCreateDashboard();
   dashboard.requireCount = dashboard.requireCount + 1;
   requires.save();
@@ -126,11 +134,17 @@ export function handlePostTask(event: TaskPosted): void {
   task.itemCount = ZERO_BI;
   task.adopted = null;
   task.txHash = event.transaction.hash;
-  task.requires = getOrCreateRequire(event.params.vars.requireId).id;
+  let requires = getOrCreateRequire(event.params.vars.requireId);
+  requires.taskCount = requires.taskCount.plus(ONE_BI);
+  task.requires = requires.id;
   task.strategy = SETTLEMENT[event.params.vars.settlement];
   task.currency = getOrCreateWhitelistedToken(event.params.vars.currency).id;
-  task.auditModule = event.params.vars.auditModule;
-  task.detectionModule = event.params.vars.detectionModule;
+  task.auditModule = getOrCreateWhitelistedAuditModule(
+    event.params.vars.auditModule
+  ).id;
+  task.detectionModule = getOrCreateWhitelistedDetectionModule(
+    event.params.vars.detectionModule
+  ).id;
   task.state = "ONGOING";
   let dashboard = getOrCreateDashboard();
   dashboard.taskCount = dashboard.taskCount.plus(ONE_BI);
@@ -140,6 +154,7 @@ export function handlePostTask(event: TaskPosted): void {
   box.save();
   task.save();
   dayData.save();
+  requires.save();
   dashboard.save();
 }
 
@@ -152,7 +167,9 @@ export function handleSubmitItem(event: ItemSubmitted): void {
   task.itemCount = task.itemCount.plus(ONE_BI);
   item.maker = maker.id;
   item.owner = getOrCreateUser(event.params.maker, event).id;
-  item.requires = getOrCreateRequire(event.params.vars.requireId).id;
+  let requires = getOrCreateRequire(event.params.vars.requireId);
+  requires.itemCount = requires.itemCount.plus(ONE_BI);
+  item.requires = requires.id;
   item.cid = event.params.vars.cid;
   item.task = task.id;
   item.state = "NORMAL";
@@ -169,6 +186,7 @@ export function handleSubmitItem(event: ItemSubmitted): void {
   item.save();
   maker.save();
   dayData.save();
+  requires.save();
   dashboard.save();
 }
 
@@ -295,6 +313,10 @@ export function getOrCreateRequire(requireId: BigInt): Require {
     requires = new Require(requireId.toString());
     let base = MurmesContract.getRequiresNoteById(requireId);
     requires.notes = base;
+    requires.time = 0;
+    requires.registrant = Bytes.fromHexString(ZERO_ADDRESS);
+    requires.taskCount = ZERO_BI;
+    requires.itemCount = ZERO_BI;
     requires.save();
   }
   return requires;
@@ -349,13 +371,20 @@ export function getOrCreateTask(taskId: BigInt, event: ethereum.Event): Task {
       task.amount = base.value.getAmount();
       task.deadline = base.value.getDeadline();
       task.source = base.value.getSource();
-      task.requires = getOrCreateRequire(base.value.getRequireId()).id;
+      let requires = getOrCreateRequire(base.value.getRequireId());
+      requires.taskCount = requires.taskCount.plus(ONE_BI);
+      task.requires = requires.id;
       task.strategy = SETTLEMENT[base.value.getSettlement()];
       task.currency = getOrCreateWhitelistedToken(base.value.getCurrency()).id;
-      task.auditModule = base.value.getAuditModule();
-      task.detectionModule = base.value.getDetectionModule();
+      task.auditModule = getOrCreateWhitelistedAuditModule(
+        base.value.getAuditModule()
+      ).id;
+      task.detectionModule = getOrCreateWhitelistedDetectionModule(
+        base.value.getDetectionModule()
+      ).id;
       box.save();
       user.save();
+      requires.save();
     }
     task.start = event.block.timestamp.toI32();
     task.itemCount = ZERO_BI;
@@ -382,35 +411,4 @@ export function getOrCreateDayData(event: ethereum.Event): DayData {
     dayData.save();
   }
   return dayData;
-}
-
-function getOrCreateWhitelistedToken(token: Bytes): WhitelistedToken {
-  let erc20Token = WhitelistedToken.load(token.toHexString());
-  if (erc20Token == null) {
-    erc20Token = new WhitelistedToken(token.toHexString());
-    const ERC20Contract = ERC20.bind(Address.fromBytes(token));
-    let name = ERC20Contract.try_name();
-    if (!name.reverted) {
-      erc20Token.name = name.value;
-    } else {
-      erc20Token.name = "PT";
-    }
-
-    let symbol = ERC20Contract.try_symbol();
-    if (!symbol.reverted) {
-      erc20Token.symbol = symbol.value;
-    } else {
-      erc20Token.symbol = "PT";
-    }
-
-    let decimals = ERC20Contract.try_decimals();
-    if (!decimals.reverted) {
-      erc20Token.decimal = decimals.value;
-    } else {
-      erc20Token.decimal = 6;
-    }
-
-    erc20Token.save();
-  }
-  return erc20Token;
 }

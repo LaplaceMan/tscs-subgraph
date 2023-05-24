@@ -29,11 +29,14 @@ export function getOrCreateItem(itemId: BigInt, event: ethereum.Event): Item {
   if (item === null) {
     item = new Item(itemId.toString());
     let base = ItemTokenContract.getItemBaseData(itemId);
-    item.requires = getOrCreateRequire(base.getValue2()).id;
+    let requires = getOrCreateRequire(base.getValue2());
+    requires.itemCount = requires.itemCount.plus(ONE_BI);
+    item.requires = requires.id;
     item.fingerprint = ItemTokenContract.getItemFingerprint(itemId);
     let task = getOrCreateTask(base.getValue1(), event);
     item.task = task.id;
     task.save();
+    requires.save();
     item.state = "NORMAL";
     let uri = ItemTokenContract.try_tokenURI(itemId);
     if (!uri.reverted) {

@@ -276,22 +276,22 @@ export class Task extends Entity {
     this.set("currency", Value.fromString(value));
   }
 
-  get auditModule(): Bytes {
+  get auditModule(): string {
     let value = this.get("auditModule");
-    return value!.toBytes();
+    return value!.toString();
   }
 
-  set auditModule(value: Bytes) {
-    this.set("auditModule", Value.fromBytes(value));
+  set auditModule(value: string) {
+    this.set("auditModule", Value.fromString(value));
   }
 
-  get detectionModule(): Bytes {
+  get detectionModule(): string {
     let value = this.get("detectionModule");
-    return value!.toBytes();
+    return value!.toString();
   }
 
-  set detectionModule(value: Bytes) {
-    this.set("detectionModule", Value.fromBytes(value));
+  set detectionModule(value: string) {
+    this.set("detectionModule", Value.fromString(value));
   }
 
   get amount(): BigInt {
@@ -749,6 +749,33 @@ export class Require extends Entity {
     this.set("notes", Value.fromString(value));
   }
 
+  get registrant(): Bytes {
+    let value = this.get("registrant");
+    return value!.toBytes();
+  }
+
+  set registrant(value: Bytes) {
+    this.set("registrant", Value.fromBytes(value));
+  }
+
+  get time(): i32 {
+    let value = this.get("time");
+    return value!.toI32();
+  }
+
+  set time(value: i32) {
+    this.set("time", Value.fromI32(value));
+  }
+
+  get taskCount(): BigInt {
+    let value = this.get("taskCount");
+    return value!.toBigInt();
+  }
+
+  set taskCount(value: BigInt) {
+    this.set("taskCount", Value.fromBigInt(value));
+  }
+
   get tasks(): Array<string> | null {
     let value = this.get("tasks");
     if (!value || value.kind == ValueKind.NULL) {
@@ -764,6 +791,15 @@ export class Require extends Entity {
     } else {
       this.set("tasks", Value.fromStringArray(<Array<string>>value));
     }
+  }
+
+  get itemCount(): BigInt {
+    let value = this.get("itemCount");
+    return value!.toBigInt();
+  }
+
+  set itemCount(value: BigInt) {
+    this.set("itemCount", Value.fromBigInt(value));
   }
 
   get items(): Array<string> | null {
@@ -1425,5 +1461,97 @@ export class WhitelistedToken extends Entity {
 
   set decimal(value: i32) {
     this.set("decimal", Value.fromI32(value));
+  }
+}
+
+export class WhitelistedAuditModule extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(
+      id != null,
+      "Cannot save WhitelistedAuditModule entity without an ID"
+    );
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type WhitelistedAuditModule must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("WhitelistedAuditModule", id.toString(), this);
+    }
+  }
+
+  static load(id: string): WhitelistedAuditModule | null {
+    return changetype<WhitelistedAuditModule | null>(
+      store.get("WhitelistedAuditModule", id)
+    );
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get name(): string {
+    let value = this.get("name");
+    return value!.toString();
+  }
+
+  set name(value: string) {
+    this.set("name", Value.fromString(value));
+  }
+}
+
+export class WhitelistedDetectionModule extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(
+      id != null,
+      "Cannot save WhitelistedDetectionModule entity without an ID"
+    );
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type WhitelistedDetectionModule must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("WhitelistedDetectionModule", id.toString(), this);
+    }
+  }
+
+  static load(id: string): WhitelistedDetectionModule | null {
+    return changetype<WhitelistedDetectionModule | null>(
+      store.get("WhitelistedDetectionModule", id)
+    );
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get name(): string {
+    let value = this.get("name");
+    return value!.toString();
+  }
+
+  set name(value: string) {
+    this.set("name", Value.fromString(value));
   }
 }

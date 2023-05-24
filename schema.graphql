@@ -26,8 +26,8 @@ type Task @entity {
   box: Box!
   strategy: SettlementType!
   currency: WhitelistedToken!
-  auditModule: Bytes!
-  detectionModule: Bytes!
+  auditModule: WhitelistedAuditModule!
+  detectionModule: WhitelistedDetectionModule!
   amount: BigInt!
   requires: Require!
   start: Int!
@@ -71,7 +71,11 @@ type Revenue @entity {
 type Require @entity {
   id: ID!
   notes: String!
+  registrant: Bytes!
+  time: Int!
+  taskCount: BigInt!
   tasks: [Task!] @derivedFrom(field: "requires")
+  itemCount: BigInt!
   items: [Item!] @derivedFrom(field: "requires")
 }
 
@@ -139,6 +143,16 @@ type WhitelistedToken @entity {
   name: String!
   symbol: String!
   decimal: Int!
+}
+
+type WhitelistedAuditModule @entity {
+  id: ID!
+  name: String!
+}
+
+type WhitelistedDetectionModule @entity {
+  id: ID!
+  name: String!
 }
 
 enum ItemState {
