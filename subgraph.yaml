@@ -4,10 +4,11 @@ schema:
 dataSources:
   - kind: ethereum
     name: Murmes
-    network: mainnet
+    network: mumbai
     source:
-      address: "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+      address: "0x2E2F1434Ce4D4Ec45bE6C3Cf4c6C70767D46259f"
       abi: Events
+      startBlock: 37392539
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -72,10 +73,11 @@ dataSources:
 
   - kind: ethereum/contract
     name: Platforms
-    network: mainnet
+    network: mumbai
     source:
-      address: "0x0165878A594ca255338adfa4d48449f69242Eb8F"
+      address: "0xea241696708f147bAad0baC2f0aFD5A265DEb0E3"
       abi: Events
+      startBlock: 37392539
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -105,10 +107,11 @@ dataSources:
 
   - kind: ethereum/contract
     name: ItemToken
-    network: mainnet
+    network: mumbai
     source:
-      address: "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"
+      address: "0x86C57f0be2b5a7bA45F5E913Cf973060405CA4bD"
       abi: ItemToken
+      startBlock: 37392539
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -127,10 +130,11 @@ dataSources:
 
   - kind: ethereum/contract
     name: ItemVersionManagement
-    network: mainnet
+    network: mumbai
     source:
-      address: "0x610178dA211FEF7D417bC0e6FeD39F05609AD788"
+      address: "0x1B0698B118aD0adF0df020be4f2f71e07b955667"
       abi: Events
+      startBlock: 37392539
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -155,10 +159,11 @@ dataSources:
 
   - kind: ethereum/contract
     name: ModuleGlobal
-    network: mainnet
+    network: mumbai
     source:
-      address: "0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6"
+      address: "0x10A383577337F45337650A8A2394a92A16cB9271"
       abi: Events
+      startBlock: 37392539
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6

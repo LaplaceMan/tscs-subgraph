@@ -63,7 +63,8 @@ type Revenue @entity {
   id: ID!
   day: BigInt!
   user: User!
-  platform: Platform!
+  platform: Platform
+  token: WhitelistedToken
   locked: BigInt!
   extracted: BigInt!
 }
@@ -121,8 +122,8 @@ type Platform @entity {
 type Box @entity {
   id: ID!
   platform: Platform!
-  realId: BigInt
-  orderId: BigInt!
+  realId: BigInt!
+  orderId: BigInt
   creator: User
   time: Int!
   taskCount: BigInt!

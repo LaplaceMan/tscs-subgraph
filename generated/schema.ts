@@ -681,13 +681,38 @@ export class Revenue extends Entity {
     this.set("user", Value.fromString(value));
   }
 
-  get platform(): string {
+  get platform(): string | null {
     let value = this.get("platform");
-    return value!.toString();
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
   }
 
-  set platform(value: string) {
-    this.set("platform", Value.fromString(value));
+  set platform(value: string | null) {
+    if (!value) {
+      this.unset("platform");
+    } else {
+      this.set("platform", Value.fromString(<string>value));
+    }
+  }
+
+  get token(): string | null {
+    let value = this.get("token");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set token(value: string | null) {
+    if (!value) {
+      this.unset("token");
+    } else {
+      this.set("token", Value.fromString(<string>value));
+    }
   }
 
   get locked(): BigInt {
@@ -1239,8 +1264,17 @@ export class Box extends Entity {
     this.set("platform", Value.fromString(value));
   }
 
-  get realId(): BigInt | null {
+  get realId(): BigInt {
     let value = this.get("realId");
+    return value!.toBigInt();
+  }
+
+  set realId(value: BigInt) {
+    this.set("realId", Value.fromBigInt(value));
+  }
+
+  get orderId(): BigInt | null {
+    let value = this.get("orderId");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
@@ -1248,21 +1282,12 @@ export class Box extends Entity {
     }
   }
 
-  set realId(value: BigInt | null) {
+  set orderId(value: BigInt | null) {
     if (!value) {
-      this.unset("realId");
+      this.unset("orderId");
     } else {
-      this.set("realId", Value.fromBigInt(<BigInt>value));
+      this.set("orderId", Value.fromBigInt(<BigInt>value));
     }
-  }
-
-  get orderId(): BigInt {
-    let value = this.get("orderId");
-    return value!.toBigInt();
-  }
-
-  set orderId(value: BigInt) {
-    this.set("orderId", Value.fromBigInt(value));
   }
 
   get creator(): string | null {

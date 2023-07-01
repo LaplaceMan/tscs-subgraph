@@ -26,6 +26,7 @@ import {
   Require,
   Audit,
   Item,
+  WhitelistedToken,
 } from "../generated/schema";
 import {
   MURMES_SYSTEM,
@@ -120,7 +121,7 @@ export function handlePostTask(event: TaskPosted): void {
   let user = getOrCreateUser(event.params.caller, event);
   let box = getOrCreateBox(
     event.params.vars.platform,
-    event.params.vars.sourceId,
+    event.params.taskId,
     event
   );
   box.taskCount = box.taskCount.plus(ONE_BI);
@@ -335,6 +336,7 @@ export function getOrCreateRevenue(
       "-" +
       day.toString()
   );
+  let token = WhitelistedToken.load(platformAddress.toHexString());
   if (revenue === null) {
     revenue = new Revenue(
       ownerAddress.toHexString() +
@@ -345,7 +347,12 @@ export function getOrCreateRevenue(
     );
     revenue.day = day;
     revenue.user = getOrCreateUser(ownerAddress, event).id;
-    revenue.platform = getOrCreatePlatform(platformAddress, event).id;
+    if(token === null) {
+      revenue.platform = getOrCreatePlatform(platformAddress, event).id;
+    } else {
+      revenue.platform = getOrCreatePlatform(Address.fromString(MURMES_SYSTEM), event).id;
+      revenue.token = getOrCreateWhitelistedToken(platformAddress).id;
+    }
     revenue.locked = ZERO_BI;
     revenue.extracted = ZERO_BI;
     revenue.save();

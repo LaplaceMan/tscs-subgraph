@@ -1,13 +1,14 @@
-import { BigInt, Address, ethereum } from "@graphprotocol/graph-ts";
+import { BigInt, Address, ethereum, log } from "@graphprotocol/graph-ts";
 import {
   RegisterPlatform,
   PlatformStateUpdate,
   BoxCreated,
 } from "../../generated/Platforms/Events";
 import { Platforms } from "../../generated/Platforms/Platforms";
-import { Platform, Box } from "../../generated/schema";
+import { Platform, Box, WhitelistedToken } from "../../generated/schema";
 import { PLATFORM_MANAGER, ZERO_BI, ONE_BI, MURMES_SYSTEM } from "../utils";
 import {
+  MurmesContract,
   getOrCreateDashboard,
   getOrCreateDayData,
   getOrCreateUser,
@@ -45,7 +46,7 @@ export function handlePlatformStateUpdate(event: PlatformStateUpdate): void {
 
 export function handleBoxCreated(event: BoxCreated): void {
   let box = new Box(
-    event.params.platform.toHexString() + event.params.boxId.toString()
+    event.params.platform.toHexString() + '-' + event.params.boxId.toString()
   );
   let platform = getOrCreatePlatform(event.params.platform, event);
   platform.boxCount = platform.boxCount.plus(ONE_BI);
@@ -67,22 +68,26 @@ export function handleBoxCreated(event: BoxCreated): void {
 
 export function getOrCreateBox(
   platform: Address,
-  boxId: BigInt,
+  taskId: BigInt,
   event: ethereum.Event
 ): Box {
-  let box = Box.load(platform.toHexString() + boxId.toString());
+  let base = MurmesContract.try_tasks(taskId);
+  let boxId = base.value.getBoxId();
+  let box = Box.load(platform.toHexString() + '-' + boxId.toString());
   if (box === null) {
     let platform_ = getOrCreatePlatform(platform, event);
-    box = new Box(platform.toHexString() + boxId.toString());
+    box = new Box(platform.toHexString() + '-' + boxId.toString());
     box.platform = platform_.id;
     box.time = event.block.timestamp.toI32();
     box.taskCount = ZERO_BI;
     if (platform != Address.fromString(MURMES_SYSTEM)) {
       let base = PlatformsContract.getBox(boxId);
       box.realId = base.id;
+      box.orderId = boxId;
       box.creator = getOrCreateUser(base.creator, event).id;
+    } else {
+      box.realId = boxId;
     }
-    box.orderId = boxId;
     box.save();
   }
   return box;

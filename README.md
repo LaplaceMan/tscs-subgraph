@@ -1,16 +1,19 @@
 # Murmes Subgraph
 
-[Murmes](https://github.com/LaplaceMan/tscs-contracts) is a blockchain-based tokenized subtitling crowdsourcing system. It is dedicated to solving the problem of "language silos" in the current video media platform. Through a complete set of trading mechanisms and economic models, video creators, subtitle makers, viewers, and investors are connected in an open, transparent, and multi-profit ecosystem.
+[Murmes](https://github.com/LaplaceMan/tscs-contracts) is a modular, customizable and multi-ecology compatible crowdsourcing protocol on the blockchain that will provide WEB3 users with a flexible, fun and multi-beneficial crowdsourcing marketplace.
 
 This subgraph is used for:
 
 - aggregates data and serves dashboard.
 - act as the back-end in the early stages of the project and provide necessary data for the front-end.
 - data on users.
-- data on tasks (applications).
-- data on rewards.
-- data on subtitles.
-- data on platforms and videos.
+- data on tasks.
+- data on items.
+- data on revenue.
+- data on audit.
+- data on whitelisted tokens.
+- data on whitelisted modules.
+- data on platforms and boxes.
 
 # Running locally
 
@@ -40,5 +43,4 @@ This subgraph is used for:
 
 ## Deployed
 
-- Goerli: https://thegraph.com/hosted-service/subgraph/laplaceman/murmes-goerli
-- Mumbai: https://thegraph.com/hosted-service/subgraph/laplaceman/murmes-mumbai-v5
+- Mumbai: https://thegraph.com/hosted-service/subgraph/laplaceman/murmes-mumbai
